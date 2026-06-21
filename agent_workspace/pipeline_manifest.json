@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "project": "LNPDB_Articles_AgentExtraction",
+  "stage_order": [
+    "00_marker",
+    "01_make_ft_csv",
+    "02_ft_selector",
+    "02b_manual_review",
+    "03_figure_mapping",
+    "03_split_excel_blocks",
+    "03_split_excel_blocks_batch",
+    "04_figure_separate",
+    "04_ft_excel_matcher"
+  ],
+  "pre_agent_stages": [
+    "00_marker",
+    "01_make_ft_csv",
+    "02_ft_selector",
+    "02b_manual_review"
+  ],
+  "agent_stages": [
+    "03_figure_mapping",
+    "03_split_excel_blocks",
+    "03_split_excel_blocks_batch",
+    "04_figure_separate",
+    "04_ft_excel_matcher"
+  ],
+  "manual_review_marker": ".manual_select_review_done",
+  "stages": {
+    "00_marker": {
+      "script": "0_mark_down_gen/00_Marker.py",
+      "required_inputs": ["*.pdf"],
+      "expected_outputs": ["*.md"],
+      "retry": true
+    },
+    "01_make_ft_csv": {
+      "script": "0_mark_down_gen/01_make_FT_csv.py",
+      "required_inputs": ["*.md", "*.pdf"],
+      "expected_outputs": ["fig_table_inventory.csv"],
+      "retry": true
+    },
+    "02_ft_selector": {
+      "script": "0_mark_down_gen/02_FT_selector.py",
+      "required_inputs": ["fig_table_inventory.csv"],
+      "expected_outputs": ["fig_table_lnpdb_classified.csv"],
+      "retry": true
+    },
+    "02b_manual_review": {
+      "script": "0_mark_down_gen/02B_FT_manual_selector_gui.py",
+      "required_inputs": ["fig_table_lnpdb_classified.csv"],
+      "expected_outputs": [".manual_select_review_done"],
+      "retry": false
+    },
+    "03_figure_mapping": {
+      "script": "0_mark_down_gen/03_figure_mapping.py",
+      "required_inputs": [".manual_select_review_done", "fig_table_lnpdb_classified.csv"],
+      "expected_outputs": ["total_figure_mapping.json"],
+      "retry": true
+    },
+    "03_split_excel_blocks": {
+      "script": "0_mark_down_gen/03_split_excel_blocks.py",
+      "required_inputs": ["Exp_Excel"],
+      "expected_outputs": [],
+      "retry": true
+    },
+    "03_split_excel_blocks_batch": {
+      "script": "0_mark_down_gen/03_split_excel_blocks_batch.py",
+      "required_inputs": [".manual_select_review_done", "Exp_Excel", "fig_table_inventory.csv"],
+      "expected_outputs": ["excel_block_inventory.csv", "three_core_result_all.json", "Exp_Excel_Blocks"],
+      "retry": true
+    },
+    "04_figure_separate": {
+      "script": "0_mark_down_gen/04_figure_saperate_gemini.py",
+      "required_inputs": [".manual_select_review_done", "total_figure_mapping.json"],
+      "expected_outputs": ["separated_panels_gemini"],
+      "retry": true
+    },
+    "04_ft_excel_matcher": {
+      "script": "0_mark_down_gen/04_FT-Excel_matcher.py",
+      "required_inputs": [".manual_select_review_done", "fig_table_lnpdb_classified.csv", "fig_table_inventory.csv", "excel_block_inventory.csv"],
+      "expected_outputs": ["excel_mapping.json", "excel_mapping_rows.csv"],
+      "retry": true
+    }
+  }
+}
+

@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "queue": [],
+  "default_policy": {
+    "run_pre_agent_stages_only_when_requested": true,
+    "require_manual_review_marker_for_agent_stages": true,
+    "backup_before_overwrite": true,
+    "max_retries_before_human_review": 2
+  }
+}
+

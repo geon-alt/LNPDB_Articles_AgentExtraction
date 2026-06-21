@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "project": "LNPDB_Articles_AgentExtraction",
+  "mode": "external_cli_agent_workspace",
+  "active_paper_folder": "F:\\내 드라이브\\EXTRACT-TEST\\QS_2026",
+  "current_stage": "03_figure_mapping",
+  "last_updated": "2026-06-21T15:57:41+00:00",
+  "stage_status": {
+    "00_marker": {
+      "status": "next_stage_selected",
+      "updated": "2026-06-21T15:26:19+00:00",
+      "detail": {
+        "next_stage": "00_marker",
+        "blocked": false,
+        "reason": "non-empty markdown files: 0"
+      }
+    },
+    "01_make_ft_csv": {
+      "status": "next_stage_selected",
+      "updated": "2026-06-21T15:30:45+00:00",
+      "detail": {
+        "next_stage": "01_make_ft_csv",
+        "blocked": false,
+        "reason": "missing or empty: F:\\내 드라이브\\EXTRACT-TEST\\QS_2026\\fig_table_inventory.csv"
+      }
+    },
+    "02b_manual_review": {
+      "status": "next_stage_selected",
+      "updated": "2026-06-21T15:31:43+00:00",
+      "detail": {
+        "next_stage": "02b_manual_review",
+        "blocked": true,
+        "reason": "marker=False; reviewed_copy=False; manual_select_column=True"
+      }
+    },
+    "03_figure_mapping": {
+      "status": "validated",
+      "updated": "2026-06-21T15:57:41+00:00",
+      "detail": {
+        "ok": true,
+        "messages": [
+          "top_level_keys=2"
+        ]
+      }
+    }
+  },
+  "last_event": {
+    "stage": "03_figure_mapping",
+    "status": "validated",
+    "detail": {
+      "ok": true,
+      "messages": [
+        "top_level_keys=2"
+      ]
+    }
+  },
+  "manual_review_required": false,
+  "notes": [
+    "00-02B are pre-agent stages.",
+    "03 and later require .manual_select_review_done.",
+    "Existing scripts remain in 0_mark_down_gen."
+  ]
+}

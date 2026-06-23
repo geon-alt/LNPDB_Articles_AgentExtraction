@@ -3,8 +3,8 @@
   "project": "LNPDB_Articles_AgentExtraction",
   "mode": "external_cli_agent_workspace",
   "active_paper_folder": "F:\\내 드라이브\\EXTRACT-TEST\\QS_2026",
-  "current_stage": "03_figure_mapping",
-  "last_updated": "2026-06-21T15:57:41+00:00",
+  "current_stage": "07_finalize_unified_table",
+  "last_updated": "2026-06-22T15:17:52+00:00",
   "stage_status": {
     "00_marker": {
       "status": "next_stage_selected",
@@ -35,22 +35,102 @@
     },
     "03_figure_mapping": {
       "status": "validated",
-      "updated": "2026-06-21T15:57:41+00:00",
+      "updated": "2026-06-22T15:00:15+00:00",
       "detail": {
         "ok": true,
         "messages": [
-          "top_level_keys=2"
+          "top_level_keys=2",
+          "invalid_source_quality_values=0",
+          "missing_fallback_or_selected_paths=0"
+        ]
+      }
+    },
+    "03_split_excel_blocks_batch": {
+      "status": "validated",
+      "updated": "2026-06-22T15:00:15+00:00",
+      "detail": {
+        "ok": true,
+        "messages": [
+          "rows=44",
+          "summary_exists=True",
+          "block_dir_exists=True",
+          "missing_block_paths=0"
+        ]
+      }
+    },
+    "04_ft_excel_matcher": {
+      "status": "validated",
+      "updated": "2026-06-22T15:04:11+00:00",
+      "detail": {
+        "ok": true,
+        "messages": [
+          "mapping_keys=71",
+          "rows_csv_exists=True"
+        ]
+      }
+    },
+    "04_figure_separate": {
+      "status": "validated",
+      "updated": "2026-06-22T15:00:15+00:00",
+      "detail": {
+        "ok": true,
+        "messages": [
+          "mapping_keys=2",
+          "panel_dirs=0",
+          "invalid_source_quality_values=0",
+          "missing_fallback_or_selected_paths=0"
+        ]
+      }
+    },
+    "05_smiles_structure_resolution": {
+      "status": "validated",
+      "updated": "2026-06-22T15:09:19+00:00",
+      "detail": {
+        "ok": true,
+        "messages": [
+          "rows=68",
+          "name_columns=['Name', 'compound_id']",
+          "smiles_columns=['SMILES', 'resolved_smiles']"
+        ]
+      }
+    },
+    "06_unified_lnpdb_extraction": {
+      "status": "validated",
+      "updated": "2026-06-22T15:17:52+00:00",
+      "detail": {
+        "ok": true,
+        "messages": [
+          "rows=685",
+          "selected_items=71",
+          "missing_required_columns=0",
+          "empty_item_ids=0",
+          "review_flags_exists=True",
+          "json_parses=True"
+        ]
+      }
+    },
+    "07_finalize_unified_table": {
+      "status": "validated",
+      "updated": "2026-06-22T15:17:52+00:00",
+      "detail": {
+        "ok": true,
+        "messages": [
+          "final_rows=685",
+          "lnpdb_like_rows=685",
+          "qc_report_parses=true"
         ]
       }
     }
   },
   "last_event": {
-    "stage": "03_figure_mapping",
+    "stage": "07_finalize_unified_table",
     "status": "validated",
     "detail": {
       "ok": true,
       "messages": [
-        "top_level_keys=2"
+        "final_rows=685",
+        "lnpdb_like_rows=685",
+        "qc_report_parses=true"
       ]
     }
   },

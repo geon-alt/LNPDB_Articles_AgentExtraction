@@ -2,6 +2,8 @@
 
 This document defines the pipeline stages that external coding agents should follow. Existing code stays in `0_mark_down_gen/`; do not move it.
 
+Legacy Gemini/API-assisted scripts under `1_Extract_Exp_Figs/`, `2_Extract_SMILES/`, `3_Extract_Formula_by_Figs/`, and `4_Extract_Exp_Vals/` are preserved for manual legacy mode only. The default API-free workflow uses external CLI agent task files or deterministic heuristics and must not require `find_api.py`, `LLM_API.py`, `LLM_Batch.py`, Vertex/Gemini credentials, or hard-coded API keys.
+
 ## PRE_AGENT_STAGES
 
 ### 00_marker
@@ -124,14 +126,19 @@ Active agent stages must not run unless `.manual_select_review_done` exists.
 - Script: `0_mark_down_gen/04_figure_saperate_gemini.py`
 - Note: The repository currently spells the filename `saperate`, not `separate`.
 - Required input files: `total_figure_mapping.json`, selected source image files, classified/reviewed CSV.
-- Expected output files: `separated_panels_gemini/` folders or panel paths recorded in `total_figure_mapping.json`.
+- Expected output files: `separated_panels_gemini/` folders or panel paths recorded in `total_figure_mapping.json`; optional `pdf_page_renders/` fallback pages.
+- Marker-extracted images are primary candidates only.
+- If a Marker image is missing, wrongly cropped, incomplete, or inconsistent with the caption, render the original PDF page with PyMuPDF and use that path as `selected_source_for_paneling`.
+- If the selected source or panel boundaries remain uncertain, set `manual_required=true` and do not guess panel crops.
 - Success criteria:
   - Panel output folder exists for mapped images that require panel separation.
   - Mapping JSON is updated with panel paths.
   - Panel image paths exist and are readable.
+  - Fallback render paths recorded in `fallback_render` or `selected_source_for_paneling` exist when present.
 - If failed, check:
   - Mapping JSON keys match source folder names.
   - OpenCV can read source images.
+  - PyMuPDF is installed when PDF page fallback is needed.
   - Vertex/Gemini credentials and batch settings are valid.
 - Retry: Yes, after isolating failed images.
 
@@ -152,3 +159,54 @@ Active agent stages must not run unless `.manual_select_review_done` exists.
   - Batch job output parsing succeeded.
 - Retry: Yes, but inspect previous batch job artifacts first.
 
+### 05_smiles_structure_resolution
+
+- Purpose: Resolve compound names, IUPAC names, and structure-derived SMILES without Gemini/API dependencies.
+- Legacy scripts preserved under: `2_Extract_SMILES/`.
+- Default mode: `external_agent`.
+- Required input files: markdown/PDF sources, mapped source images when available, `total_figure_mapping.json` when available.
+- Expected output files: `compound_inventory_standardized.csv`, `smiles_resolved.csv`, `smiles_resolution_qc.csv`.
+- Success criteria:
+  - `smiles_resolved.csv` exists and parses.
+  - It includes a name identifier column and a SMILES/resolved SMILES column.
+  - Unresolved or ambiguous compounds are marked for manual review.
+- If failed, check:
+  - Deterministic lookup tools such as OPSIN, PubChem, CIR, or local LNPDB references.
+  - Structure-image helper outputs from MolScribe/DECIMER when used.
+- Retry: Yes, after resolving tool/input availability.
+
+### 06_unified_lnpdb_extraction
+
+- Purpose: Build one figure/table-item-level long table combining experimental conditions, formulation composition, experimental values, and provenance.
+- Default mode: `external_agent`.
+- Replaces old independent extraction from `1_Extract_Exp_Figs/`, `3_Extract_Formula_by_Figs/`, and `4_Extract_Exp_Vals/`.
+- Required input files: `.manual_select_review_done`, `fig_table_lnpdb_classified.csv`, `total_figure_mapping.json`, `excel_mapping.json`, `excel_block_inventory.csv`, `Exp_Excel_Blocks/`, markdown files.
+- Optional input files: `separated_panels_gemini/`, `compound_inventory_standardized.csv`, `text_extracted_iupac.csv`, `smiles_resolved.csv`, outputs from `2_Extract_SMILES/`.
+- Expected output files: `unified_extraction.csv`, `unified_extraction.json`, `unified_extraction_review_flags.csv`.
+- Success criteria:
+  - `unified_extraction.csv` exists, parses, and contains required columns.
+  - Rows use long format: one row per item/formulation/condition/metric/value.
+  - Excel numeric values are treated as authoritative for experimental values.
+  - Figure/PDF images provide labels, axes, legends, panel identity, and visual context.
+  - Markdown provides captions, methods context, dose, model, route, and formulation descriptions.
+  - Missing exact values remain blank with `manual_required=true`.
+- If failed, check:
+  - `excel_mapping.json` links selected items to block CSVs.
+  - `total_figure_mapping.json` contains source image/PDF provenance.
+  - External CLI agent did not hallucinate unsupported values.
+- Retry: Yes, after fixing missing evidence or mappings.
+
+### 07_finalize_unified_table
+
+- Purpose: Finalize the unified extraction into final and LNPDB-like CSVs with a QC report.
+- Default mode: `heuristic`.
+- Required input files: `unified_extraction.csv`, `unified_extraction_review_flags.csv`.
+- Expected output files: `unified_extraction_final.csv`, `unified_extraction_lnpdb_like.csv`, `unified_extraction_qc_report.json`.
+- Success criteria:
+  - Final and LNPDB-like CSVs parse.
+  - QC report JSON parses.
+  - No missing scientific value is invented during finalization.
+- If failed, check:
+  - `unified_extraction.csv` required columns.
+  - Manual review flags and low-confidence row counts.
+- Retry: Yes, after fixing unified extraction rows.

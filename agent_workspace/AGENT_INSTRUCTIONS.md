@@ -17,6 +17,9 @@ Process LNPDB article extraction work one paper folder at a time:
 - classify/refine Excel blocks
 - separate figure panels or important regions
 - match selected figure/table items to Excel blocks
+- resolve compound names/SMILES without API judgment
+- build one unified extraction table for conditions, formulation composition, values, and provenance
+- finalize unified outputs with QC
 
 ## Agent Role
 
@@ -32,6 +35,10 @@ The coding agent is responsible for this loop:
 8. Move to the next eligible stage.
 
 For API-free active stages, the agent should read task markdown files under `agent_workspace/tasks/` and produce the expected JSON/CSV outputs directly. In `external_agent` mode, `Agent_Task_Runner.py` creates the task file and records `external_agent_required`; Codex CLI, Claude Code, or another external coding agent then completes the task by reading files, inspecting assets, running API-free helper code, and writing outputs.
+
+`run-agent-active` is the orchestration mode for this API-free workflow. It creates stage task files, invokes an external CLI agent such as Codex or Claude as a subprocess, validates outputs, appends validation feedback to the task file on failure, retries when configured, and then advances to the next active stage. The same no-Gemini/no-API/no-legacy-import rules apply inside the external CLI agent run.
+
+Use `--stream-agent-output` when operators need to watch the external CLI agent's stdout/stderr live during long-running stages.
 
 ## Safety Rules
 
@@ -49,14 +56,18 @@ For API-free active stages, the agent should read task markdown files under `age
 
 `00_marker`, `01_make_ft_csv`, `02_ft_selector`, and `02b_manual_review` are pre-agent stages. They prepare source text, inventory, classification, and human confirmation.
 
-`03_figure_mapping`, `03_split_excel_blocks`, `03_split_excel_blocks_batch`, `04_figure_separate`, and `04_ft_excel_matcher` are active agent stages. The coding agent may run these after manual review is complete.
+`03_figure_mapping`, `03_split_excel_blocks`, `03_split_excel_blocks_batch`, `04_figure_separate`, `04_ft_excel_matcher`, `05_smiles_structure_resolution`, `06_unified_lnpdb_extraction`, and `07_finalize_unified_table` are active agent stages. The coding agent may run these after manual review is complete.
 
-For the API-free workflow, use `03_figure_mapping`, `03_split_excel_blocks_batch`, `04_figure_separate`, and `04_ft_excel_matcher` in `external_agent` or `heuristic` mode. These modes must not import the legacy Gemini scripts:
+For the API-free workflow, use `03_figure_mapping`, `03_split_excel_blocks_batch`, `04_figure_separate`, `04_ft_excel_matcher`, `05_smiles_structure_resolution`, and `06_unified_lnpdb_extraction` in `external_agent` mode where judgment is needed; `07_finalize_unified_table` defaults to `heuristic`. These modes must not import the legacy Gemini scripts:
 
 - `0_mark_down_gen/03_figure_mapping.py`
 - `0_mark_down_gen/03_split_excel_blocks_batch.py`
 - `0_mark_down_gen/04_figure_saperate_gemini.py`
 - `0_mark_down_gen/04_FT-Excel_matcher.py`
+- scripts under `1_Extract_Exp_Figs/`
+- scripts under `2_Extract_SMILES/`
+- scripts under `3_Extract_Formula_by_Figs/`
+- scripts under `4_Extract_Exp_Vals/`
 
 Legacy mode is a compatibility mode for running the old Gemini/API scripts and may require the old credential files and helper modules.
 
@@ -102,3 +113,9 @@ Every meaningful action should be reflected in machine-readable state and human-
 - next recommended action
 
 Use `Agent_Task_Runner.py` when possible because it writes JSON logs and state automatically. If you execute scripts manually, update the same state files yourself.
+
+For automated active-stage execution, prefer:
+
+```bash
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent codex
+```

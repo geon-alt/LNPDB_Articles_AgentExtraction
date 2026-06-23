@@ -5,8 +5,11 @@ import csv
 import importlib.util
 import json
 import re
+import shlex
 import shutil
+import subprocess
 import sys
+import threading
 import traceback
 from datetime import datetime, timezone
 from pathlib import Path
@@ -28,6 +31,18 @@ PROJECT_EXCLUDE_DIRS = {
     "agent_workspace",
 }
 
+FALLBACK_SOURCE_QUALITIES = {
+    "suspect_crop",
+    "missing_image",
+    "caption_image_mismatch",
+}
+
+VALID_SOURCE_QUALITIES = FALLBACK_SOURCE_QUALITIES | {
+    "ok",
+    "pdf_page_render_fallback",
+    "manual_required",
+}
+
 
 STAGE_ORDER = [
     "00_marker",
@@ -39,6 +54,9 @@ STAGE_ORDER = [
     "03_split_excel_blocks_batch",
     "04_figure_separate",
     "04_ft_excel_matcher",
+    "05_smiles_structure_resolution",
+    "06_unified_lnpdb_extraction",
+    "07_finalize_unified_table",
 ]
 
 AGENT_STAGES = {
@@ -47,6 +65,9 @@ AGENT_STAGES = {
     "03_split_excel_blocks_batch",
     "04_figure_separate",
     "04_ft_excel_matcher",
+    "05_smiles_structure_resolution",
+    "06_unified_lnpdb_extraction",
+    "07_finalize_unified_table",
 }
 
 
@@ -55,9 +76,27 @@ STAGE_EXECUTION_MODE = {
     "03_split_excel_blocks_batch": "external_agent",
     "04_figure_separate": "external_agent",
     "04_ft_excel_matcher": "external_agent",
+    "05_smiles_structure_resolution": "external_agent",
+    "06_unified_lnpdb_extraction": "external_agent",
+    "07_finalize_unified_table": "heuristic",
 }
 
 VALID_STAGE_EXECUTION_MODES = {"legacy", "external_agent", "heuristic"}
+
+DEFAULT_AGENT_ACTIVE_STAGES = [
+    "03_figure_mapping",
+    "03_split_excel_blocks_batch",
+    "04_figure_separate",
+    "04_ft_excel_matcher",
+    "05_smiles_structure_resolution",
+    "06_unified_lnpdb_extraction",
+    "07_finalize_unified_table",
+]
+
+DEFAULT_AGENT_COMMAND_TEMPLATES = {
+    "codex": 'codex exec --cd "{project_root}" --dangerously-bypass-approvals-and-sandbox --add-dir "{paper_folder}" -',
+    "claude": 'claude -p "{prompt_text}"',
+}
 
 
 STAGES: dict[str, dict[str, Any]] = {
@@ -104,7 +143,118 @@ STAGES: dict[str, dict[str, Any]] = {
         "outputs": ["excel_mapping.json", "excel_mapping_rows.csv"],
         "requires_manual_marker": True,
     },
+    "05_smiles_structure_resolution": {
+        "script": "2_Extract_SMILES/FromIUPAC/Extract_Text_Lipid.py",
+        "outputs": ["compound_inventory_standardized.csv", "smiles_resolved.csv", "smiles_resolution_qc.csv"],
+        "requires_manual_marker": True,
+    },
+    "06_unified_lnpdb_extraction": {
+        "script": "4_Extract_Exp_Vals/Exp_Vals_From_Exles/42_Extract_Exp_Vals_Router.py",
+        "outputs": ["unified_extraction.csv", "unified_extraction.json", "unified_extraction_review_flags.csv"],
+        "requires_manual_marker": True,
+    },
+    "07_finalize_unified_table": {
+        "script": "Agent_Task_Runner.py",
+        "outputs": ["unified_extraction_final.csv", "unified_extraction_lnpdb_like.csv", "unified_extraction_qc_report.json"],
+        "requires_manual_marker": True,
+    },
 }
+
+LEGACY_STAGE_SCRIPT_GROUPS: dict[str, list[str]] = {
+    "05_smiles_structure_resolution": [
+        "2_Extract_SMILES/FromIUPAC/20_Text_to_SMILES.py",
+        "2_Extract_SMILES/FromIUPAC/Extract_Text_Lipid.py",
+        "2_Extract_SMILES/FromIUPAC/Extract_Lipid_SMILES.py",
+        "2_Extract_SMILES/FromImage/mol_annotator/*.py",
+    ],
+    "06_unified_lnpdb_extraction": [
+        "1_Extract_Exp_Figs/10_Extract_from_Excel.py",
+        "1_Extract_Exp_Figs/10_Extract_from_PDF_one.py",
+        "1_Extract_Exp_Figs/10_Extract_from_PDF_grouped.py",
+        "3_Extract_Formula_by_Figs/30_Extract_Formula_by_Excel.py",
+        "3_Extract_Formula_by_Figs/30_Extract_Formula_by_Figs.py",
+        "4_Extract_Exp_Vals/Exp_Vals_From_Exles/40_Extract_Exp_Vals_Norm.py",
+        "4_Extract_Exp_Vals/Exp_Vals_From_Exles/41_Extract_Exp_Vals_DirectLLM.py",
+        "4_Extract_Exp_Vals/Exp_Vals_From_Exles/42_Extract_Exp_Vals_Router.py",
+        "4_Extract_Exp_Vals/Exp_Vals_From_Exles/Fig_Excel_Matching.py",
+        "4_Extract_Exp_Vals/Exp_Vals_From_Tables/50_Tabel_Extractor.py",
+        "4_Extract_Exp_Vals/Exp_Vals_From_Tables/TableExtractor.py",
+    ],
+}
+
+UNIFIED_EXTRACTION_COLUMNS = [
+    "Paper_ID",
+    "Item_ID",
+    "visual_type",
+    "source_type",
+    "source_image",
+    "source_pdf",
+    "source_page",
+    "selected_source_for_paneling",
+    "excel_file",
+    "excel_sheet",
+    "block_id",
+    "block_csv_path",
+    "Aqueous_buffer",
+    "Dialysis_buffer",
+    "Mixing_method",
+    "Model",
+    "Model_type",
+    "Model_target",
+    "Route_of_administration",
+    "Cargo",
+    "Cargo_type",
+    "Dose_ug_nucleicacid",
+    "Experiment_method",
+    "Experiment_batching",
+    "formulation_id",
+    "Formulation_Name",
+    "IL_name",
+    "IL_SMILES",
+    "IL_molarratio",
+    "HL_name",
+    "HL_SMILES",
+    "HL_molarratio",
+    "CHL_name",
+    "CHL_SMILES",
+    "CHL_molarratio",
+    "PEG_name",
+    "PEG_SMILES",
+    "PEG_molarratio",
+    "Fifth_component_name",
+    "Fifth_component_SMILES",
+    "Fifth_component_molarratio",
+    "IL_to_nucleicacid_massratio",
+    "condition_1_name",
+    "condition_1_value",
+    "condition_2_name",
+    "condition_2_value",
+    "condition_3_name",
+    "condition_3_value",
+    "condition_4_name",
+    "condition_4_value",
+    "metric_type",
+    "original_values",
+    "aggregated_value",
+    "unit",
+    "replicate_type",
+    "evidence_text",
+    "evidence_image",
+    "evidence_excel",
+    "confidence",
+    "manual_required",
+    "reason",
+]
+
+UNIFIED_REVIEW_FLAG_COLUMNS = [
+    "Paper_ID",
+    "Item_ID",
+    "block_id",
+    "field",
+    "issue",
+    "severity",
+    "reason",
+]
 
 
 def utc_now() -> str:
@@ -208,6 +358,97 @@ def rel_to_paper(path: Path, paper_folder: Path) -> str:
         return path.resolve().relative_to(paper_folder.resolve()).as_posix()
     except ValueError:
         return str(path)
+
+
+def path_from_mapping_value(paper_folder: Path, value: Any) -> Path | None:
+    if not isinstance(value, str) or not value.strip():
+        return None
+    path = Path(value.strip())
+    if not path.is_absolute():
+        path = paper_folder / path
+    return path
+
+
+def iter_total_figure_mapping_entries(data: Any):
+    if not isinstance(data, dict):
+        return
+    for key, value in data.items():
+        if not isinstance(value, dict):
+            continue
+        if isinstance(key, str) and key.startswith("_"):
+            continue
+        if any(field in value for field in ("source_image", "source_pdf", "source_page", "panels", "caption")):
+            yield value
+            continue
+        for item_key, entry in value.items():
+            if isinstance(item_key, str) and item_key.startswith("_"):
+                continue
+            if isinstance(entry, dict):
+                yield entry
+
+
+def render_pdf_page(paper_folder: Path, source_pdf: str, source_page: int, dpi: int = 220) -> str:
+    try:
+        import fitz
+    except ImportError as exc:
+        raise RuntimeError("PyMuPDF is required for PDF page render fallback. Install package 'pymupdf'.") from exc
+
+    if source_page < 1:
+        raise ValueError(f"source_page must be a 1-based positive integer, got {source_page!r}")
+
+    pdf_path = Path(source_pdf)
+    if not pdf_path.is_absolute():
+        pdf_path = paper_folder / pdf_path
+    if not pdf_path.is_file():
+        raise FileNotFoundError(f"source_pdf does not exist: {pdf_path}")
+
+    out_dir = paper_folder / "pdf_page_renders"
+    out_dir.mkdir(parents=True, exist_ok=True)
+    out_path = out_dir / f"{pdf_path.stem}_page_{source_page:03d}.png"
+    if out_path.exists():
+        return rel_to_paper(out_path, paper_folder)
+
+    doc = fitz.open(str(pdf_path))
+    try:
+        if source_page > doc.page_count:
+            raise ValueError(f"source_page {source_page} exceeds page count {doc.page_count} for {pdf_path}")
+        page = doc[source_page - 1]
+        pix = page.get_pixmap(dpi=dpi)
+        pix.save(str(out_path))
+    finally:
+        doc.close()
+    return rel_to_paper(out_path, paper_folder)
+
+
+def is_local_path_value(value: Any) -> bool:
+    if not isinstance(value, str) or not value.strip():
+        return False
+    lowered = value.strip().lower()
+    return not re.match(r"^[a-z][a-z0-9+.-]*://", lowered) and not lowered.startswith("data:")
+
+
+def missing_mapping_paths(paper_folder: Path, data: Any, fields: set[str]) -> list[str]:
+    missing: list[str] = []
+    for entry in iter_total_figure_mapping_entries(data):
+        for field in fields:
+            value = entry.get(field)
+            if not is_local_path_value(value):
+                continue
+            path = path_from_mapping_value(paper_folder, value)
+            if path and not path.exists():
+                missing.append(f"{field}={value}")
+    return missing
+
+
+def invalid_source_quality_values(data: Any) -> list[str]:
+    invalid: list[str] = []
+    for entry in iter_total_figure_mapping_entries(data):
+        value = entry.get("source_quality")
+        if value is None or value == "":
+            continue
+        if str(value) not in VALID_SOURCE_QUALITIES:
+            invalid.append(str(value))
+    return invalid
 
 
 def safe_name(value: str) -> str:
@@ -317,11 +558,29 @@ PDFs:
 3. If `manual_select` is absent, fall back to `need_for_lnpdb` values `yes` or `maybe`.
 4. For every selected item, inspect `item_id`, `base_id`, `caption`, and `reason`.
 5. Search the paper folder for source image, table, and PDF assets.
-6. Map each selected figure/table item to the most likely source image/table path.
-7. Create `total_figure_mapping.json` in the paper folder root.
-8. Follow `agent_workspace/OUTPUT_SCHEMA.md` for the `total_figure_mapping.json` schema.
-9. Store paths relative to the paper folder when possible.
-10. If uncertain, record `confidence: "low"` or `confidence: "unmatched"` and a short `reason`.
+6. Treat Marker-extracted `_page_x_Figure_y.jpeg` images as primary candidates only, not ground truth.
+7. Map each selected figure/table item to the most likely source image/table path.
+8. When possible, record `source_pdf` and 1-based `source_page` for each mapping entry.
+9. Infer `source_page` from markdown image/caption page and order when explicit page metadata is unavailable.
+10. If the source image is far from the caption, appears to include only part of the figure, or does not match the expected panel count, set `source_quality: "suspect_crop"`.
+11. If no plausible image exists, set `source_quality: "missing_image"` and `manual_required: true`.
+12. If image and caption appear mismatched, set `source_quality: "caption_image_mismatch"`.
+13. If the source image is complete and caption-consistent, set `source_quality: "ok"`.
+14. Create `total_figure_mapping.json` in the paper folder root.
+15. Follow `agent_workspace/OUTPUT_SCHEMA.md` for the `total_figure_mapping.json` schema.
+16. Store paths relative to the paper folder when possible.
+17. If uncertain, record `confidence: "low"` or `confidence: "unmatched"` and a short `reason`; do not guess.
+
+## Optional Mapping Fields
+- `source_image`
+- `source_pdf`
+- `source_page`
+- `source_quality`
+- `fallback_render`
+- `selected_source_for_paneling`
+- `manual_required`
+- `confidence`
+- `reason`
 
 ## Validation Command
 ```bash
@@ -418,12 +677,36 @@ Separate mapped source images into panels or mark entries for manual review with
 
 ## Work Instructions
 1. Read `total_figure_mapping.json`.
-2. Identify entries with `source_image`.
-3. Decide whether panel cropping is needed for each image.
-4. Use OpenCV/PIL helper code or write a small deterministic script if crop boundaries are clear.
-5. Save panel images under `separated_panels_gemini/`.
-6. Add panel paths back into `total_figure_mapping.json`.
-7. If automatic crop is uncertain, do not crop; record `manual_required`, `confidence`, and `reason`.
+2. For each entry, first inspect `source_image`.
+3. If `source_image` appears complete and consistent with the caption, use it as the paneling source and set `selected_source_for_paneling` to that path.
+4. If `source_image` appears incomplete, wrongly cropped, missing panel labels, merged with unrelated content, or inconsistent with the caption, do not rely on it and do not force-crop it.
+5. If `source_pdf` and 1-based `source_page` are available for a suspect entry, render the corresponding original PDF page using PyMuPDF.
+6. Save rendered pages under `pdf_page_renders/`.
+7. Add the rendered page path as `fallback_render`.
+8. Set `selected_source_for_paneling = fallback_render`.
+9. Set `source_quality = "pdf_page_render_fallback"`.
+10. Decide whether panel cropping is needed from `selected_source_for_paneling`.
+11. Use OpenCV/PIL helper code or write a small deterministic script only if crop boundaries are clear.
+12. Save panel images under `separated_panels_gemini/`.
+13. Add panel paths back into `total_figure_mapping.json`.
+14. If panel boundaries remain uncertain, set `manual_required: true`, `confidence: "low"`, and a short `reason`; do not hallucinate panel crops.
+15. If PyMuPDF is unavailable, record a dependency note in `reason` and keep `manual_required: true`.
+
+## PyMuPDF Render Example
+```python
+import fitz
+from pathlib import Path
+
+pdf_path = Path("source.pdf")
+source_page = 1
+out_path = Path("pdf_page_renders/source_page_001.png")
+
+doc = fitz.open(str(pdf_path))
+page = doc[source_page - 1]
+pix = page.get_pixmap(dpi=220)
+pix.save(str(out_path))
+doc.close()
+```
 
 ## Validation Command
 ```bash
@@ -484,6 +767,170 @@ python Agent_Task_Runner.py validate --stage 04_ft_excel_matcher --paper-folder 
 - Do not import or require `find_api.py`.
 - Do not use Gemini, Vertex, `LLM_API.py`, or `LLM_Batch.py`.
 - Do not hard-code API keys or credentials.
+"""
+    elif stage == "05_smiles_structure_resolution":
+        require_existing_file(paper_folder / MANUAL_MARKER, stage)
+        require_existing_file(paper_folder / "total_figure_mapping.json", stage)
+        markdowns = asset_list(paper_folder, {".md"})
+        pdfs = asset_list(paper_folder, {".pdf"})
+        images = asset_list(paper_folder, {".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp"})
+        content = f"""# External Agent Task: 05_smiles_structure_resolution
+
+Target paper folder: `{paper_folder}`
+
+## Stage Purpose
+Resolve compound names, IUPAC names, and structure-derived SMILES from text and image sources without Gemini/API dependencies.
+
+## Required Input Files
+- `{paper_folder / MANUAL_MARKER}`
+- markdown files and/or PDFs from the paper folder
+- `{paper_folder / "total_figure_mapping.json"}` when available
+- source images when available
+
+Markdown files:
+{render_bullet_list(markdowns)}
+
+PDFs:
+{render_bullet_list(pdfs)}
+
+Images:
+{render_bullet_list(images)}
+
+## Optional Input Files
+- existing LNPDB reference file if configured locally
+- outputs from DECIMER/MolScribe helpers if already available
+- legacy outputs from `2_Extract_SMILES/`
+
+## Expected Output Files
+- `{paper_folder / "compound_inventory_standardized.csv"}`
+- `{paper_folder / "smiles_resolved.csv"}`
+- `{paper_folder / "smiles_resolution_qc.csv"}`
+
+## Work Instructions
+1. Collect lipid/component names, aliases, IUPAC names, and structure image references from markdown, PDFs, captions, tables, and mapped source images.
+2. Use deterministic or lookup tools when available: OPSIN, PubChem, CIR, existing LNPDB references, and MolScribe/DECIMER helper outputs for structure crops.
+3. Create `compound_inventory_standardized.csv` with one row per compound/name candidate.
+4. Create `smiles_resolved.csv` with at least `Name` or `compound_id`, and `SMILES` or `resolved_smiles`.
+5. Create `smiles_resolution_qc.csv` with unresolved names, conflicts, ambiguous matches, and evidence notes.
+6. Preserve provenance fields such as source file, item id, caption snippet, table block, or image path when available.
+7. If a SMILES cannot be resolved deterministically, leave it blank and mark it for manual review.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 05_smiles_structure_resolution --paper-folder "{paper_folder}"
+```
+
+## Constraints
+- Do not run Gemini/API-assisted SMILES scripts.
+- Do not import or require `find_api.py`, `LLM_API.py`, or `LLM_Batch.py`.
+- Do not use Gemini, Vertex, or hard-coded credentials.
+"""
+    elif stage == "06_unified_lnpdb_extraction":
+        require_existing_file(paper_folder / MANUAL_MARKER, stage)
+        require_existing_file(paper_folder / "fig_table_lnpdb_classified.csv", stage)
+        require_existing_file(paper_folder / "total_figure_mapping.json", stage)
+        require_existing_file(paper_folder / "excel_mapping.json", stage)
+        require_existing_file(paper_folder / "excel_block_inventory.csv", stage)
+        if not (paper_folder / "Exp_Excel_Blocks").is_dir():
+            raise FileNotFoundError(f"{stage} requires a directory: {paper_folder / 'Exp_Excel_Blocks'}")
+        markdowns = asset_list(paper_folder, {".md"})
+        optional_inputs = [
+            "separated_panels_gemini",
+            "compound_inventory_standardized.csv",
+            "text_extracted_iupac.csv",
+            "smiles_resolved.csv",
+        ]
+        content = f"""# External Agent Task: 06_unified_lnpdb_extraction
+
+Target paper folder: `{paper_folder}`
+
+## Stage Purpose
+Create one unified long table at figure/table item level that combines experimental conditions, formulation composition, experimental values, and provenance. This replaces the old independent extraction of experimental metadata, formulation composition, and experimental values.
+
+## Required Input Files
+- `{paper_folder / MANUAL_MARKER}`
+- `{paper_folder / "fig_table_lnpdb_classified.csv"}`
+- `{paper_folder / "total_figure_mapping.json"}`
+- `{paper_folder / "excel_mapping.json"}`
+- `{paper_folder / "excel_block_inventory.csv"}`
+- `{paper_folder / "Exp_Excel_Blocks"}`
+- markdown files:
+{render_bullet_list(markdowns)}
+
+## Optional Input Files
+{render_bullet_list([item for item in optional_inputs if (paper_folder / item).exists()])}
+- any outputs from `2_Extract_SMILES/`
+
+## Expected Output Files
+- `{paper_folder / "unified_extraction.csv"}`
+- `{paper_folder / "unified_extraction.json"}`
+- `{paper_folder / "unified_extraction_review_flags.csv"}`
+
+## Required Output Columns
+Use the columns documented in `agent_workspace/OUTPUT_SCHEMA.md` for `unified_extraction.csv`. Include all experimental condition, formulation composition, experimental value, evidence, confidence, and manual review fields even when values are blank.
+
+## Work Instructions
+1. For every selected figure/table item, extract experimental conditions, formulation composition, and experimental values into one unified long table.
+2. Do not split the task into separate independent LLM calls for conditions/formulation/values.
+3. Use all available context: markdown captions, PDF-derived images, separated panels, Excel block CSVs, `excel_mapping.json`, `total_figure_mapping.json`, and SMILES outputs.
+4. Treat Excel numeric values as authoritative for experimental values.
+5. Use figure/PDF images for labels, axes, legend, group interpretation, panel identity, and visual context.
+6. Use markdown for caption, methods context, dose, model, route, and formulation descriptions.
+7. If exact values are missing, do not hallucinate. Leave blank and set `manual_required=true`.
+8. If multiple formulations or groups exist in one figure/table, produce one row per formulation/condition/metric/value.
+9. Use long format.
+10. Preserve `original_values` exactly; `aggregated_value` may be a mean only when replicates are explicit.
+11. Record `evidence_text`, `evidence_excel`, and `evidence_image` for every nontrivial extracted value.
+12. Record `confidence` and `reason`.
+13. Create `unified_extraction_review_flags.csv` for missing metadata, low confidence, value/formulation mismatch, unresolved SMILES, missing figure evidence, and any manual review need.
+14. Also write `unified_extraction.json` with records and source summary.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 06_unified_lnpdb_extraction --paper-folder "{paper_folder}"
+```
+
+## Constraints
+- Do not use Gemini/API/find_api/LLM_API/LLM_Batch.
+- Do not run legacy scripts from `1_Extract_Exp_Figs`, `3_Extract_Formula_by_Figs`, or `4_Extract_Exp_Vals`.
+- Do not hard-code API keys or credentials.
+"""
+    elif stage == "07_finalize_unified_table":
+        require_existing_file(paper_folder / MANUAL_MARKER, stage)
+        require_existing_file(paper_folder / "unified_extraction.csv", stage)
+        content = f"""# External Agent Task: 07_finalize_unified_table
+
+Target paper folder: `{paper_folder}`
+
+## Stage Purpose
+Finalize `unified_extraction.csv` into reviewed final and LNPDB-like tables, with a QC report.
+
+## Required Input Files
+- `{paper_folder / MANUAL_MARKER}`
+- `{paper_folder / "unified_extraction.csv"}`
+- `{paper_folder / "unified_extraction_review_flags.csv"}`
+
+## Expected Output Files
+- `{paper_folder / "unified_extraction_final.csv"}`
+- `{paper_folder / "unified_extraction_lnpdb_like.csv"}`
+- `{paper_folder / "unified_extraction_qc_report.json"}`
+
+## Work Instructions
+1. Read `unified_extraction.csv`.
+2. Preserve source rows and provenance.
+3. Normalize booleans and blank values without inventing missing scientific data.
+4. Create `unified_extraction_final.csv`.
+5. Create `unified_extraction_lnpdb_like.csv` using the same rows and LNPDB-facing columns where available.
+6. Create `unified_extraction_qc_report.json` with row counts, missing critical fields, low-confidence rows, and manual review counts.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 07_finalize_unified_table --paper-folder "{paper_folder}"
+```
+
+## Constraints
+- Do not use Gemini/API/find_api/LLM_API/LLM_Batch.
+- Do not hallucinate missing values during finalization.
 """
     else:
         raise ValueError(f"No external agent task template for stage: {stage}")
@@ -685,12 +1132,15 @@ def run_heuristic_figure_mapping(paper_folder: Path) -> dict[str, Any]:
         image_score = score(image_match) if image_match else 0
         table_score = score(table_match) if table_match else 0
         matched = image_score > 0 or table_score > 0
+        image_found = bool(image_match and image_score > 0)
         mapping[paper_folder.name][item_id] = {
             "item_id": item_id,
             "base_id": base_id,
             "caption": row.get("caption", ""),
-            "source_image": rel_to_paper(image_match, paper_folder) if image_match and image_score > 0 else None,
+            "source_image": rel_to_paper(image_match, paper_folder) if image_found else None,
             "source_table": rel_to_paper(table_match, paper_folder) if table_match and table_score > 0 else None,
+            "source_quality": "ok" if image_found else "missing_image",
+            "manual_required": not image_found,
             "confidence": "low" if matched else "unmatched",
             "reason": "Filename matched item_id/base_id in heuristic mode." if matched else "No filename matched item_id/base_id in heuristic mode.",
         }
@@ -782,30 +1232,57 @@ def run_heuristic_figure_separate(paper_folder: Path) -> dict[str, Any]:
     panel_dir = paper_folder / "separated_panels_gemini"
     panel_dir.mkdir(parents=True, exist_ok=True)
     updated = 0
-    if isinstance(data, dict):
-        for paper_value in data.values():
-            if not isinstance(paper_value, dict):
-                continue
-            for item_key, entry in paper_value.items():
-                if item_key.startswith("_") or not isinstance(entry, dict):
-                    continue
-                if entry.get("source_image"):
-                    entry.setdefault("panels", {})
-                    entry["panel_separation"] = "not_performed"
-                    entry["confidence"] = "not_separated"
-                    entry["reason"] = "Panel separation not performed in heuristic mode."
-                    updated += 1
+    fallback_render_count = 0
+    fallback_render_errors: list[str] = []
+    for entry in iter_total_figure_mapping_entries(data):
+        source_quality = str(entry.get("source_quality") or "").strip()
+        if source_quality in FALLBACK_SOURCE_QUALITIES and entry.get("source_pdf") and entry.get("source_page"):
+            try:
+                source_page = int(entry["source_page"])
+                fallback_render = render_pdf_page(paper_folder, str(entry["source_pdf"]), source_page)
+            except Exception as exc:
+                message = f"PDF page render fallback failed: {exc}"
+                entry["manual_required"] = True
+                entry["confidence"] = "low"
+                entry["reason"] = f"{entry.get('reason', '').strip()} {message}".strip()
+                fallback_render_errors.append(message)
+            else:
+                entry["fallback_render"] = fallback_render
+                entry["selected_source_for_paneling"] = fallback_render
+                entry["source_quality"] = "pdf_page_render_fallback"
+                entry["manual_required"] = True
+                entry["confidence"] = "low"
+                entry["reason"] = (
+                    f"{entry.get('reason', '').strip()} "
+                    "Heuristic mode rendered the source PDF page because the Marker image was not reliable; "
+                    "panel separation still requires manual review."
+                ).strip()
+                fallback_render_count += 1
+        if entry.get("source_image") or entry.get("fallback_render"):
+            entry.setdefault("panels", {})
+            entry["panel_separation"] = "not_performed"
+            if not entry.get("fallback_render"):
+                entry["confidence"] = "not_separated"
+                entry["reason"] = "Panel separation not performed in heuristic mode."
+            updated += 1
     write_json(
         panel_dir / "manifest.json",
         {
             "created_by": "Agent_Task_Runner heuristic mode",
             "status": "panel separation not performed in heuristic mode",
             "updated_mapping_entries": updated,
+            "fallback_render_count": fallback_render_count,
+            "fallback_render_errors": fallback_render_errors,
             "created_at": utc_now(),
         },
     )
     write_json(mapping_path, data)
-    return {"panel_dir": str(panel_dir), "updated_mapping_entries": updated}
+    return {
+        "panel_dir": str(panel_dir),
+        "updated_mapping_entries": updated,
+        "fallback_render_count": fallback_render_count,
+        "fallback_render_errors": fallback_render_errors,
+    }
 
 
 def keyword_set(*values: str) -> set[str]:
@@ -826,6 +1303,233 @@ def block_preview_text(paper_folder: Path, block_csv_path: str, max_rows: int = 
         return ""
     rows = read_csv_matrix(path)[:max_rows]
     return " ".join(str(cell) for row in rows for cell in row if str(cell).strip())
+
+
+def selected_item_rows_by_id(paper_folder: Path) -> dict[str, dict[str, str]]:
+    classified = paper_folder / "fig_table_lnpdb_classified.csv"
+    if not classified.exists():
+        return {}
+    rows = selected_ft_rows(read_csv_rows(classified))
+    return {row_item_id(row): row for row in rows}
+
+
+def mapping_entries_by_item(paper_folder: Path) -> dict[str, dict[str, Any]]:
+    data = load_json(paper_folder / "total_figure_mapping.json", {})
+    entries: dict[str, dict[str, Any]] = {}
+    for entry in iter_total_figure_mapping_entries(data):
+        item_id = str(entry.get("item_id") or entry.get("pdf_item_id") or entry.get("Item_ID") or "").strip()
+        if item_id:
+            entries[item_id] = entry
+    return entries
+
+
+def excel_matches_by_item(paper_folder: Path) -> dict[str, list[dict[str, Any]]]:
+    data = load_json(paper_folder / "excel_mapping.json", {})
+    matches: dict[str, list[dict[str, Any]]] = {}
+    if isinstance(data, dict):
+        for item_id, value in data.items():
+            if isinstance(value, list):
+                matches[str(item_id)] = [entry for entry in value if isinstance(entry, dict)]
+            elif isinstance(value, dict):
+                matches[str(item_id)] = [value]
+    return matches
+
+
+def normalize_bool_text(value: Any) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    text = str(value or "").strip().lower()
+    if text in {"1", "true", "yes", "y"}:
+        return "true"
+    if text in {"0", "false", "no", "n"}:
+        return "false"
+    return "true" if text else ""
+
+
+def numeric_string(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    normalized = text.replace(",", "")
+    if normalized.endswith("%"):
+        normalized = normalized[:-1].strip()
+    if re.fullmatch(r"[-+]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][-+]?\d+)?", normalized):
+        return normalized
+    return ""
+
+
+def cell_has_numeric_value(value: Any) -> bool:
+    text = str(value or "").strip()
+    return bool(text and re.search(r"[-+]?\d", text))
+
+
+def nearest_row_label(row: list[Any], col_index: int) -> str:
+    for idx in range(min(col_index, len(row)) - 1, -1, -1):
+        text = str(row[idx] or "").strip()
+        if text and not cell_has_numeric_value(text):
+            return text
+    return ""
+
+
+def nearest_column_label(matrix: list[list[Any]], row_index: int, col_index: int) -> str:
+    for idx in range(row_index - 1, -1, -1):
+        if col_index < len(matrix[idx]):
+            text = str(matrix[idx][col_index] or "").strip()
+            if text and not cell_has_numeric_value(text):
+                return text
+    return ""
+
+
+def base_unified_row(paper_folder: Path, item_id: str, item_row: dict[str, str], mapping_entry: dict[str, Any] | None) -> dict[str, Any]:
+    entry = mapping_entry or {}
+    row = {column: "" for column in UNIFIED_EXTRACTION_COLUMNS}
+    row.update(
+        {
+            "Paper_ID": paper_folder.name,
+            "Item_ID": item_id,
+            "visual_type": item_row.get("type") or item_row.get("visual_type") or item_row.get("label") or "",
+            "source_image": entry.get("source_image", ""),
+            "source_pdf": entry.get("source_pdf", ""),
+            "source_page": entry.get("source_page", ""),
+            "selected_source_for_paneling": entry.get("selected_source_for_paneling", ""),
+            "evidence_text": item_row.get("caption", ""),
+            "evidence_image": entry.get("selected_source_for_paneling") or entry.get("fallback_render") or entry.get("source_image", ""),
+            "confidence": "low",
+            "manual_required": "true",
+            "reason": "Heuristic unified extraction; complex metadata requires manual or external-agent review.",
+        }
+    )
+    return row
+
+
+def run_heuristic_unified_lnpdb_extraction(paper_folder: Path) -> dict[str, Any]:
+    selected_by_id = selected_item_rows_by_id(paper_folder)
+    mapping_by_item = mapping_entries_by_item(paper_folder)
+    matches_by_item = excel_matches_by_item(paper_folder)
+    output_rows: list[dict[str, Any]] = []
+    review_flags: list[dict[str, Any]] = []
+
+    for item_id, item_row in selected_by_id.items():
+        item_output_count = 0
+        matches = matches_by_item.get(item_id, [])
+        for match in matches:
+            block_csv_path = str(match.get("block_csv_path") or "").strip()
+            block_path = path_from_mapping_value(paper_folder, block_csv_path)
+            if not block_csv_path or not block_path or not block_path.exists():
+                review_flags.append(
+                    {
+                        "Paper_ID": paper_folder.name,
+                        "Item_ID": item_id,
+                        "block_id": match.get("block_id", ""),
+                        "field": "block_csv_path",
+                        "issue": "missing Excel block mapping",
+                        "severity": "high",
+                        "reason": f"Mapped block CSV is missing: {block_csv_path}",
+                    }
+                )
+                continue
+            matrix = read_csv_matrix(block_path)
+            block_output_count = 0
+            for row_index, matrix_row in enumerate(matrix):
+                for col_index, cell in enumerate(matrix_row):
+                    if not cell_has_numeric_value(cell):
+                        continue
+                    original = str(cell).strip()
+                    row_label = nearest_row_label(matrix_row, col_index)
+                    column_label = nearest_column_label(matrix, row_index, col_index)
+                    out = base_unified_row(paper_folder, item_id, item_row, mapping_by_item.get(item_id))
+                    out.update(
+                        {
+                            "source_type": "excel_block",
+                            "excel_file": match.get("excel_file", ""),
+                            "excel_sheet": match.get("excel_sheet", ""),
+                            "block_id": match.get("block_id", ""),
+                            "block_csv_path": block_csv_path,
+                            "condition_1_name": "row_label" if row_label else "",
+                            "condition_1_value": row_label,
+                            "condition_2_name": "column_label" if column_label else "",
+                            "condition_2_value": column_label,
+                            "metric_type": column_label or row_label or match.get("block_id", ""),
+                            "original_values": original,
+                            "aggregated_value": numeric_string(original),
+                            "evidence_excel": f"{block_csv_path}#R{row_index + 1}C{col_index + 1}",
+                        }
+                    )
+                    output_rows.append(out)
+                    block_output_count += 1
+                    item_output_count += 1
+            if block_output_count == 0:
+                review_flags.append(
+                    {
+                        "Paper_ID": paper_folder.name,
+                        "Item_ID": item_id,
+                        "block_id": match.get("block_id", ""),
+                        "field": "original_values",
+                        "issue": "no numeric values detected",
+                        "severity": "medium",
+                        "reason": f"No numeric cells were detected in {block_csv_path}.",
+                    }
+                )
+        if item_output_count == 0:
+            out = base_unified_row(paper_folder, item_id, item_row, mapping_by_item.get(item_id))
+            out["source_type"] = "manual_review_placeholder"
+            out["reason"] = "No mapped numeric Excel value could be converted heuristically; manual extraction required."
+            output_rows.append(out)
+            review_flags.append(
+                {
+                    "Paper_ID": paper_folder.name,
+                    "Item_ID": item_id,
+                    "block_id": "",
+                    "field": "row",
+                    "issue": "unified extraction placeholder only",
+                    "severity": "high",
+                    "reason": out["reason"],
+                }
+            )
+
+    write_csv_dicts(paper_folder / "unified_extraction.csv", output_rows, UNIFIED_EXTRACTION_COLUMNS)
+    write_json(
+        paper_folder / "unified_extraction.json",
+        {
+            "created_by": "Agent_Task_Runner heuristic mode",
+            "created_at": utc_now(),
+            "records": output_rows,
+            "source_summary": {
+                "selected_items": len(selected_by_id),
+                "excel_mapped_items": len(matches_by_item),
+            },
+        },
+    )
+    write_csv_dicts(paper_folder / "unified_extraction_review_flags.csv", review_flags, UNIFIED_REVIEW_FLAG_COLUMNS)
+    return {"rows": len(output_rows), "review_flags": len(review_flags), "selected_items": len(selected_by_id)}
+
+
+def run_heuristic_finalize_unified_table(paper_folder: Path) -> dict[str, Any]:
+    source = paper_folder / "unified_extraction.csv"
+    require_existing_file(source, "07_finalize_unified_table")
+    rows = read_csv_rows(source)
+    for row in rows:
+        row["manual_required"] = normalize_bool_text(row.get("manual_required", ""))
+        row.setdefault("confidence", "")
+    fieldnames = list(rows[0].keys()) if rows else UNIFIED_EXTRACTION_COLUMNS
+    write_csv_dicts(paper_folder / "unified_extraction_final.csv", rows, fieldnames)
+    write_csv_dicts(paper_folder / "unified_extraction_lnpdb_like.csv", rows, fieldnames)
+    manual_count = sum(1 for row in rows if normalize_bool_text(row.get("manual_required")) == "true")
+    low_confidence_count = sum(1 for row in rows if str(row.get("confidence", "")).strip().lower() in {"", "low", "unmatched"})
+    missing_item_id = sum(1 for row in rows if not str(row.get("Item_ID", "")).strip())
+    write_json(
+        paper_folder / "unified_extraction_qc_report.json",
+        {
+            "created_by": "Agent_Task_Runner heuristic mode",
+            "created_at": utc_now(),
+            "rows": len(rows),
+            "manual_required_rows": manual_count,
+            "low_confidence_rows": low_confidence_count,
+            "missing_item_id_rows": missing_item_id,
+            "source": "unified_extraction.csv",
+        },
+    )
+    return {"rows": len(rows), "manual_required_rows": manual_count, "low_confidence_rows": low_confidence_count}
 
 
 def run_heuristic_ft_excel_matcher(paper_folder: Path) -> dict[str, Any]:
@@ -913,6 +1617,10 @@ def run_heuristic_stage(stage: str, paper_folder: Path) -> Any:
         return run_heuristic_figure_separate(paper_folder)
     if stage == "04_ft_excel_matcher":
         return run_heuristic_ft_excel_matcher(paper_folder)
+    if stage == "06_unified_lnpdb_extraction":
+        return run_heuristic_unified_lnpdb_extraction(paper_folder)
+    if stage == "07_finalize_unified_table":
+        return run_heuristic_finalize_unified_table(paper_folder)
     raise ValueError(f"No heuristic implementation for stage: {stage}")
 
 
@@ -965,7 +1673,17 @@ def validate_stage(stage: str, paper_folder: Path) -> tuple[bool, list[str]]:
         if not non_empty_file(path):
             return False, [f"missing or empty: {path}"]
         data = json.loads(path.read_text(encoding="utf-8"))
-        return isinstance(data, dict) and bool(data), [f"top_level_keys={len(data) if isinstance(data, dict) else 'not_object'}"]
+        invalid_qualities = invalid_source_quality_values(data)
+        fallback_missing = missing_mapping_paths(
+            paper_folder,
+            data,
+            {"fallback_render", "selected_source_for_paneling"},
+        )
+        return isinstance(data, dict) and bool(data) and not invalid_qualities, [
+            f"top_level_keys={len(data) if isinstance(data, dict) else 'not_object'}",
+            f"invalid_source_quality_values={len(invalid_qualities)}",
+            f"missing_fallback_or_selected_paths={len(fallback_missing)}",
+        ]
 
     if stage == "03_split_excel_blocks":
         script = PROJECT_ROOT / STAGES[stage]["script"]
@@ -996,7 +1714,19 @@ def validate_stage(stage: str, paper_folder: Path) -> tuple[bool, list[str]]:
             return False, [f"missing or empty: {mapping}"]
         data = json.loads(mapping.read_text(encoding="utf-8"))
         panel_dirs = list(paper_folder.rglob("separated_panels_gemini"))
-        return isinstance(data, dict), [f"mapping_keys={len(data) if isinstance(data, dict) else 'not_object'}", f"panel_dirs={len(panel_dirs)}"]
+        invalid_qualities = invalid_source_quality_values(data)
+        missing_paths = missing_mapping_paths(
+            paper_folder,
+            data,
+            {"fallback_render", "selected_source_for_paneling"},
+        )
+        ok = isinstance(data, dict) and not invalid_qualities and not missing_paths
+        return ok, [
+            f"mapping_keys={len(data) if isinstance(data, dict) else 'not_object'}",
+            f"panel_dirs={len(panel_dirs)}",
+            f"invalid_source_quality_values={len(invalid_qualities)}",
+            f"missing_fallback_or_selected_paths={len(missing_paths)}",
+        ]
 
     if stage == "04_ft_excel_matcher":
         mapping = paper_folder / "excel_mapping.json"
@@ -1006,6 +1736,72 @@ def validate_stage(stage: str, paper_folder: Path) -> tuple[bool, list[str]]:
         data = json.loads(mapping.read_text(encoding="utf-8"))
         ok = isinstance(data, dict) and rows_csv.exists()
         return ok, [f"mapping_keys={len(data) if isinstance(data, dict) else 'not_object'}", f"rows_csv_exists={rows_csv.exists()}"]
+
+    if stage == "05_smiles_structure_resolution":
+        path = paper_folder / "smiles_resolved.csv"
+        if not non_empty_file(path):
+            return False, [f"missing or empty: {path}"]
+        rows = read_csv_rows(path)
+        cols = set(rows[0].keys()) if rows else set()
+        name_cols = {"Name", "name", "compound_id", "Compound_ID"} & cols
+        smiles_cols = {"SMILES", "smiles", "resolved_smiles", "Resolved_SMILES"} & cols
+        ok = bool(rows and name_cols and smiles_cols)
+        return ok, [f"rows={len(rows)}", f"name_columns={sorted(name_cols)}", f"smiles_columns={sorted(smiles_cols)}"]
+
+    if stage == "06_unified_lnpdb_extraction":
+        path = paper_folder / "unified_extraction.csv"
+        flags = paper_folder / "unified_extraction_review_flags.csv"
+        json_path = paper_folder / "unified_extraction.json"
+        if not non_empty_file(path):
+            return False, [f"missing or empty: {path}"]
+        rows = read_csv_rows(path)
+        cols = set(rows[0].keys()) if rows else set()
+        missing_cols = [col for col in UNIFIED_EXTRACTION_COLUMNS if col not in cols]
+        selected_count = len(selected_item_rows_by_id(paper_folder))
+        empty_item_ids = sum(1 for row in rows if not str(row.get("Item_ID", "")).strip())
+        ok_json = True
+        if json_path.exists():
+            try:
+                json.loads(json_path.read_text(encoding="utf-8"))
+            except Exception:
+                ok_json = False
+        ok = (
+            bool(rows)
+            and not missing_cols
+            and empty_item_ids == 0
+            and "confidence" in cols
+            and "manual_required" in cols
+            and flags.exists()
+            and ok_json
+            and (selected_count == 0 or len(rows) >= 1)
+        )
+        return ok, [
+            f"rows={len(rows)}",
+            f"selected_items={selected_count}",
+            f"missing_required_columns={len(missing_cols)}",
+            f"empty_item_ids={empty_item_ids}",
+            f"review_flags_exists={flags.exists()}",
+            f"json_parses={ok_json}",
+        ]
+
+    if stage == "07_finalize_unified_table":
+        final_csv = paper_folder / "unified_extraction_final.csv"
+        lnpdb_csv = paper_folder / "unified_extraction_lnpdb_like.csv"
+        qc_json = paper_folder / "unified_extraction_qc_report.json"
+        if not non_empty_file(final_csv):
+            return False, [f"missing or empty: {final_csv}"]
+        if not non_empty_file(lnpdb_csv):
+            return False, [f"missing or empty: {lnpdb_csv}"]
+        if not non_empty_file(qc_json):
+            return False, [f"missing or empty: {qc_json}"]
+        try:
+            qc = json.loads(qc_json.read_text(encoding="utf-8"))
+        except Exception as exc:
+            return False, [f"qc_report_parse_error={exc}"]
+        final_rows = read_csv_rows(final_csv)
+        lnpdb_rows = read_csv_rows(lnpdb_csv)
+        ok = isinstance(qc, dict) and bool(final_rows) and bool(lnpdb_rows)
+        return ok, [f"final_rows={len(final_rows)}", f"lnpdb_like_rows={len(lnpdb_rows)}", "qc_report_parses=true"]
 
     raise ValueError(f"Unknown stage: {stage}")
 
@@ -1024,6 +1820,9 @@ def observe(paper_folder: Path) -> dict[str, Any]:
         "total_figure_mapping.json": (paper_folder / "total_figure_mapping.json").exists(),
         "excel_block_inventory.csv": (paper_folder / "excel_block_inventory.csv").exists(),
         "excel_mapping.json": (paper_folder / "excel_mapping.json").exists(),
+        "smiles_resolved.csv": (paper_folder / "smiles_resolved.csv").exists(),
+        "unified_extraction.csv": (paper_folder / "unified_extraction.csv").exists(),
+        "unified_extraction_final.csv": (paper_folder / "unified_extraction_final.csv").exists(),
     }
     result = {"exists": paper_folder.exists(), "files": files, "artifacts": artifacts}
     append_log(paper_folder, {"action": "observe", "result": result})
@@ -1165,10 +1964,450 @@ def run_legacy_stage(stage: str, paper_folder: Path) -> Any:
         client = module.get_vertexai_client(api_key_path, project=project_id)
         return module.process_excel_matcher(paper_folder, client, getattr(module, "MODEL_NAME", "gemini-3.1-pro-preview"))
 
+    if stage in LEGACY_STAGE_SCRIPT_GROUPS:
+        scripts = "\n".join(f"- {script_path}" for script_path in LEGACY_STAGE_SCRIPT_GROUPS[stage])
+        raise RuntimeError(
+            f"{stage} replaces multiple legacy Gemini/API-assisted scripts and has no single safe legacy runner. "
+            f"Legacy scripts are preserved for manual legacy mode only:\n{scripts}"
+        )
+
     raise ValueError(f"Unknown stage: {stage}")
 
 
-def run_stage(stage: str, paper_folder: Path, dry_run: bool = False, skip_backup: bool = False) -> dict[str, Any]:
+def tail_text(value: str, max_chars: int = 4000) -> str:
+    if not value:
+        return ""
+    return value[-max_chars:]
+
+
+def run_subprocess_streaming(command_args: list[str], stdin_text: str | None = None) -> dict[str, Any]:
+    process = subprocess.Popen(
+        command_args,
+        cwd=PROJECT_ROOT,
+        stdin=subprocess.PIPE if stdin_text is not None else None,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        encoding="utf-8",
+        errors="replace",
+    )
+    stdout_parts: list[str] = []
+    stderr_parts: list[str] = []
+
+    def reader(pipe, output, parts: list[str]) -> None:
+        try:
+            for line in iter(pipe.readline, ""):
+                parts.append(line)
+                output.write(line)
+                output.flush()
+        finally:
+            pipe.close()
+
+    stdout_thread = threading.Thread(target=reader, args=(process.stdout, sys.stdout, stdout_parts), daemon=True)
+    stderr_thread = threading.Thread(target=reader, args=(process.stderr, sys.stderr, stderr_parts), daemon=True)
+    stdout_thread.start()
+    stderr_thread.start()
+
+    if stdin_text is not None and process.stdin is not None:
+        try:
+            process.stdin.write(stdin_text)
+            process.stdin.close()
+        except (BrokenPipeError, OSError, ValueError):
+            pass
+
+    returncode = process.wait()
+    stdout_thread.join()
+    stderr_thread.join()
+    return {
+        "returncode": returncode,
+        "stdout_tail": tail_text("".join(stdout_parts)),
+        "stderr_tail": tail_text("".join(stderr_parts)),
+    }
+
+
+def validation_result_dict(ok: bool, messages: list[str]) -> dict[str, Any]:
+    return {"ok": ok, "messages": messages}
+
+
+def append_validation_failure_feedback(task_file: Path, validation_result: dict[str, Any], attempt: int) -> None:
+    messages = validation_result.get("messages", [])
+    lines = [
+        "",
+        "## Validation Failure Feedback",
+        "",
+        f"Attempt: {attempt}",
+        "",
+        "Validation did not pass. Re-read the task instructions and fix the output files without using Gemini/API/find_api/LLM_API/LLM_Batch.",
+        "",
+        "Validation messages:",
+    ]
+    lines.extend(f"- {message}" for message in messages)
+    lines.extend(
+        [
+            "",
+            "Retry instructions:",
+            "- Inspect the current outputs and the validation messages.",
+            "- Modify or create only the required output CSV/JSON files.",
+            "- Preserve provenance and mark uncertain values with manual_required=true.",
+            "- Run the validation command again after changes.",
+            "",
+        ]
+    )
+    with task_file.open("a", encoding="utf-8") as f:
+        f.write("\n".join(lines))
+
+
+def build_agent_prompt(stage: str, paper_folder: Path, task_file: Path, validation_result: dict[str, Any] | None = None) -> str:
+    task_text = task_file.read_text(encoding="utf-8")
+    validation_text = ""
+    if validation_result:
+        validation_text = (
+            "\n\nPrevious validation result:\n"
+            + json.dumps(validation_result, ensure_ascii=False, indent=2)
+            + "\nFix the validation failures and rerun validation.\n"
+        )
+    return f"""You are an external CLI coding agent working in the LNPDB_Articles_AgentExtraction repository.
+
+Stage: {stage}
+Target paper folder: {paper_folder}
+Task file: {task_file}
+
+Read and complete the task markdown below. Use the target paper folder from both this prompt and the task file.
+
+Hard constraints:
+- Do not use Gemini/API/find_api/LLM_API/LLM_Batch.
+- Do not run legacy Gemini scripts.
+- Follow agent_workspace/OUTPUT_SCHEMA.md.
+- Create or modify the required output files so Agent_Task_Runner.py validation passes.
+- If exact values are missing, leave them blank and set manual_required=true.
+- Record evidence/provenance for nontrivial extracted values.
+- Do not delete original PDF or Excel files.
+- If overwrite is needed, create a backup or follow the runner backup policy.
+- Stage-specific task markdown instructions have priority.
+- If you fail, record the cause and what you changed.
+{validation_text}
+Task markdown:
+
+{task_text}
+"""
+
+
+def split_agent_command(command: str) -> list[str]:
+    try:
+        parts = shlex.split(command, posix=False)
+    except ValueError:
+        parts = shlex.split(command)
+    cleaned: list[str] = []
+    for part in parts:
+        if len(part) >= 2 and part[0] == part[-1] and part[0] in {"'", '"'}:
+            cleaned.append(part[1:-1])
+        else:
+            cleaned.append(part)
+    return cleaned
+
+
+def build_agent_command_args(
+    command_template: str,
+    prompt_text: str,
+    task_file: Path,
+    paper_folder: Path,
+    stage: str,
+) -> tuple[list[str], str, bool]:
+    parts = split_agent_command(command_template)
+    stdin_mode = "{prompt_stdin}" in command_template or "-" in parts
+    replacements = {
+        "{prompt_text}": "" if stdin_mode else prompt_text,
+        "{prompt_stdin}": "-",
+        "{prompt_file}": str(task_file),
+        "{stage}": stage,
+        "{paper_folder}": str(paper_folder),
+        "{project_root}": str(PROJECT_ROOT),
+    }
+    command_args: list[str] = []
+    display_parts: list[str] = []
+    for part in parts:
+        arg = part
+        display = part
+        for placeholder, value in replacements.items():
+            arg = arg.replace(placeholder, value)
+            if placeholder == "{prompt_text}":
+                display = display.replace(placeholder, "<prompt_text>" if not stdin_mode else "")
+            elif placeholder == "{prompt_stdin}":
+                display = display.replace(placeholder, "-")
+            else:
+                display = display.replace(placeholder, value)
+        if arg != "":
+            command_args.append(arg)
+        if display != "":
+            display_parts.append(display)
+    return command_args, " ".join(display_parts), stdin_mode
+
+
+def run_external_cli_agent(
+    agent: str,
+    task_file: Path,
+    paper_folder: Path,
+    stage: str,
+    command_template: str | None = None,
+    dry_run: bool = False,
+    validation_result: dict[str, Any] | None = None,
+    stream_output: bool = False,
+) -> dict[str, Any]:
+    if agent not in {"codex", "claude", "custom"}:
+        raise ValueError(f"Unsupported agent: {agent}")
+    if agent == "custom":
+        if not command_template:
+            raise ValueError("--agent-command is required when --agent custom")
+        template = command_template
+    else:
+        template = command_template or DEFAULT_AGENT_COMMAND_TEMPLATES[agent]
+
+    prompt_text = build_agent_prompt(stage, paper_folder, task_file, validation_result=validation_result)
+    command_args, command_display, stdin_mode = build_agent_command_args(template, prompt_text, task_file, paper_folder, stage)
+    result: dict[str, Any] = {
+        "agent": agent,
+        "stage": stage,
+        "task_file": str(task_file),
+        "prompt_file": str(task_file),
+        "prompt_length": len(prompt_text),
+        "command": command_display,
+        "stdin_mode": stdin_mode,
+        "dry_run": dry_run,
+        "stream_output": stream_output,
+    }
+    if dry_run:
+        result.update({"returncode": None, "stdout_tail": "", "stderr_tail": "", "skipped": True})
+        return result
+
+    try:
+        if stream_output:
+            completed_result = run_subprocess_streaming(command_args, prompt_text if stdin_mode else None)
+            result.update(completed_result)
+            return result
+        completed = subprocess.run(
+            command_args,
+            cwd=PROJECT_ROOT,
+            input=prompt_text if stdin_mode else None,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+        )
+    except FileNotFoundError as exc:
+        result.update({"returncode": None, "stdout_tail": "", "stderr_tail": str(exc), "error": str(exc)})
+        return result
+
+    result.update(
+        {
+            "returncode": completed.returncode,
+            "stdout_tail": tail_text(completed.stdout),
+            "stderr_tail": tail_text(completed.stderr),
+        }
+    )
+    return result
+
+
+def run_agent_active(
+    paper_folder: Path,
+    stages: list[str] | None,
+    agent: str,
+    command_template: str | None,
+    dry_run: bool,
+    continue_on_error: bool,
+    max_agent_retries: int,
+    skip_valid: bool = True,
+    stream_agent_output: bool = False,
+) -> dict[str, Any]:
+    if not paper_folder.exists():
+        raise FileNotFoundError(f"Paper folder does not exist: {paper_folder}")
+    if not has_manual_marker(paper_folder):
+        raise RuntimeError(f"Refusing active agent run: missing {paper_folder / MANUAL_MARKER}")
+    if max_agent_retries < 0:
+        raise ValueError("--max-agent-retries must be >= 0")
+
+    selected_stages = stages or DEFAULT_AGENT_ACTIVE_STAGES
+    unknown = [stage for stage in selected_stages if stage not in STAGES]
+    if unknown:
+        raise ValueError(f"Unknown stages: {unknown}")
+
+    summary: dict[str, Any] = {
+        "status": "completed",
+        "paper_folder": str(paper_folder),
+        "agent": agent,
+        "dry_run": dry_run,
+        "stream_agent_output": stream_agent_output,
+        "stages": [],
+    }
+    append_log(
+        paper_folder,
+        {
+            "action": "run_agent_active_start",
+            "agent": agent,
+            "stages": selected_stages,
+            "dry_run": dry_run,
+            "continue_on_error": continue_on_error,
+            "max_agent_retries": max_agent_retries,
+            "skip_valid": skip_valid,
+            "stream_agent_output": stream_agent_output,
+        },
+    )
+
+    for stage in selected_stages:
+        ok, messages = validate_stage(stage, paper_folder)
+        validation = validation_result_dict(ok, messages)
+        mode = STAGE_EXECUTION_MODE.get(stage, "legacy")
+        print(f"[RUN_AGENT_ACTIVE] stage={stage} mode={mode}")
+        print(f"[VALIDATE] stage={stage}")
+        print(f"[VALIDATE] ok={str(ok).lower()} messages={messages}")
+        if ok and skip_valid:
+            stage_result = {"stage": stage, "status": "skipped_valid", "validation": validation}
+            summary["stages"].append(stage_result)
+            append_log(paper_folder, {"action": "stage_skip_valid", "stage": stage, "validation": validation})
+            update_state(paper_folder, stage, "validated", validation)
+            continue
+
+        stage_result: dict[str, Any] = {
+            "stage": stage,
+            "status": "running",
+            "mode": mode,
+            "attempts": 0,
+            "validation": validation,
+        }
+        last_agent_result: dict[str, Any] | None = None
+        try:
+            run_result = run_stage(stage, paper_folder, dry_run=dry_run)
+            stage_result["run_result"] = run_result
+            if dry_run:
+                stage_result["status"] = "planned"
+                summary["stages"].append(stage_result)
+                continue
+
+            if run_result.get("status") == "external_agent_required":
+                task_file = Path(run_result["task_file"])
+                stage_result["task_file"] = str(task_file)
+                validation_feedback: dict[str, Any] | None = None
+                for attempt in range(max_agent_retries + 1):
+                    stage_result["attempts"] = attempt + 1
+                    preview_template = command_template
+                    if not preview_template:
+                        if agent == "custom":
+                            preview_template = ""
+                        else:
+                            preview_template = DEFAULT_AGENT_COMMAND_TEMPLATES[agent]
+                    preview_prompt = build_agent_prompt(stage, paper_folder, task_file, validation_result=validation_feedback)
+                    _preview_args, preview_command, preview_stdin_mode = build_agent_command_args(
+                        preview_template,
+                        preview_prompt,
+                        task_file,
+                        paper_folder,
+                        stage,
+                    )
+                    print(f"[EXTERNAL_AGENT] command={preview_command}")
+                    print(f"[EXTERNAL_AGENT] task_file={task_file}")
+                    print(
+                        "[EXTERNAL_AGENT] "
+                        f"stdin_mode={str(preview_stdin_mode).lower()} "
+                        f"prompt_length={len(preview_prompt)}"
+                    )
+                    agent_result = run_external_cli_agent(
+                        agent,
+                        task_file,
+                        paper_folder,
+                        stage,
+                        command_template=command_template,
+                        dry_run=dry_run,
+                        validation_result=validation_feedback,
+                        stream_output=stream_agent_output,
+                    )
+                    last_agent_result = agent_result
+                    append_log(paper_folder, {"action": "external_agent_call", **agent_result})
+                    if agent_result.get("returncode") not in {0, None}:
+                        stage_result["status"] = "agent_failed"
+                        stage_result["agent_result"] = agent_result
+                    print(f"[VALIDATE] stage={stage}")
+                    ok, messages = validate_stage(stage, paper_folder)
+                    validation_feedback = validation_result_dict(ok, messages)
+                    print(f"[VALIDATE] ok={str(ok).lower()} messages={messages}")
+                    stage_result["validation"] = validation_feedback
+                    append_log(
+                        paper_folder,
+                        {"action": "stage_validation", "stage": stage, "task_file": str(task_file), "validation": validation_feedback},
+                    )
+                    if ok:
+                        stage_result["status"] = "completed"
+                        stage_result["agent_result"] = agent_result
+                        update_state(paper_folder, stage, "validated", validation_feedback)
+                        break
+                    if attempt < max_agent_retries:
+                        append_validation_failure_feedback(task_file, validation_feedback, attempt + 1)
+                        append_log(
+                            paper_folder,
+                            {
+                                "action": "stage_retry",
+                                "stage": stage,
+                                "task_file": str(task_file),
+                                "attempt": attempt + 1,
+                                "validation": validation_feedback,
+                            },
+                        )
+                else:
+                    stage_result["status"] = "validation_failed"
+            else:
+                print(f"[VALIDATE] stage={stage}")
+                ok, messages = validate_stage(stage, paper_folder)
+                validation = validation_result_dict(ok, messages)
+                print(f"[VALIDATE] ok={str(ok).lower()} messages={messages}")
+                stage_result["validation"] = validation
+                append_log(paper_folder, {"action": "stage_validation", "stage": stage, "validation": validation})
+                if ok:
+                    stage_result["status"] = "completed"
+                    update_state(paper_folder, stage, "validated", validation)
+                else:
+                    stage_result["status"] = "validation_failed"
+
+            if stage_result["status"] != "completed":
+                failure_detail = {
+                    "stage": stage,
+                    "status": stage_result["status"],
+                    "validation": stage_result.get("validation"),
+                    "agent_result": last_agent_result,
+                }
+                update_state(paper_folder, stage, "failed", failure_detail)
+                if not continue_on_error:
+                    summary["status"] = "failed"
+                    summary["stages"].append(stage_result)
+                    append_log(paper_folder, {"action": "run_agent_active_done", **summary})
+                    return summary
+        except Exception as exc:
+            stage_result.update(
+                {
+                    "status": "failed",
+                    "error": str(exc),
+                    "traceback": traceback.format_exc(),
+                }
+            )
+            update_state(paper_folder, stage, "failed", stage_result)
+            if not continue_on_error:
+                summary["status"] = "failed"
+                summary["stages"].append(stage_result)
+                append_log(paper_folder, {"action": "run_agent_active_done", **summary})
+                return summary
+
+        summary["stages"].append(stage_result)
+
+    if any(stage_result.get("status") not in {"completed", "skipped_valid", "planned"} for stage_result in summary["stages"]):
+        summary["status"] = "completed_with_errors" if continue_on_error else "failed"
+    append_log(paper_folder, {"action": "run_agent_active_done", **summary})
+    return summary
+
+
+def run_stage(
+    stage: str,
+    paper_folder: Path,
+    dry_run: bool = False,
+    skip_backup: bool = False,
+    mode_override: str | None = None,
+) -> dict[str, Any]:
     if stage not in STAGES:
         raise ValueError(f"Unknown stage: {stage}")
     if not paper_folder.exists():
@@ -1176,7 +2415,7 @@ def run_stage(stage: str, paper_folder: Path, dry_run: bool = False, skip_backup
     if STAGES[stage].get("requires_manual_marker") and not has_manual_marker(paper_folder):
         raise RuntimeError(f"Refusing to run {stage}: missing {paper_folder / MANUAL_MARKER}")
 
-    mode = STAGE_EXECUTION_MODE.get(stage, "legacy")
+    mode = mode_override or STAGE_EXECUTION_MODE.get(stage, "legacy")
     if mode not in VALID_STAGE_EXECUTION_MODES:
         raise ValueError(f"Invalid execution mode for {stage}: {mode}")
     script = PROJECT_ROOT / STAGES[stage]["script"]
@@ -1249,6 +2488,18 @@ def main() -> int:
     p_run.add_argument("--paper-folder", required=True)
     p_run.add_argument("--dry-run", action="store_true")
     p_run.add_argument("--skip-backup", action="store_true")
+    p_run.add_argument("--mode", choices=sorted(VALID_STAGE_EXECUTION_MODES))
+
+    p_run_agent = sub.add_parser("run-agent-active")
+    p_run_agent.add_argument("--paper-folder", required=True)
+    p_run_agent.add_argument("--agent", choices=["codex", "claude", "custom"], default="codex")
+    p_run_agent.add_argument("--agent-command", default=None)
+    p_run_agent.add_argument("--stages", nargs="*", default=None, choices=STAGE_ORDER)
+    p_run_agent.add_argument("--dry-run", action="store_true")
+    p_run_agent.add_argument("--continue-on-error", action="store_true")
+    p_run_agent.add_argument("--max-agent-retries", type=int, default=1)
+    p_run_agent.add_argument("--no-skip-valid", action="store_true")
+    p_run_agent.add_argument("--stream-agent-output", action="store_true")
 
     args = parser.parse_args()
     paper_folder = resolve_paper_folder(args.paper_folder)
@@ -1273,9 +2524,30 @@ def main() -> int:
         return 0 if ok else 2
 
     if args.command == "run":
-        result = run_stage(args.stage, paper_folder, dry_run=args.dry_run, skip_backup=args.skip_backup)
+        result = run_stage(
+            args.stage,
+            paper_folder,
+            dry_run=args.dry_run,
+            skip_backup=args.skip_backup,
+            mode_override=args.mode,
+        )
         print(json.dumps(result, ensure_ascii=False, indent=2, default=str))
         return 0 if result.get("status") in {None, "success", "external_agent_required"} or "planned" in result else 2
+
+    if args.command == "run-agent-active":
+        result = run_agent_active(
+            paper_folder=paper_folder,
+            stages=args.stages,
+            agent=args.agent,
+            command_template=args.agent_command,
+            dry_run=args.dry_run,
+            continue_on_error=args.continue_on_error,
+            max_agent_retries=args.max_agent_retries,
+            skip_valid=not args.no_skip_valid,
+            stream_agent_output=args.stream_agent_output,
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+        return 0 if result.get("status") in {"completed", "completed_with_errors"} else 2
 
     return 1
 

@@ -52,6 +52,50 @@ Then run:
 python Agent_Task_Runner.py run --stage "<STAGE_NAME>" --paper-folder "<PAPER_FOLDER>"
 ```
 
+Unified extraction:
+
+```bash
+python Agent_Task_Runner.py run --stage 06_unified_lnpdb_extraction --paper-folder "<PAPER_FOLDER>"
+python Agent_Task_Runner.py validate --stage 06_unified_lnpdb_extraction --paper-folder "<PAPER_FOLDER>"
+```
+
+API-free active-stage sequence:
+
+```bash
+python Agent_Task_Runner.py run --stage 03_figure_mapping --paper-folder "<PAPER_FOLDER>"
+python Agent_Task_Runner.py run --stage 03_split_excel_blocks_batch --paper-folder "<PAPER_FOLDER>"
+python Agent_Task_Runner.py run --stage 04_figure_separate --paper-folder "<PAPER_FOLDER>"
+python Agent_Task_Runner.py run --stage 04_ft_excel_matcher --paper-folder "<PAPER_FOLDER>"
+python Agent_Task_Runner.py run --stage 05_smiles_structure_resolution --paper-folder "<PAPER_FOLDER>"
+python Agent_Task_Runner.py run --stage 06_unified_lnpdb_extraction --paper-folder "<PAPER_FOLDER>"
+python Agent_Task_Runner.py run --stage 07_finalize_unified_table --paper-folder "<PAPER_FOLDER>"
+```
+
+Automatic external CLI agent orchestration:
+
+```bash
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent codex
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent codex --stream-agent-output
+```
+
+Custom command examples:
+
+```bash
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent custom --agent-command "codex exec --cd \"{project_root}\" --dangerously-bypass-approvals-and-sandbox --add-dir \"{paper_folder}\" -"
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent custom --agent-command "cmd /c codex exec --cd \"{project_root}\" --dangerously-bypass-approvals-and-sandbox --add-dir \"{paper_folder}\" -"
+```
+
+Limit stages or retry behavior:
+
+```bash
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent codex --stages 03_figure_mapping 04_figure_separate 06_unified_lnpdb_extraction
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent codex --max-agent-retries 2 --continue-on-error
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent codex --no-skip-valid
+python Agent_Task_Runner.py run-agent-active --paper-folder "<PAPER_FOLDER>" --agent codex --stream-agent-output
+```
+
+`run-agent-active` creates task markdown for `external_agent` stages, sends the prompt to the chosen CLI agent through stdin when the command includes `-` or `{prompt_stdin}`, validates outputs, appends validation feedback to the task file on failure, retries up to `--max-agent-retries`, and proceeds stage by stage. Valid stages are skipped by default and logged as `stage_skip_valid`. Use `--stream-agent-output` to see Codex/Claude stdout and stderr in real time while still preserving log tails.
+
 ## 5. Validate
 
 ```bash
@@ -69,4 +113,3 @@ The runner updates state automatically. If you run a legacy script manually, upd
 - `agent_workspace/logs/<paper-name>.jsonl`
 
 Then call `next` again.
-

@@ -10,7 +10,10 @@
     "03_split_excel_blocks",
     "03_split_excel_blocks_batch",
     "04_figure_separate",
-    "04_ft_excel_matcher"
+    "04_ft_excel_matcher",
+    "05_smiles_structure_resolution",
+    "06_unified_lnpdb_extraction",
+    "07_finalize_unified_table"
   ],
   "pre_agent_stages": [
     "00_marker",
@@ -23,7 +26,10 @@
     "03_split_excel_blocks",
     "03_split_excel_blocks_batch",
     "04_figure_separate",
-    "04_ft_excel_matcher"
+    "04_ft_excel_matcher",
+    "05_smiles_structure_resolution",
+    "06_unified_lnpdb_extraction",
+    "07_finalize_unified_table"
   ],
   "manual_review_marker": ".manual_select_review_done",
   "stages": {
@@ -80,7 +86,24 @@
       "required_inputs": [".manual_select_review_done", "fig_table_lnpdb_classified.csv", "fig_table_inventory.csv", "excel_block_inventory.csv"],
       "expected_outputs": ["excel_mapping.json", "excel_mapping_rows.csv"],
       "retry": true
+    },
+    "05_smiles_structure_resolution": {
+      "script": "2_Extract_SMILES/FromIUPAC/Extract_Text_Lipid.py",
+      "required_inputs": [".manual_select_review_done", "*.md", "*.pdf"],
+      "expected_outputs": ["compound_inventory_standardized.csv", "smiles_resolved.csv", "smiles_resolution_qc.csv"],
+      "retry": true
+    },
+    "06_unified_lnpdb_extraction": {
+      "script": "4_Extract_Exp_Vals/Exp_Vals_From_Exles/42_Extract_Exp_Vals_Router.py",
+      "required_inputs": [".manual_select_review_done", "fig_table_lnpdb_classified.csv", "total_figure_mapping.json", "excel_mapping.json", "excel_block_inventory.csv", "Exp_Excel_Blocks"],
+      "expected_outputs": ["unified_extraction.csv", "unified_extraction.json", "unified_extraction_review_flags.csv"],
+      "retry": true
+    },
+    "07_finalize_unified_table": {
+      "script": "Agent_Task_Runner.py",
+      "required_inputs": [".manual_select_review_done", "unified_extraction.csv", "unified_extraction_review_flags.csv"],
+      "expected_outputs": ["unified_extraction_final.csv", "unified_extraction_lnpdb_like.csv", "unified_extraction_qc_report.json"],
+      "retry": true
     }
   }
 }
-

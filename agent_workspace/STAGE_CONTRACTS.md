@@ -166,7 +166,7 @@ Failure handling:
 ## 04_figure_separate
 
 Inputs:
-- required: `.manual_select_review_done`, `total_figure_mapping.json`, source images
+- required: `.manual_select_review_done`, `total_figure_mapping.json`, source images or source PDF/page metadata
 - optional: reviewed classified CSV
 
 Command:
@@ -181,15 +181,22 @@ python 0_mark_down_gen/04_figure_saperate_gemini.py
 
 Outputs:
 - `separated_panels_gemini/`
+- optional `pdf_page_renders/` with rendered fallback PDF pages
 - updated `total_figure_mapping.json`
+  - optional `fallback_render`
+  - optional `selected_source_for_paneling`
+  - optional `source_quality="pdf_page_render_fallback"`
+  - optional `manual_required=true`
 
 Validation:
 - JSON parses.
 - Panel paths recorded in JSON exist when present.
+- `fallback_render` and `selected_source_for_paneling` paths exist when present.
 - Output folders contain readable image files for processed mappings.
 
 Failure handling:
-- Check filename typo, mapping keys, source image readability, OpenCV, and Gemini/Vertex batch output.
+- Check filename typo, mapping keys, source image readability, PyMuPDF availability for fallback render, OpenCV, and Gemini/Vertex batch output.
+- Treat Marker image crops as primary candidates only; if a crop is suspect, render the PDF page and set `manual_required=true` when boundaries remain unclear.
 
 ## 04_ft_excel_matcher
 
@@ -216,3 +223,80 @@ Validation:
 Failure handling:
 - Check block inventory, selected FT rows, batch result parse errors, and normalized FT IDs.
 
+## 05_smiles_structure_resolution
+
+Inputs:
+- required: `.manual_select_review_done`, markdown/PDF sources, source images when available
+- optional: `total_figure_mapping.json`, local LNPDB reference files, DECIMER/MolScribe helper outputs
+
+Command:
+```bash
+python Agent_Task_Runner.py run --stage 05_smiles_structure_resolution --paper-folder "<PAPER_FOLDER>"
+```
+
+Outputs:
+- `compound_inventory_standardized.csv`
+- `smiles_resolved.csv`
+- `smiles_resolution_qc.csv`
+
+Validation:
+- `smiles_resolved.csv` parses.
+- It includes `Name` or `compound_id`.
+- It includes `SMILES` or `resolved_smiles`.
+
+Failure handling:
+- Check deterministic tools or references such as OPSIN, PubChem, CIR, existing LNPDB references, and MolScribe/DECIMER helper outputs.
+- Mark unresolved or ambiguous compounds with `manual_required=true`.
+- Do not call Gemini/API helpers.
+
+## 06_unified_lnpdb_extraction
+
+Inputs:
+- required: `.manual_select_review_done`, `fig_table_lnpdb_classified.csv`, `total_figure_mapping.json`, `excel_mapping.json`, `excel_block_inventory.csv`, `Exp_Excel_Blocks/`, markdown files
+- optional: `separated_panels_gemini/`, `compound_inventory_standardized.csv`, `text_extracted_iupac.csv`, `smiles_resolved.csv`, outputs from `2_Extract_SMILES/`
+
+Command:
+```bash
+python Agent_Task_Runner.py run --stage 06_unified_lnpdb_extraction --paper-folder "<PAPER_FOLDER>"
+```
+
+Outputs:
+- `unified_extraction.csv`
+- `unified_extraction.json`
+- `unified_extraction_review_flags.csv`
+
+Validation:
+- `unified_extraction.csv` parses.
+- Required unified columns exist.
+- `Item_ID`, `confidence`, and `manual_required` exist.
+- At least one row exists when selected items exist.
+- `unified_extraction_review_flags.csv` exists.
+
+Failure handling:
+- Check selected FT rows and Excel mappings.
+- Check `block_csv_path` files under `Exp_Excel_Blocks/`.
+- Use Excel blocks for numeric values, figures/images for labels and visual context, and markdown for methods/caption context.
+- Leave uncertain fields blank with `manual_required=true`.
+
+## 07_finalize_unified_table
+
+Inputs:
+- required: `.manual_select_review_done`, `unified_extraction.csv`, `unified_extraction_review_flags.csv`
+
+Command:
+```bash
+python Agent_Task_Runner.py run --stage 07_finalize_unified_table --paper-folder "<PAPER_FOLDER>"
+```
+
+Outputs:
+- `unified_extraction_final.csv`
+- `unified_extraction_lnpdb_like.csv`
+- `unified_extraction_qc_report.json`
+
+Validation:
+- Final and LNPDB-like CSVs parse.
+- QC report JSON parses.
+
+Failure handling:
+- Fix required columns in `unified_extraction.csv`.
+- Review low-confidence and manual-required rows before treating final outputs as curated.

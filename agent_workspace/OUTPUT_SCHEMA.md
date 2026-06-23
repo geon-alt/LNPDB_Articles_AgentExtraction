@@ -46,6 +46,14 @@ Expected shape:
   "source_folder_name": {
     "figure 1": {
       "source_image": "relative/or/absolute/path.png",
+      "source_pdf": "relative/or/absolute/source.pdf",
+      "source_page": 3,
+      "source_quality": "ok",
+      "fallback_render": "pdf_page_renders/source_page_003.png",
+      "selected_source_for_paneling": "relative/or/absolute/path.png",
+      "manual_required": false,
+      "confidence": "high",
+      "reason": "short rationale",
       "panels": {
         "A": "relative/or/absolute/panel.png"
       }
@@ -60,6 +68,25 @@ Validation rules:
 - Top-level value is an object.
 - At least one nested mapping exists when selected figure/table rows exist.
 - Any local path fields found in values should resolve to existing files or be logged as missing.
+- `source_image` is a primary candidate, not guaranteed ground truth.
+- Optional fallback fields are allowed for Marker crop failures:
+  - `source_pdf`
+  - `source_page`
+  - `source_quality`
+  - `fallback_render`
+  - `selected_source_for_paneling`
+  - `manual_required`
+  - `confidence`
+  - `reason`
+- Allowed `source_quality` values:
+  - `ok`
+  - `suspect_crop`
+  - `missing_image`
+  - `caption_image_mismatch`
+  - `pdf_page_render_fallback`
+  - `manual_required`
+- If `fallback_render` or `selected_source_for_paneling` is present and is a local path, it should resolve under the paper folder or as an absolute file path.
+- If boundaries or source identity remain uncertain, set `manual_required` to `true` and do not invent panel crops.
 
 ## `excel_block_inventory.csv`
 
@@ -139,3 +166,139 @@ Minimum expectations:
   - `block_csv_path`
   - `reason`
 
+## `compound_inventory_standardized.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- One row per compound/name candidate.
+- Useful columns:
+  - `compound_id`
+  - `Name`
+  - `alias`
+  - `source_type`
+  - `source_path`
+  - `Item_ID`
+  - `evidence_text`
+  - `manual_required`
+  - `reason`
+
+## `smiles_resolved.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Columns include at least one name identifier: `Name` or `compound_id`.
+- Columns include at least one SMILES field: `SMILES` or `resolved_smiles`.
+- Unresolved compounds should keep a row with blank SMILES and `manual_required=true`.
+
+## `unified_extraction.csv`
+
+Expected shape:
+
+- Long-format CSV with one row per figure/table item, formulation/condition, metric, and value.
+- It replaces separate experimental condition, formulation, and value extraction outputs.
+
+Required columns:
+
+- `Paper_ID`
+- `Item_ID`
+- `visual_type`
+- `source_type`
+- `source_image`
+- `source_pdf`
+- `source_page`
+- `selected_source_for_paneling`
+- `excel_file`
+- `excel_sheet`
+- `block_id`
+- `block_csv_path`
+- `Aqueous_buffer`
+- `Dialysis_buffer`
+- `Mixing_method`
+- `Model`
+- `Model_type`
+- `Model_target`
+- `Route_of_administration`
+- `Cargo`
+- `Cargo_type`
+- `Dose_ug_nucleicacid`
+- `Experiment_method`
+- `Experiment_batching`
+- `formulation_id`
+- `Formulation_Name`
+- `IL_name`
+- `IL_SMILES`
+- `IL_molarratio`
+- `HL_name`
+- `HL_SMILES`
+- `HL_molarratio`
+- `CHL_name`
+- `CHL_SMILES`
+- `CHL_molarratio`
+- `PEG_name`
+- `PEG_SMILES`
+- `PEG_molarratio`
+- `Fifth_component_name`
+- `Fifth_component_SMILES`
+- `Fifth_component_molarratio`
+- `IL_to_nucleicacid_massratio`
+- `condition_1_name`
+- `condition_1_value`
+- `condition_2_name`
+- `condition_2_value`
+- `condition_3_name`
+- `condition_3_value`
+- `condition_4_name`
+- `condition_4_value`
+- `metric_type`
+- `original_values`
+- `aggregated_value`
+- `unit`
+- `replicate_type`
+- `evidence_text`
+- `evidence_image`
+- `evidence_excel`
+- `confidence`
+- `manual_required`
+- `reason`
+
+Validation rules:
+
+- CSV parses.
+- Required columns exist.
+- `Item_ID` is non-empty for every row.
+- `original_values` is preserved as a string exactly as extracted.
+- Missing exact values must remain blank with `manual_required=true`; do not hallucinate values.
+- `confidence` and `reason` should explain nontrivial extraction decisions.
+
+## `unified_extraction_review_flags.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Useful columns:
+  - `Paper_ID`
+  - `Item_ID`
+  - `block_id`
+  - `field`
+  - `issue`
+  - `severity`
+  - `reason`
+- Rows identify manual review needs such as missing metadata, unresolved SMILES, formulation/value mismatch, or missing evidence.
+
+## `unified_extraction_final.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Preserves `unified_extraction.csv` rows after final normalization/review.
+- Keeps provenance columns needed to audit source evidence.
+
+## `unified_extraction_lnpdb_like.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Contains LNPDB-facing rows derived from `unified_extraction_final.csv`.
+- Does not invent missing scientific values during projection.

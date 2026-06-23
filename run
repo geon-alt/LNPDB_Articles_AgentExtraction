@@ -1,0 +1,21 @@
+$PAPER="F:\내 드라이브\EXTRACT-TEST\QS_2026"
+
+$CMD='cmd /c codex exec --cd "C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction" --dangerously-bypass-approvals-and-sandbox --add-dir "{paper_folder}" -'
+
+$RunnerArgs=@(
+  "run-agent-active",
+  "--paper-folder", $PAPER,
+  "--agent", "custom",
+  "--agent-command", $CMD,
+  "--stages", "03_split_excel_blocks_batch",
+  "--no-skip-valid",
+  "--max-agent-retries", "1"
+)
+
+python Agent_Task_Runner.py @RunnerArgs
+
+python Agent_Task_Runner.py run-agent-active `
+  --paper-folder "$PAPER" `
+  --agent custom `
+  --agent-command $CMD `
+  --max-agent-retries 1

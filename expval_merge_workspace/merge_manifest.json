@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "project": "LNPDB_expval_lnpdb_like_merge",
+  "mode": "local_cli_with_optional_llm_key_map",
+  "llm_provider": "openai",
+  "llm_model": "gpt-4.1-mini",
+  "default_expval_root": "F:\\내 드라이브\\LNPDB_update_1\\Supplementrays\\expvals",
+  "default_lnpdb_roots": [
+    "F:\\내 드라이브\\LNPDB_update_1\\Supplementrays",
+    "F:\\내 드라이브\\LNPDB_update_1\\Source_head_tail_separated_f",
+    "F:\\내 드라이브\\LNPDB_update_1\\Source_DOI_added_f"
+  ],
+  "default_output_root": "F:\\내 드라이브\\LNPDB_update_1\\expval_merge_outputs",
+  "stage_order": [
+    "00_observe_inputs",
+    "01_build_figure_table_key_map",
+    "02_normalize_expvals",
+    "03_normalize_lnpdb",
+    "04_build_match_candidates",
+    "05_merge_values",
+    "06_validate_merge"
+  ],
+  "default_policy": {
+    "never_modify_original_inputs": true,
+    "preserve_lnpdb_original_columns": true,
+    "require_value_provenance": true,
+    "forbid_value_only_matching": true,
+    "forbid_silent_overwrite_conflicts": true,
+    "default_merge_mode": "fill_existing",
+    "allow_long_expand_only_when_requested": true
+  },
+  "stages": {
+    "00_observe_inputs": {
+      "required_inputs": ["expval_root", "lnpdb_roots"],
+      "expected_outputs": ["input_inventory.csv", "observe_report.json"],
+      "retry": true
+    },
+    "01_build_figure_table_key_map": {
+      "required_inputs": ["input_inventory.csv"],
+      "expected_outputs": ["figure_table_key_map.csv", "figure_table_key_map_review_flags.csv"],
+      "retry": true
+    },
+    "02_normalize_expvals": {
+      "required_inputs": ["input_inventory.csv"],
+      "expected_outputs": ["normalized_expvals.csv", "normalized_expvals_warnings.csv"],
+      "retry": true
+    },
+    "03_normalize_lnpdb": {
+      "required_inputs": ["input_inventory.csv"],
+      "expected_outputs": ["normalized_lnpdb_rows.csv", "lnpdb_file_inventory.csv"],
+      "retry": true
+    },
+    "04_build_match_candidates": {
+      "required_inputs": ["normalized_expvals.csv", "normalized_lnpdb_rows.csv"],
+      "expected_outputs": [
+        "merge_candidates.csv",
+        "merge_conflicts.csv",
+        "merge_unmatched_expvals.csv",
+        "merge_unmatched_lnpdb_rows.csv"
+      ],
+      "retry": true
+    },
+    "05_merge_values": {
+      "required_inputs": ["merge_candidates.csv", "normalized_expvals.csv", "normalized_lnpdb_rows.csv"],
+      "expected_outputs": ["merged_lnpdb_like.csv"],
+      "retry": true
+    },
+    "06_validate_merge": {
+      "required_inputs": ["merged_lnpdb_like.csv", "merge_candidates.csv"],
+      "expected_outputs": ["merge_qc_report.json", "merge_review_flags.csv"],
+      "retry": true
+    }
+  }
+}

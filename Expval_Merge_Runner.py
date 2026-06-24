@@ -6,6 +6,7 @@ import json
 import math
 import os
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -42,6 +43,7 @@ LOG_DIR = WORKSPACE / "logs"
 
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx", ".xlsm", ".xls"}
 EXCEL_EXTENSIONS = {".xlsx", ".xlsm", ".xls"}
+REFERENCE_EXTENSIONS = {".md", ".markdown", ".txt", ".pdf"}
 
 STAGE_ORDER = [
     "00_observe_inputs",
@@ -231,6 +233,22 @@ def llm_model_from_args(args: argparse.Namespace, config: dict[str, Any]) -> str
         or os.environ.get("EXPVAL_MERGE_LLM_MODEL")
         or ""
     )
+
+
+def resolve_codex_command() -> str:
+    configured = os.environ.get("CODEX_CLI", "").strip()
+    if configured:
+        return configured
+    candidates = ["codex.cmd", "codex.exe", "codex"] if os.name == "nt" else ["codex"]
+    for candidate in candidates:
+        found = shutil.which(candidate)
+        if found:
+            return found
+    return "codex"
+
+
+def reference_roots_from_args(args: argparse.Namespace, config: dict[str, Any]) -> list[Path]:
+    return resolve_roots(getattr(args, "reference_root", None), config.get("default_reference_roots"))
 
 
 def normalize_text(value: Any) -> str:
@@ -711,7 +729,7 @@ def call_codex_key_classifier(prompt: dict[str, Any], model: str) -> tuple[dict[
         response_path = temp_root / "response.json"
         schema_path.write_text(json.dumps(schema, ensure_ascii=False, indent=2), encoding="utf-8")
         command = [
-            "codex",
+            resolve_codex_command(),
             "exec",
             "--cd",
             str(PROJECT_ROOT),
@@ -756,8 +774,9 @@ def partition_mapping_prompt(
     partition_key: str,
     source_rows: list[dict[str, Any]],
     target_rows: list[dict[str, Any]],
+    reference_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    return {
+    prompt = {
         "task": "Create a reusable row-matching plan between one source experimental-value table and one target table.",
         "partition_key": partition_key,
         "rules": [
@@ -806,6 +825,159 @@ def partition_mapping_prompt(
         "source": schema_summary(source_rows),
         "target": schema_summary(target_rows),
     }
+    if reference_context:
+        prompt["reference_context"] = reference_context
+        prompt["rules"].extend(
+            [
+                "When reference_context is present, read the reference_documents as the paper-level context before revising the mapping strategy.",
+                "Use the reference documents to infer label order, figure captions, formulation names, and missing label-to-formulation mappings.",
+                "Do not invent target values that are absent from the supplied target unique values or sample rows.",
+                "If reference_context still does not make the mapping deterministic, keep needs_review true.",
+            ]
+        )
+    return prompt
+
+
+def reference_search_terms(partition_key: str) -> list[str]:
+    key = normalize_text(partition_key)
+    terms = [key]
+    match = re.search(r"(supplementary figure|supplementary table|figure|table)\s+([0-9]+[a-z]?)", key)
+    if match:
+        kind, item = match.groups()
+        item_number = re.match(r"([0-9]+)", item)
+        if kind.startswith("supplementary figure"):
+            terms.extend([f"supplementary fig {item}", f"supp fig {item}", f"s{item}", f"figure s{item}"])
+        elif kind.startswith("supplementary table"):
+            terms.extend([f"supplementary table {item}", f"supp table {item}", f"table s{item}"])
+        if item_number:
+            terms.append(f"{kind.split()[-1]} {item_number.group(1)}")
+    seen = set()
+    ordered = []
+    for term in terms:
+        normalized = normalize_text(term)
+        if normalized and normalized not in seen:
+            seen.add(normalized)
+            ordered.append(normalized)
+    return ordered
+
+
+def iter_reference_files(roots: list[Path]) -> list[Path]:
+    files: list[Path] = []
+    seen: set[str] = set()
+    for root in roots:
+        if root.is_file():
+            candidates = [root] if root.suffix.lower() in REFERENCE_EXTENSIONS else []
+        elif root.is_dir():
+            candidates = [
+                path
+                for path in root.rglob("*")
+                if path.is_file() and path.suffix.lower() in REFERENCE_EXTENSIONS
+            ]
+        else:
+            candidates = []
+        for path in candidates:
+            try:
+                key = str(path.resolve()).lower()
+            except Exception:
+                key = str(path.absolute()).lower()
+            if key in seen:
+                continue
+            seen.add(key)
+            files.append(path)
+    return sorted(files, key=lambda path: (path.suffix.lower() == ".pdf", str(path).lower()))
+
+
+def read_reference_text(path: Path, max_chars: int | None = None) -> tuple[str, str]:
+    suffix = path.suffix.lower()
+    if suffix in {".md", ".markdown", ".txt"}:
+        for encoding in ("utf-8-sig", "utf-8", "cp949"):
+            try:
+                text = path.read_text(encoding=encoding, errors="replace")
+                return (text[:max_chars] if max_chars else text), ""
+            except UnicodeDecodeError:
+                continue
+        text = path.read_text(errors="replace")
+        return (text[:max_chars] if max_chars else text), ""
+    if suffix == ".pdf":
+        reader_cls = None
+        try:
+            from pypdf import PdfReader  # type: ignore
+
+            reader_cls = PdfReader
+        except Exception:
+            try:
+                from PyPDF2 import PdfReader  # type: ignore
+
+                reader_cls = PdfReader
+            except Exception as exc:
+                return "", f"PDF text extraction unavailable: {exc}"
+        try:
+            reader = reader_cls(str(path))
+            chunks = []
+            for page in reader.pages:
+                if max_chars and sum(len(chunk) for chunk in chunks) >= max_chars:
+                    break
+                chunks.append(page.extract_text() or "")
+            text = "\n".join(chunks)
+            return (text[:max_chars] if max_chars else text), ""
+        except Exception as exc:
+            return "", f"PDF text extraction failed: {exc}"
+    return "", "unsupported reference extension"
+
+
+def compact_reference_text(text: str, max_chars: int) -> tuple[str, str]:
+    cleaned = re.sub(r"\s+", " ", text).strip()
+    if len(cleaned) <= max_chars:
+        return cleaned, "full"
+    head_len = max_chars // 3
+    mid_len = max_chars // 3
+    tail_len = max_chars - head_len - mid_len
+    mid_start = max(0, (len(cleaned) // 2) - (mid_len // 2))
+    compacted = "\n\n[DOCUMENT_START]\n" + cleaned[:head_len]
+    compacted += "\n\n[DOCUMENT_MIDDLE]\n" + cleaned[mid_start: mid_start + mid_len]
+    compacted += "\n\n[DOCUMENT_END]\n" + cleaned[-tail_len:]
+    return compacted, "start_middle_end_compacted"
+
+
+def collect_reference_context(
+    partition_key: str,
+    reference_roots: list[Path],
+    source_rows: list[dict[str, Any]],
+    target_rows: list[dict[str, Any]],
+    max_files: int = 6,
+    max_chars_per_document: int = 60_000,
+) -> dict[str, Any]:
+    terms = reference_search_terms(partition_key)
+    files = iter_reference_files(reference_roots)
+    documents: list[dict[str, Any]] = []
+    diagnostics: list[dict[str, Any]] = []
+    for path in files:
+        text, warning = read_reference_text(path)
+        if warning:
+            diagnostics.append({"file": str(path), "warning": warning})
+        if not text:
+            continue
+        content, mode = compact_reference_text(text, max_chars_per_document)
+        documents.append(
+            {
+                "file": str(path),
+                "extension": path.suffix.lower(),
+                "original_chars": len(text),
+                "included_chars": len(content),
+                "inclusion_mode": mode,
+                "content": content,
+            }
+        )
+        if len(documents) >= max_files:
+            break
+    return {
+        "partition_key": partition_key,
+        "orientation_terms": terms,
+        "reference_roots": [str(root) for root in reference_roots],
+        "files_seen": len(files),
+        "documents": documents,
+        "diagnostics": diagnostics,
+    }
 
 
 def parse_mapping_plan_response(text: str) -> dict[str, Any]:
@@ -825,7 +997,7 @@ def parse_mapping_plan_response(text: str) -> dict[str, Any]:
     return payload
 
 
-def call_codex_mapping_planner(prompt: dict[str, Any], model: str) -> tuple[dict[str, Any], str]:
+def mapping_plan_response_schema() -> dict[str, Any]:
     value_pair_schema = {
         "type": "object",
         "properties": {
@@ -880,9 +1052,15 @@ def call_codex_mapping_planner(prompt: dict[str, Any], model: str) -> tuple[dict
         ],
         "additionalProperties": False,
     }
+    return schema
+
+
+def call_codex_mapping_planner(prompt: dict[str, Any], model: str) -> tuple[dict[str, Any], str]:
+    schema = mapping_plan_response_schema()
     prompt_text = (
-        "Build the table-to-table mapping plan from the supplied JSON only. "
-        "Do not inspect files, run commands, or modify anything.\n\n"
+        "Build the table-to-table mapping plan from the supplied JSON. "
+        "The JSON may include source rows, target rows, and optional reference documents read from the paper extraction folder. "
+        "Do not inspect additional files, run commands, or modify anything. Return JSON only.\n\n"
         + json.dumps(prompt, ensure_ascii=False)
     )
     with tempfile.TemporaryDirectory(prefix="expval_mapping_plan_") as temp_dir:
@@ -891,7 +1069,7 @@ def call_codex_mapping_planner(prompt: dict[str, Any], model: str) -> tuple[dict
         response_path = temp_root / "response.json"
         schema_path.write_text(json.dumps(schema, ensure_ascii=False, indent=2), encoding="utf-8")
         command = [
-            "codex",
+            resolve_codex_command(),
             "exec",
             "--cd",
             str(PROJECT_ROOT),
@@ -1587,6 +1765,7 @@ def build_partition_mapping_plans(
     lnpdb_rows: list[dict[str, Any]],
     provider: str = "heuristic",
     model: str = "",
+    reference_roots: list[Path] | None = None,
 ) -> dict[str, dict[str, Any]]:
     exp_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     target_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -1598,6 +1777,8 @@ def build_partition_mapping_plans(
     plans: dict[str, dict[str, Any]] = {}
     summary_rows: list[dict[str, Any]] = []
     review_rows: list[dict[str, Any]] = []
+    reference_context_reports: list[dict[str, Any]] = []
+    reference_roots = reference_roots or []
     for partition_key in sorted(set(exp_by_partition) | set(target_by_partition)):
         source_rows = exp_by_partition.get(partition_key, [])
         target_rows = target_by_partition.get(partition_key, [])
@@ -1624,11 +1805,71 @@ def build_partition_mapping_plans(
                     )
                     plan = validate_mapping_plan(llm_plan, partition_key, source_rows, target_rows)
                     method = f"codex:{model or 'default'}"
+                    if reference_roots and (plan.get("needs_review") or plan.get("confidence") == "low"):
+                        reference_context = collect_reference_context(
+                            partition_key,
+                            reference_roots,
+                            source_rows,
+                            target_rows,
+                        )
+                        reference_context_reports.append(reference_context)
+                        if reference_context.get("documents"):
+                            try:
+                                ref_llm_plan, ref_raw_response = call_codex_mapping_planner(
+                                    partition_mapping_prompt(
+                                        partition_key,
+                                        source_rows,
+                                        target_rows,
+                                        reference_context,
+                                    ),
+                                    model,
+                                )
+                                ref_plan = validate_mapping_plan(ref_llm_plan, partition_key, source_rows, target_rows)
+                                ref_plan["reference_context_used"] = True
+                                ref_plan["reference_context_documents"] = len(reference_context.get("documents", []))
+                                ref_plan["reference_context_snippets"] = len(reference_context.get("documents", []))
+                                ref_plan["reference_context_files"] = sorted(
+                                    {doc.get("file", "") for doc in reference_context.get("documents", []) if doc.get("file")}
+                                )
+                                ref_plan["initial_reason"] = plan.get("reason", "")
+                                ref_plan["initial_confidence"] = plan.get("confidence", "")
+                                ref_plan["initial_needs_review"] = bool(plan.get("needs_review", False))
+                                plan = ref_plan
+                                raw_response = ref_raw_response
+                                method = f"codex:{model or 'default'}+reference_context"
+                            except Exception as exc:
+                                plan["reference_context_used"] = False
+                                plan["reference_context_error"] = str(exc)
+                                plan["reference_context_documents"] = len(reference_context.get("documents", []))
+                                plan["reference_context_snippets"] = len(reference_context.get("documents", []))
+                        else:
+                            plan["reference_context_used"] = False
+                            plan["reference_context_documents"] = 0
+                            plan["reference_context_snippets"] = 0
                 except Exception as exc:
                     heuristic = heuristic_mapping_plan(partition_key, source_rows, target_rows)
                     plan = validate_mapping_plan(heuristic, partition_key, source_rows, target_rows)
-                    plan["needs_review"] = True
-                    plan["reason"] = f"Codex mapping failed; heuristic fallback: {exc}"
+                    fallback_needs_review = bool(plan.get("needs_review", False))
+                    if reference_roots and fallback_needs_review:
+                        reference_context = collect_reference_context(
+                            partition_key,
+                            reference_roots,
+                            source_rows,
+                            target_rows,
+                        )
+                        reference_context_reports.append(reference_context)
+                        plan["reference_context_used"] = False
+                        plan["reference_context_documents"] = len(reference_context.get("documents", []))
+                        plan["reference_context_snippets"] = len(reference_context.get("documents", []))
+                        plan["reference_context_files"] = sorted(
+                            {doc.get("file", "") for doc in reference_context.get("documents", []) if doc.get("file")}
+                        )
+                        if reference_context.get("documents"):
+                            plan["reference_context_error"] = "Codex mapping unavailable, so reference documents could not be used for LLM retry."
+                    plan["reason"] = (
+                        f"Codex mapping failed; heuristic fallback "
+                        f"{'requires review' if fallback_needs_review else 'accepted'}: {exc}"
+                    )
                     method = "heuristic_after_codex_failed"
             else:
                 heuristic = heuristic_mapping_plan(partition_key, source_rows, target_rows)
@@ -1648,6 +1889,10 @@ def build_partition_mapping_plans(
             "method": plan.get("method", ""),
             "needs_review": str(bool(plan.get("needs_review", False))).lower(),
             "reason": plan.get("reason", ""),
+            "reference_context_used": str(bool(plan.get("reference_context_used", False))).lower(),
+            "reference_context_documents": plan.get("reference_context_documents", ""),
+            "reference_context_snippets": plan.get("reference_context_snippets", ""),
+            "reference_context_files": "|".join(plan.get("reference_context_files", []) or []),
             "mapping_plan_json": json.dumps(plan, ensure_ascii=False),
         }
         summary_rows.append(summary)
@@ -1666,10 +1911,19 @@ def build_partition_mapping_plans(
         "method",
         "needs_review",
         "reason",
+        "reference_context_used",
+        "reference_context_documents",
+        "reference_context_snippets",
+        "reference_context_files",
         "mapping_plan_json",
     ]
     write_csv(output_root / "partition_mapping_rules.csv", summary_rows, summary_columns)
     write_csv(output_root / "partition_mapping_rules_review_flags.csv", review_rows, summary_columns)
+    if reference_context_reports:
+        write_json(
+            output_root / "partition_reference_context_report.json",
+            {"schema_version": 1, "created_at": utc_now(), "partitions": reference_context_reports},
+        )
     return plans
 
 
@@ -1677,11 +1931,12 @@ def build_match_candidates(
     output_root: Path,
     provider: str = "heuristic",
     model: str = "",
+    reference_roots: list[Path] | None = None,
 ) -> dict[str, Any]:
     expvals = dataframe_to_records(read_csv_flexible(output_root / "normalized_expvals.csv"))
     lnpdb_rows = dataframe_to_records(read_csv_flexible(output_root / "normalized_lnpdb_rows.csv"))
     partition_report = write_partition_outputs(output_root, expvals, lnpdb_rows)
-    plans = build_partition_mapping_plans(output_root, expvals, lnpdb_rows, provider, model)
+    plans = build_partition_mapping_plans(output_root, expvals, lnpdb_rows, provider, model, reference_roots)
     exp_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     target_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in expvals:
@@ -1699,7 +1954,6 @@ def build_match_candidates(
         target_value_column = plan.get("target_value_column", "")
         if (
             not target_rows
-            or plan.get("needs_review")
             or not source_value_column
             or not target_value_column
             or not plan.get("relations")
@@ -1727,9 +1981,6 @@ def build_match_candidates(
                 elif not extracted:
                     conflict_reason = f"source value column is empty: {source_value_column}"
                     accepted = False
-                elif plan.get("needs_review"):
-                    conflict_reason = "partition mapping plan requires review"
-                    accepted = False
                 candidate_seq += 1
                 candidate = {
                     "candidate_id": f"MC{candidate_seq:08d}",
@@ -1745,7 +1996,7 @@ def build_match_candidates(
                     "matched_fields": "|".join(evaluation.get("matched_fields", [])),
                     "match_reason": evaluation.get("reason", ""),
                     "accepted": str(accepted).lower(),
-                    "manual_required": str(bool(plan.get("needs_review", False))).lower(),
+                    "manual_required": str(bool(plan.get("needs_review", False)) and not accepted).lower(),
                     "conflict_reason": conflict_reason,
                 }
                 candidates.append(candidate)
@@ -2151,6 +2402,7 @@ def run_stage(stage: str, args: argparse.Namespace, config: dict[str, Any]) -> d
                 output_root,
                 llm_provider_from_args(args, config),
                 llm_model_from_args(args, config),
+                reference_roots_from_args(args, config),
             )
         elif stage == "05_merge_values":
             result = merge_values(output_root, getattr(args, "mode", "fill_existing"))
@@ -2201,6 +2453,16 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--output-root", help="Output folder. Defaults to manifest default_output_root.")
         p.add_argument("--llm-provider", choices=["none", "heuristic", "codex", "openai"], default=argparse.SUPPRESS)
         p.add_argument("--llm-model", default=argparse.SUPPRESS)
+        p.add_argument(
+            "--reference-root",
+            "--previous-extraction-root",
+            action="append",
+            dest="reference_root",
+            help=(
+                "Optional previous extraction folder/file containing PDFs or PDF-derived Markdown. "
+                "Used only to retry ambiguous Codex partition mappings."
+            ),
+        )
 
     for command in ["observe", "build-key-map", "normalize-expvals", "normalize-lnpdb", "build-candidates", "validate", "run-all"]:
         p = sub.add_parser(command)

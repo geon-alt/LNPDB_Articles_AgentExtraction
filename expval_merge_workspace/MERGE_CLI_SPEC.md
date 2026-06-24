@@ -109,12 +109,14 @@ Inputs:
 
 - `normalized_expvals.csv`
 - `normalized_lnpdb_rows.csv`
+- optional `--reference-root` / `--previous-extraction-root`: a previous extraction folder or file containing PDFs, Markdown, or text derived from PDFs. This is used only when the Codex mapping planner returns an ambiguous/low-confidence partition mapping.
 
 Outputs:
 
 - `partition_mapping_rules.json`
 - `partition_mapping_rules.csv`
 - `partition_mapping_rules_review_flags.csv`
+- `partition_reference_context_report.json` when reference context was consulted
 - `merge_candidates.csv`
 - `merge_conflicts.csv`
 - `merge_unmatched_expvals.csv`

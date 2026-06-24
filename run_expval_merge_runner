@@ -1,11 +1,12 @@
 Expval_Merge_Runner.py usage
 경로는 따옴표로 감싸고 실행
 
- python Expval_Merge_Runner.py run-all \
-    --expval-root "/path/to/figure_split_exp_source_folder" \
-    --lnpdb-root "/path/to/lnpdb_like_target.xlsx" \
-    --output-root "/path/to/output" \
-    --llm-provider codex
+python Expval_Merge_Runner.py run-all \
+   --expval-root "/path/to/figure_split_exp_source_folder" \
+   --lnpdb-root "/path/to/lnpdb_like_target.xlsx" \
+   --output-root "/path/to/output" \
+   --llm-provider codex \
+   --previous-extraction-root "F:\내 드라이브\LNPDB_new\FG_2026"
 
 
  python Expval_Merge_Runner.py run-all \
@@ -13,3 +14,4 @@ Expval_Merge_Runner.py usage
     --lnpdb-root "/Users/kogeon/Google Drive/내 드라이브/LNPDB_update_1/s_empty/target/FG_2026.xlsx" \
     --output-root "/Users/kogeon/Google Drive/내 드라이브/LNPDB_update_1/s_empty/FG_2026_Fill" \
     --llm-provider codex
+       --previous-extraction-root "F:\내 드라이브\LNPDB_new\FG_2026"

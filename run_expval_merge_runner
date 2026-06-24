@@ -1,0 +1,54 @@
+Expval_Merge_Runner.py usage
+
+Run all stages with the default project paths:
+
+```powershell
+python Expval_Merge_Runner.py run-all `
+  --expval-root "F:\내 드라이브\LNPDB_update_1\s_empty\expvals" `
+  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\s_empty\target" `
+  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\Source_head_tail_separated_f" `
+  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\Source_DOI_added_f" `
+  --output-root "F:\내 드라이브\LNPDB_update_1\expval_merge_outputs"
+```
+python Expval_Merge_Runner.py run-all `
+  --expval-root "F:\내 드라이브\LNPDB_update_1\s_empty\expvals" `
+  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\s_empty\target" `
+  --output-root "F:\내 드라이브\LNPDB_update_1\s_empty\expval_merge_outputs"
+
+Run all stages using the manifest defaults:
+
+```powershell
+python Expval_Merge_Runner.py run-all --config expval_merge_workspace\merge_manifest.json
+```
+
+Run stages one by one:
+
+```powershell
+python Expval_Merge_Runner.py observe --config expval_merge_workspace\merge_manifest.json
+python Expval_Merge_Runner.py build-key-map --config expval_merge_workspace\merge_manifest.json
+python Expval_Merge_Runner.py normalize-expvals --config expval_merge_workspace\merge_manifest.json
+python Expval_Merge_Runner.py normalize-lnpdb --config expval_merge_workspace\merge_manifest.json
+python Expval_Merge_Runner.py build-candidates --config expval_merge_workspace\merge_manifest.json
+python Expval_Merge_Runner.py merge --config expval_merge_workspace\merge_manifest.json --mode fill_existing
+python Expval_Merge_Runner.py validate --config expval_merge_workspace\merge_manifest.json
+```
+
+Useful output files:
+
+```text
+F:\내 드라이브\LNPDB_update_1\expval_merge_outputs\merged_lnpdb_like.csv
+F:\내 드라이브\LNPDB_update_1\expval_merge_outputs\merge_conflicts.csv
+F:\내 드라이브\LNPDB_update_1\expval_merge_outputs\merge_review_flags.csv
+F:\내 드라이브\LNPDB_update_1\expval_merge_outputs\merge_qc_report.json
+```
+
+Notes:
+
+- Original input files are not modified.
+- Figure/Table classification uses the currently logged-in Codex CLI by default; `OPENAI_API_KEY` is not required.
+- Check CLI authentication with `codex login status`; run `codex login` once if it reports `Not logged in`.
+- `partition_inventory.csv` and `partitioned\...` show the figure/table split used before matching.
+- Only `experimental_value` is filled.
+- Rows with non-empty `experimental_value` are not overwritten.
+- Use `--mode fill_existing` for conservative filling.
+- Use `--mode long_expand` only when one LNPDB-like row should expand into multiple group/condition rows.

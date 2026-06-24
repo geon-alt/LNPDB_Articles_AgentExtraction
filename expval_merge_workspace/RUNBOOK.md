@@ -33,16 +33,23 @@ Expected output:
 
 ## 3. Build Figure/Table Key Map
 
-Heuristic only:
+Using the logged-in Codex CLI (default; no API key):
+
+```bash
+codex login status
+codex login
+```
+
+`codex login` is needed only when the CLI reports `Not logged in`. A ChatGPT/Codex app login and the PowerShell Codex CLI login can be separate.
 
 ```bash
 python Expval_Merge_Runner.py build-key-map --config expval_merge_workspace/merge_manifest.json
 ```
 
-With OpenAI:
+Heuristic only:
 
 ```bash
-python Expval_Merge_Runner.py build-key-map --config expval_merge_workspace/merge_manifest.json --llm-provider openai --llm-model gpt-4.1-mini
+python Expval_Merge_Runner.py build-key-map --config expval_merge_workspace/merge_manifest.json --llm-provider heuristic
 ```
 
 Check:

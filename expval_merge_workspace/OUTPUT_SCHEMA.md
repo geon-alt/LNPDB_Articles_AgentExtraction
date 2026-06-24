@@ -52,7 +52,7 @@ needs_review
 review_reason
 ```
 
-`method` is `heuristic`, `openai:<model>`, or `heuristic_after_llm_failed`.
+`method` is `heuristic`, `codex:<model>`, `openai:<model>`, or `heuristic_after_llm_failed`.
 
 ## `figure_table_key_map_review_flags.csv`
 

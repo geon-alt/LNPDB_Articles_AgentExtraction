@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "project": "LNPDB_expval_lnpdb_like_merge",
-  "mode": "local_cli_with_optional_llm_key_map",
-  "llm_provider": "openai",
-  "llm_model": "gpt-4.1-mini",
+  "mode": "local_cli_with_logged_in_codex_key_map",
+  "llm_provider": "codex",
+  "llm_model": "",
   "default_expval_root": "F:\\내 드라이브\\LNPDB_update_1\\Supplementrays\\expvals",
   "default_lnpdb_roots": [
     "F:\\내 드라이브\\LNPDB_update_1\\Supplementrays",

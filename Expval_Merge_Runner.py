@@ -16,6 +16,14 @@ from pathlib import Path
 from typing import Any
 from urllib import request, error
 
+from expval_merge_workspace.flexible_matcher import (
+    evaluate_pair,
+    heuristic_mapping_plan,
+    row_payload,
+    schema_summary,
+    validate_mapping_plan,
+)
+
 
 try:
     import pandas as pd
@@ -305,6 +313,15 @@ def safe_path_component(value: Any) -> str:
     return text[:120] or "unknown"
 
 
+def natural_partition_sort_key(value: Any) -> tuple[Any, ...]:
+    normalized = normalize_text(value)
+    tokens = re.split(r"(\d+)", normalized)
+    natural_tokens = tuple(int(token) if token.isdigit() else token for token in tokens)
+    supplementary = 1 if "supplementary" in normalized else 0
+    kind_order = 0 if "figure" in normalized else 1 if "table" in normalized else 2
+    return supplementary, kind_order, natural_tokens
+
+
 def find_column(columns: list[str], candidates: list[str]) -> str | None:
     by_compact = {compact_key(c): c for c in columns}
     for candidate in candidates:
@@ -441,6 +458,54 @@ def iter_candidate_files(roots: list[Path], exclude_roots: list[Path] | None = N
     return sorted(files, key=lambda p: str(p).lower())
 
 
+def resolve_single_paper_target_files(roots: list[Path]) -> tuple[list[Path], str]:
+    if len(roots) != 1:
+        raise ValueError("One paper run requires exactly one --lnpdb-root: a single CSV/Excel file or one folder of Excel files.")
+    root = roots[0]
+    if root.is_file():
+        if root.suffix.lower() not in SUPPORTED_EXTENSIONS:
+            raise ValueError(f"Unsupported LNPDB-like target file: {root}")
+        return [root], "single_file"
+    if root.is_dir():
+        files = sorted(
+            [
+                path
+                for path in root.rglob("*")
+                if path.is_file() and path.suffix.lower() in EXCEL_EXTENSIONS
+            ],
+            key=lambda path: str(path).lower(),
+        )
+        if not files:
+            raise ValueError(f"Target folder contains no Excel files: {root}")
+        return files, "excel_folder_combined"
+    raise FileNotFoundError(f"LNPDB-like target path not found: {root}")
+
+
+def resolve_exp_source_files(roots: list[Path]) -> list[Path]:
+    files: list[Path] = []
+    seen: set[str] = set()
+    for root in roots:
+        if root.is_file():
+            candidates = [root] if root.suffix.lower() in SUPPORTED_EXTENSIONS else []
+        elif root.is_dir():
+            candidates = [
+                path
+                for path in root.rglob("*")
+                if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS
+            ]
+        else:
+            candidates = []
+        for path in candidates:
+            key = str(path.resolve()).lower()
+            if key not in seen:
+                seen.add(key)
+                files.append(path)
+    files.sort(key=lambda path: str(path).lower())
+    if not files:
+        raise ValueError("No experimental source CSV/Excel files were found.")
+    return files
+
+
 def read_csv_flexible(path: Path) -> Any:
     require_pandas()
     try:
@@ -476,6 +541,14 @@ def write_csv(path: Path, rows: list[dict[str, Any]], columns: list[str] | None 
         writer = csv.DictWriter(f, fieldnames=columns, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
+
+
+def clear_generated_csvs(path: Path) -> None:
+    if not path.exists():
+        return
+    for generated in path.glob("*.csv"):
+        if generated.is_file():
+            generated.unlink()
 
 
 def dataframe_to_records(df: Any) -> list[dict[str, Any]]:
@@ -679,6 +752,181 @@ def call_codex_key_classifier(prompt: dict[str, Any], model: str) -> tuple[dict[
         return parse_llm_key_response(text), text
 
 
+def partition_mapping_prompt(
+    partition_key: str,
+    source_rows: list[dict[str, Any]],
+    target_rows: list[dict[str, Any]],
+) -> dict[str, Any]:
+    return {
+        "task": "Create a reusable row-matching plan between one source experimental-value table and one target table.",
+        "partition_key": partition_key,
+        "rules": [
+            "First select the source column containing the experimental value and the target column that should receive it.",
+            "Do not use either selected value column as row-matching evidence.",
+            "Connect source and target columns by meaning and by their observed unique values.",
+            "A relation may connect one-to-one, many source columns to one target column, or one source column to many target columns.",
+            "Use explicit value_pairs when labels differ or when multiple columns must be combined or split.",
+            "Every value in value_pairs must be copied from the supplied unique values or sample rows.",
+            "Use fixed_target_values only for target-side constants supported by the supplied rows.",
+            "The plan is applied deterministically to every row; do not return row IDs or individual row assignments.",
+            "Mark needs_review when the schema is ambiguous or the plan cannot uniquely identify rows.",
+            "Return JSON only.",
+        ],
+        "relation_modes": {
+            "exact": "same normalized tuple on both sides",
+            "value_map": "explicit source tuple to target tuple mapping through value_pairs",
+            "contains": "one side combines values from the other side in one or more cells",
+            "token_overlap": "minor formatting differences only; use conservatively",
+        },
+        "output_shape": {
+            "source_value_column": "existing source column",
+            "target_value_column": "existing target column, or experimental_value when it must be created",
+            "relations": [
+                {
+                    "source_columns": ["one or more existing source columns"],
+                    "target_columns": ["one or more existing target columns"],
+                    "mode": "exact|value_map|contains|token_overlap",
+                    "required": True,
+                    "value_pairs": [
+                        {
+                            "source_values": ["same length as source_columns"],
+                            "target_values": ["same length as target_columns"],
+                        }
+                    ],
+                    "reason": "short explanation",
+                }
+            ],
+            "fixed_target_values": [
+                {"target_column": "existing target column", "target_value": "observed constant"}
+            ],
+            "confidence": "high|medium|low",
+            "needs_review": False,
+            "reason": "short plan-level explanation",
+        },
+        "source": schema_summary(source_rows),
+        "target": schema_summary(target_rows),
+    }
+
+
+def parse_mapping_plan_response(text: str) -> dict[str, Any]:
+    cleaned = text.strip()
+    if cleaned.startswith("```"):
+        cleaned = re.sub(r"^```(?:json)?", "", cleaned).strip()
+        cleaned = re.sub(r"```$", "", cleaned).strip()
+    try:
+        payload = json.loads(cleaned)
+    except Exception:
+        match = re.search(r"\{.*\}", cleaned, flags=re.DOTALL)
+        if not match:
+            raise
+        payload = json.loads(match.group(0))
+    if not isinstance(payload, dict):
+        raise ValueError("mapping plan response must be a JSON object")
+    return payload
+
+
+def call_codex_mapping_planner(prompt: dict[str, Any], model: str) -> tuple[dict[str, Any], str]:
+    value_pair_schema = {
+        "type": "object",
+        "properties": {
+            "source_values": {"type": "array", "items": {"type": "string"}},
+            "target_values": {"type": "array", "items": {"type": "string"}},
+        },
+        "required": ["source_values", "target_values"],
+        "additionalProperties": False,
+    }
+    relation_schema = {
+        "type": "object",
+        "properties": {
+            "source_columns": {"type": "array", "items": {"type": "string"}},
+            "target_columns": {"type": "array", "items": {"type": "string"}},
+            "mode": {"type": "string", "enum": ["exact", "value_map", "contains", "token_overlap"]},
+            "required": {"type": "boolean"},
+            "value_pairs": {"type": "array", "items": value_pair_schema},
+            "reason": {"type": "string"},
+        },
+        "required": ["source_columns", "target_columns", "mode", "required", "value_pairs", "reason"],
+        "additionalProperties": False,
+    }
+    fixed_target_value_schema = {
+        "type": "object",
+        "properties": {
+            "target_column": {"type": "string"},
+            "target_value": {"type": "string"},
+        },
+        "required": ["target_column", "target_value"],
+        "additionalProperties": False,
+    }
+    schema = {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+            "source_value_column": {"type": "string"},
+            "target_value_column": {"type": "string"},
+            "relations": {"type": "array", "items": relation_schema},
+            "fixed_target_values": {"type": "array", "items": fixed_target_value_schema},
+            "confidence": {"type": "string", "enum": ["high", "medium", "low"]},
+            "needs_review": {"type": "boolean"},
+            "reason": {"type": "string"},
+        },
+        "required": [
+            "source_value_column",
+            "target_value_column",
+            "relations",
+            "fixed_target_values",
+            "confidence",
+            "needs_review",
+            "reason",
+        ],
+        "additionalProperties": False,
+    }
+    prompt_text = (
+        "Build the table-to-table mapping plan from the supplied JSON only. "
+        "Do not inspect files, run commands, or modify anything.\n\n"
+        + json.dumps(prompt, ensure_ascii=False)
+    )
+    with tempfile.TemporaryDirectory(prefix="expval_mapping_plan_") as temp_dir:
+        temp_root = Path(temp_dir)
+        schema_path = temp_root / "response_schema.json"
+        response_path = temp_root / "response.json"
+        schema_path.write_text(json.dumps(schema, ensure_ascii=False, indent=2), encoding="utf-8")
+        command = [
+            "codex",
+            "exec",
+            "--cd",
+            str(PROJECT_ROOT),
+            "--sandbox",
+            "read-only",
+            "--ephemeral",
+            "--color",
+            "never",
+            "--output-schema",
+            str(schema_path),
+            "--output-last-message",
+            str(response_path),
+        ]
+        if model:
+            command.extend(["--model", model])
+        command.append("-")
+        completed = subprocess.run(
+            command,
+            cwd=PROJECT_ROOT,
+            input=prompt_text,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            capture_output=True,
+            timeout=300,
+        )
+        if completed.returncode != 0:
+            detail = (completed.stderr or completed.stdout or "").strip()
+            raise RuntimeError(f"Codex CLI failed with exit code {completed.returncode}: {detail[-2000:]}")
+        if not response_path.exists():
+            raise RuntimeError("Codex CLI completed without producing a mapping plan")
+        text = response_path.read_text(encoding="utf-8")
+        return parse_mapping_plan_response(text), text
+
+
 def load_figure_table_key_map(output_root: Path, role: str) -> dict[tuple[str, str], dict[str, Any]]:
     path = output_root / "figure_table_key_map.csv"
     if not path.exists():
@@ -709,8 +957,18 @@ def observe_inputs(
     output_root: Path,
 ) -> dict[str, Any]:
     require_pandas()
-    expval_files = iter_candidate_files(expval_roots)
-    lnpdb_files = iter_candidate_files(lnpdb_roots, exclude_roots=expval_roots + [output_root])
+    expval_files = resolve_exp_source_files(expval_roots)
+    lnpdb_files, target_input_mode = resolve_single_paper_target_files(lnpdb_roots)
+    excluded = {
+        str(path.resolve()).lower()
+        for root in expval_roots + [output_root]
+        for path in ([root] if root.exists() else [])
+    }
+    lnpdb_files = [
+        path
+        for path in lnpdb_files
+        if str(path.resolve()).lower() not in excluded
+    ]
     inventory = []
 
     for role, files in [("expval", expval_files), ("lnpdb_like", lnpdb_files)]:
@@ -746,6 +1004,8 @@ def observe_inputs(
         "output_root": str(output_root),
         "expval_files_seen": len(expval_files),
         "lnpdb_files_seen": len(lnpdb_files),
+        "target_input_mode": target_input_mode,
+        "single_paper_run": True,
         "readable_files": sum(1 for row in inventory if row["readable"]),
         "unreadable_files": sum(1 for row in inventory if not row["readable"]),
     }
@@ -1058,23 +1318,33 @@ def normalize_lnpdb(output_root: Path) -> dict[str, Any]:
     files = read_inventory(output_root, "lnpdb_like")
     key_map = load_figure_table_key_map(output_root, "lnpdb_like")
     rows: list[dict[str, Any]] = []
+    combined_rows: list[dict[str, Any]] = []
     file_inventory: list[dict[str, Any]] = []
     seq = 0
+    combined_seq = 0
     for path in files:
         try:
             tables = read_table_file(path)
         except Exception as exc:
-            file_inventory.append({"source_file": str(path), "readable": False, "error": str(exc)})
+            file_inventory.append({"source_file": str(path), "readable": False, "sheet_count": "", "row_count": 0, "error": str(exc)})
             continue
-        file_inventory.append({"source_file": str(path), "readable": True, "sheet_count": len(tables), "error": ""})
+        file_row_count = 0
         for sheet, df in tables:
             mapped_key = map_key_for_sheet(key_map, path, sheet)
             records = dataframe_to_records(df)
             if not records:
                 continue
+            file_row_count += len(records)
             columns = list(records[0].keys())
             for idx, row in enumerate(records, start=2):
                 seq += 1
+                combined_seq += 1
+                combined_row = dict(row)
+                combined_row["__target_source_file"] = str(path)
+                combined_row["__target_source_sheet"] = sheet
+                combined_row["__target_source_row"] = idx
+                combined_row["__target_combined_row_id"] = f"TR{combined_seq:08d}"
+                combined_rows.append(combined_row)
                 figure_name = source_value(row, columns, ["figure_name", "Figure", "Fig", "Item_ID", "Item_ID", "Item"])
                 existing_value_col = find_exact_column(columns, EXPERIMENTAL_VALUE_COLUMN)
                 existing_value = safe_cell(row.get(existing_value_col)) if existing_value_col else ""
@@ -1117,9 +1387,37 @@ def normalize_lnpdb(output_root: Path) -> dict[str, Any]:
                         "raw_columns_json": json.dumps(row, ensure_ascii=False),
                     }
                 )
+        file_inventory.append(
+            {
+                "source_file": str(path),
+                "readable": True,
+                "sheet_count": len(tables),
+                "row_count": file_row_count,
+                "error": "",
+            }
+        )
+    write_csv(output_root / "combined_lnpdb_target.csv", combined_rows)
     write_csv(output_root / "normalized_lnpdb_rows.csv", rows, LNPDB_CANONICAL_COLUMNS)
-    write_csv(output_root / "lnpdb_file_inventory.csv", file_inventory)
-    return {"rows": len(rows), "files": len(files), "output": str(output_root / "normalized_lnpdb_rows.csv")}
+    write_csv(
+        output_root / "lnpdb_file_inventory.csv",
+        file_inventory,
+        ["source_file", "readable", "sheet_count", "row_count", "error"],
+    )
+    combine_report = {
+        "schema_version": 1,
+        "source_file_count": len(files),
+        "combined_row_count": len(combined_rows),
+        "combined_output": str(output_root / "combined_lnpdb_target.csv"),
+        "source_files": [str(path) for path in files],
+    }
+    write_json(output_root / "target_combine_report.json", combine_report)
+    return {
+        "rows": len(rows),
+        "files": len(files),
+        "combined_rows": len(combined_rows),
+        "combined_output": str(output_root / "combined_lnpdb_target.csv"),
+        "output": str(output_root / "normalized_lnpdb_rows.csv"),
+    }
 
 
 def label_values_for_expval(row: dict[str, Any]) -> list[str]:
@@ -1242,6 +1540,7 @@ def write_partition_outputs(
         ("expvals", expvals, "expval_id", EXPVAL_COLUMNS),
         ("lnpdb_like", lnpdb_rows, "lnpdb_row_id", LNPDB_CANONICAL_COLUMNS),
     ]:
+        clear_generated_csvs(output_root / "partitioned" / role)
         grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
         for row in rows:
             partition = row.get("partition_key") or make_partition_key(row.get("figure_key", ""))
@@ -1251,7 +1550,13 @@ def write_partition_outputs(
             figure_key = group_rows[0].get("figure_key", "")
             partition_dir = output_root / "partitioned" / role
             partition_path = partition_dir / f"{safe_path_component(figure_key or 'unknown_figure_table')}.csv"
-            write_csv(partition_path, group_rows, columns)
+            review_rows = []
+            for row in group_rows:
+                review_row = row_payload(row)
+                for helper_column in columns:
+                    review_row.setdefault(helper_column, safe_cell(row.get(helper_column, "")))
+                review_rows.append(review_row)
+            write_csv(partition_path, review_rows)
             inventory.append(
                 {
                     "role": role,
@@ -1276,125 +1581,221 @@ def write_partition_outputs(
     }
 
 
-def build_match_candidates(output_root: Path) -> dict[str, Any]:
+def build_partition_mapping_plans(
+    output_root: Path,
+    expvals: list[dict[str, Any]],
+    lnpdb_rows: list[dict[str, Any]],
+    provider: str = "heuristic",
+    model: str = "",
+) -> dict[str, dict[str, Any]]:
+    exp_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    target_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in expvals:
+        exp_by_partition[row.get("partition_key") or "unknown_figure_table"].append(row)
+    for row in lnpdb_rows:
+        target_by_partition[row.get("partition_key") or "unknown_figure_table"].append(row)
+
+    plans: dict[str, dict[str, Any]] = {}
+    summary_rows: list[dict[str, Any]] = []
+    review_rows: list[dict[str, Any]] = []
+    for partition_key in sorted(set(exp_by_partition) | set(target_by_partition)):
+        source_rows = exp_by_partition.get(partition_key, [])
+        target_rows = target_by_partition.get(partition_key, [])
+        if not source_rows or not target_rows:
+            plan = {
+                "partition_key": partition_key,
+                "source_value_column": "",
+                "target_value_column": "",
+                "relations": [],
+                "fixed_target_values": {},
+                "confidence": "low",
+                "needs_review": True,
+                "reason": "partition exists on only one side",
+                "method": "unpaired_partition",
+                "raw_llm_response": "",
+            }
+        else:
+            raw_response = ""
+            if provider == "codex":
+                try:
+                    llm_plan, raw_response = call_codex_mapping_planner(
+                        partition_mapping_prompt(partition_key, source_rows, target_rows),
+                        model,
+                    )
+                    plan = validate_mapping_plan(llm_plan, partition_key, source_rows, target_rows)
+                    method = f"codex:{model or 'default'}"
+                except Exception as exc:
+                    heuristic = heuristic_mapping_plan(partition_key, source_rows, target_rows)
+                    plan = validate_mapping_plan(heuristic, partition_key, source_rows, target_rows)
+                    plan["needs_review"] = True
+                    plan["reason"] = f"Codex mapping failed; heuristic fallback: {exc}"
+                    method = "heuristic_after_codex_failed"
+            else:
+                heuristic = heuristic_mapping_plan(partition_key, source_rows, target_rows)
+                plan = validate_mapping_plan(heuristic, partition_key, source_rows, target_rows)
+                method = "heuristic"
+            plan["method"] = method
+            plan["raw_llm_response"] = raw_response
+        plans[partition_key] = plan
+        summary = {
+            "partition_key": partition_key,
+            "source_rows": len(source_rows),
+            "target_rows": len(target_rows),
+            "source_value_column": plan.get("source_value_column", ""),
+            "target_value_column": plan.get("target_value_column", ""),
+            "relation_count": len(plan.get("relations", []) or []),
+            "confidence": plan.get("confidence", ""),
+            "method": plan.get("method", ""),
+            "needs_review": str(bool(plan.get("needs_review", False))).lower(),
+            "reason": plan.get("reason", ""),
+            "mapping_plan_json": json.dumps(plan, ensure_ascii=False),
+        }
+        summary_rows.append(summary)
+        if plan.get("needs_review"):
+            review_rows.append(summary)
+
+    write_json(output_root / "partition_mapping_rules.json", {"schema_version": 1, "partitions": plans})
+    summary_columns = [
+        "partition_key",
+        "source_rows",
+        "target_rows",
+        "source_value_column",
+        "target_value_column",
+        "relation_count",
+        "confidence",
+        "method",
+        "needs_review",
+        "reason",
+        "mapping_plan_json",
+    ]
+    write_csv(output_root / "partition_mapping_rules.csv", summary_rows, summary_columns)
+    write_csv(output_root / "partition_mapping_rules_review_flags.csv", review_rows, summary_columns)
+    return plans
+
+
+def build_match_candidates(
+    output_root: Path,
+    provider: str = "heuristic",
+    model: str = "",
+) -> dict[str, Any]:
     expvals = dataframe_to_records(read_csv_flexible(output_root / "normalized_expvals.csv"))
     lnpdb_rows = dataframe_to_records(read_csv_flexible(output_root / "normalized_lnpdb_rows.csv"))
     partition_report = write_partition_outputs(output_root, expvals, lnpdb_rows)
-    exp_by_item: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    exp_by_figure: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    plans = build_partition_mapping_plans(output_root, expvals, lnpdb_rows, provider, model)
+    exp_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    target_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in expvals:
-        key = compact_key(row.get("item_id") or row.get("figure_name"))
-        if key:
-            exp_by_item[key].append(row)
-        figure_key = compact_key(row.get("figure_key") or row.get("item_id") or row.get("figure_name"))
-        if figure_key:
-            exp_by_figure[figure_key].append(row)
+        exp_by_partition[row.get("partition_key") or "unknown_figure_table"].append(row)
+    for row in lnpdb_rows:
+        target_by_partition[row.get("partition_key") or "unknown_figure_table"].append(row)
 
     candidates: list[dict[str, Any]] = []
-    conflicts: list[dict[str, Any]] = []
-    accepted_expvals: set[str] = set()
-    accepted_lnpdb: set[str] = set()
     candidate_seq = 0
-    conflict_seq = 0
+    provisional_by_target: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for partition_key, source_rows in exp_by_partition.items():
+        target_rows = target_by_partition.get(partition_key, [])
+        plan = plans.get(partition_key, {})
+        source_value_column = plan.get("source_value_column", "")
+        target_value_column = plan.get("target_value_column", "")
+        if (
+            not target_rows
+            or plan.get("needs_review")
+            or not source_value_column
+            or not target_value_column
+            or not plan.get("relations")
+        ):
+            continue
+        for erow in source_rows:
+            matches: list[tuple[dict[str, Any], dict[str, Any]]] = []
+            for lrow in target_rows:
+                evaluation = evaluate_pair(erow, lrow, plan)
+                if evaluation.get("matched"):
+                    matches.append((lrow, evaluation))
+            for lrow, evaluation in matches:
+                target_payload = row_payload(lrow)
+                source_payload = row_payload(erow)
+                existing = safe_cell(target_payload.get(target_value_column, ""))
+                extracted = safe_cell(source_payload.get(source_value_column, ""))
+                conflict_reason = ""
+                accepted = len(matches) == 1
+                if len(matches) > 1:
+                    conflict_reason = "one source row matches multiple target rows under the mapping plan"
+                    accepted = False
+                elif existing:
+                    conflict_reason = f"target value column already filled: {target_value_column}"
+                    accepted = False
+                elif not extracted:
+                    conflict_reason = f"source value column is empty: {source_value_column}"
+                    accepted = False
+                elif plan.get("needs_review"):
+                    conflict_reason = "partition mapping plan requires review"
+                    accepted = False
+                candidate_seq += 1
+                candidate = {
+                    "candidate_id": f"MC{candidate_seq:08d}",
+                    "lnpdb_row_id": lrow.get("lnpdb_row_id", ""),
+                    "expval_id": erow.get("expval_id", ""),
+                    "match_tier": "partition_mapping_rule",
+                    "lnpdb_partition_key": lrow.get("partition_key", ""),
+                    "expval_partition_key": erow.get("partition_key", ""),
+                    "source_value_column": source_value_column,
+                    "target_value_column": target_value_column,
+                    "match_score": evaluation.get("score", 0),
+                    "match_confidence": plan.get("confidence", "low"),
+                    "matched_fields": "|".join(evaluation.get("matched_fields", [])),
+                    "match_reason": evaluation.get("reason", ""),
+                    "accepted": str(accepted).lower(),
+                    "manual_required": str(bool(plan.get("needs_review", False))).lower(),
+                    "conflict_reason": conflict_reason,
+                }
+                candidates.append(candidate)
+                if accepted:
+                    provisional_by_target[lrow.get("lnpdb_row_id", "")].append(candidate)
 
-    for lrow in lnpdb_rows:
-        lkey = compact_key(lrow.get("item_id") or lrow.get("figure_name"))
-        lfigure = compact_key(lrow.get("figure_key") or lrow.get("item_id") or lrow.get("figure_name"))
-        tier_pools: list[tuple[str, list[dict[str, Any]]]] = []
-        if lfigure:
-            tier_pools.append(("figure_partition", exp_by_figure.get(lfigure, [])))
-        if lkey and exp_by_item.get(lkey):
-            tier_pools.append(("item_id", exp_by_item.get(lkey, [])))
-        if lkey:
-            partial_pool = [
-                row
-                for ekey, item_rows in exp_by_item.items()
-                if ekey and (lkey in ekey or ekey in lkey)
-                for row in item_rows
-            ]
-            if partial_pool:
-                tier_pools.append(("item_id_partial", partial_pool))
-        tier_pools.append(("remaining_global", expvals))
+    for target_id, target_candidates in provisional_by_target.items():
+        if len(target_candidates) <= 1:
+            continue
+        for candidate in target_candidates:
+            candidate["accepted"] = "false"
+            candidate["manual_required"] = "true"
+            candidate["conflict_reason"] = "multiple source rows map to one target row"
 
-        scored = []
-        selected_tier = "remaining_global"
-        seen_pool_ids: set[str] = set()
-        for tier, pool in tier_pools:
-            if not pool:
-                continue
-            tier_scored = []
-            for erow in pool:
-                expval_id = erow.get("expval_id", "")
-                if expval_id in seen_pool_ids:
-                    continue
-                seen_pool_ids.add(expval_id)
-                score, fields, reason = score_candidate(lrow, erow)
-                if score <= 0:
-                    continue
-                tier_scored.append((score, fields, reason, erow))
-            if tier_scored:
-                scored = tier_scored
-                selected_tier = tier
-                break
-        scored.sort(key=lambda x: x[0], reverse=True)
-        top_score = scored[0][0] if scored else 0
-        top = [x for x in scored if x[0] == top_score and top_score >= 45]
-
-        for score, fields, reason, erow in scored[:10]:
-            candidate_seq += 1
-            existing = lrow.get("existing_value_text", "")
-            extracted = erow.get("value_text", "")
-            accepted = False
-            manual_required = score < 75
-            conflict_reason = ""
-            if score < 60:
-                conflict_reason = "score below automatic acceptance threshold"
-            elif len(top) > 1 and score == top_score:
-                conflict_reason = "multiple top extracted-value candidates"
-            elif existing:
-                conflict_reason = "target experimental_value already filled"
-            elif not extracted:
-                conflict_reason = "missing extracted value"
-            elif score == top_score:
-                accepted = True
-                manual_required = confidence_from_score(score) != "high"
-
-            candidate = {
-                "candidate_id": f"MC{candidate_seq:08d}",
-                "lnpdb_row_id": lrow.get("lnpdb_row_id", ""),
-                "expval_id": erow.get("expval_id", ""),
-                "match_tier": selected_tier,
-                "lnpdb_partition_key": lrow.get("partition_key", ""),
-                "expval_partition_key": erow.get("partition_key", ""),
-                "match_score": score,
-                "match_confidence": confidence_from_score(score),
-                "matched_fields": "|".join(fields),
-                "match_reason": reason,
-                "accepted": str(accepted).lower(),
-                "manual_required": str(manual_required).lower(),
-                "conflict_reason": conflict_reason,
+    accepted_expvals = {
+        row.get("expval_id", "")
+        for row in candidates
+        if row.get("accepted") == "true"
+    }
+    accepted_lnpdb = {
+        row.get("lnpdb_row_id", "")
+        for row in candidates
+        if row.get("accepted") == "true"
+    }
+    exp_lookup = {row.get("expval_id", ""): row for row in expvals}
+    target_lookup = {row.get("lnpdb_row_id", ""): row for row in lnpdb_rows}
+    conflicts = []
+    for conflict_seq, candidate in enumerate(
+        [row for row in candidates if row.get("conflict_reason")],
+        start=1,
+    ):
+        erow = exp_lookup.get(candidate.get("expval_id", ""), {})
+        lrow = target_lookup.get(candidate.get("lnpdb_row_id", ""), {})
+        source_payload = row_payload(erow)
+        target_payload = row_payload(lrow)
+        conflicts.append(
+            {
+                "conflict_id": f"CF{conflict_seq:08d}",
+                "lnpdb_row_id": candidate.get("lnpdb_row_id", ""),
+                "expval_id": candidate.get("expval_id", ""),
+                "conflict_type": "mapping_rule_conflict",
+                "conflict_reason": candidate.get("conflict_reason", ""),
+                "candidate_ids": candidate.get("candidate_id", ""),
+                "existing_value_text": target_payload.get(candidate.get("target_value_column", ""), ""),
+                "extracted_value_text": source_payload.get(candidate.get("source_value_column", ""), ""),
+                "existing_unit": lrow.get("existing_unit", ""),
+                "extracted_unit": erow.get("unit", ""),
+                "review_action": "review partition_mapping_rules.csv and value mappings",
             }
-            candidates.append(candidate)
-            if accepted:
-                accepted_expvals.add(erow.get("expval_id", ""))
-                accepted_lnpdb.add(lrow.get("lnpdb_row_id", ""))
-            elif conflict_reason and score >= 60:
-                conflict_seq += 1
-                conflicts.append(
-                    {
-                        "conflict_id": f"CF{conflict_seq:08d}",
-                        "lnpdb_row_id": lrow.get("lnpdb_row_id", ""),
-                        "expval_id": erow.get("expval_id", ""),
-                        "conflict_type": "candidate_conflict",
-                        "conflict_reason": conflict_reason,
-                        "candidate_ids": candidate["candidate_id"],
-                        "existing_value_text": lrow.get("existing_value_text", ""),
-                        "extracted_value_text": erow.get("value_text", ""),
-                        "existing_unit": lrow.get("existing_unit", ""),
-                        "extracted_unit": erow.get("unit", ""),
-                        "review_action": "manual review required",
-                    }
-                )
+        )
 
     unmatched_expvals = [
         {
@@ -1439,6 +1840,8 @@ def build_match_candidates(output_root: Path) -> dict[str, Any]:
             "match_tier",
             "lnpdb_partition_key",
             "expval_partition_key",
+            "source_value_column",
+            "target_value_column",
             "match_score",
             "match_confidence",
             "matched_fields",
@@ -1504,6 +1907,7 @@ def build_match_candidates(output_root: Path) -> dict[str, Any]:
         "unmatched_expvals": len(unmatched_expvals),
         "unmatched_lnpdb_rows": len(unmatched_lnpdb),
         "partition_report": partition_report,
+        "mapping_plans": len(plans),
     }
 
 
@@ -1511,59 +1915,134 @@ def merge_values(output_root: Path, mode: str = "fill_existing") -> dict[str, An
     if mode not in {"fill_existing", "long_expand"}:
         raise ValueError(f"Unsupported merge mode: {mode}")
     lnpdb_rows = dataframe_to_records(read_csv_flexible(output_root / "normalized_lnpdb_rows.csv"))
-    expvals = {row["expval_id"]: row for row in dataframe_to_records(read_csv_flexible(output_root / "normalized_expvals.csv"))}
+    expval_rows = dataframe_to_records(read_csv_flexible(output_root / "normalized_expvals.csv"))
+    expvals = {row["expval_id"]: row for row in expval_rows}
     candidates = dataframe_to_records(read_csv_flexible(output_root / "merge_candidates.csv"))
-    accepted_by_lnpdb: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    mapping_payload = load_json(output_root / "partition_mapping_rules.json", {})
+    mapping_plans = mapping_payload.get("partitions", {}) if isinstance(mapping_payload, dict) else {}
+    accepted_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in candidates:
         if str(row.get("accepted", "")).lower() == "true":
-            accepted_by_lnpdb[row.get("lnpdb_row_id", "")].append(row)
+            partition_key = row.get("expval_partition_key") or row.get("lnpdb_partition_key") or "unknown_figure_table"
+            accepted_by_partition[partition_key].append(row)
 
-    out_rows: list[dict[str, Any]] = []
+    row_order: list[str] = []
+    mutable_rows: dict[str, dict[str, Any]] = {}
     for lrow in lnpdb_rows:
         raw = json.loads(lrow.get("raw_columns_json") or "{}")
-        matches = accepted_by_lnpdb.get(lrow.get("lnpdb_row_id", ""), [])
-        if mode == "fill_existing" and len(matches) > 1:
-            matches = []
-        if not matches:
-            merged = dict(raw)
-            for col in MERGE_PROVENANCE_COLUMNS:
-                merged.setdefault(col, "")
-            merged.setdefault(EXPERIMENTAL_VALUE_COLUMN, "")
-            merged["lnpdb_row_id"] = lrow.get("lnpdb_row_id", "")
-            out_rows.append(merged)
-            continue
-        for match in matches:
-            erow = expvals.get(match.get("expval_id", ""), {})
-            merged = dict(raw)
-            extracted_value = erow.get("value_text", "")
-            target_col = find_exact_column(list(merged.keys()), EXPERIMENTAL_VALUE_COLUMN)
-            if target_col is None:
-                target_col = EXPERIMENTAL_VALUE_COLUMN
-                merged[target_col] = ""
-            inserted = False
-            if not safe_cell(merged.get(target_col)).strip():
-                merged[target_col] = extracted_value
-                inserted = True
-            merged["lnpdb_row_id"] = lrow.get("lnpdb_row_id", "")
-            merged["merged_experimental_value"] = extracted_value if inserted else ""
-            merged["expval_source_file"] = erow.get("source_file", "") if inserted else ""
-            merged["expval_source_sheet"] = erow.get("source_sheet", "") if inserted else ""
-            merged["expval_source_row"] = erow.get("source_row", "") if inserted else ""
-            merged["expval_source_table_type"] = erow.get("source_table_type", "") if inserted else ""
-            merged["expval_value_column"] = "value_text" if inserted else ""
-            merged["expval_value_text"] = extracted_value if inserted else ""
-            merged["expval_x_pixel"] = erow.get("x_pixel", "") if inserted else ""
-            merged["expval_y_pixel"] = erow.get("y_pixel", "") if inserted else ""
-            merged["expval_x_center"] = erow.get("x_center", "") if inserted else ""
-            merged["expval_y_center"] = erow.get("y_center", "") if inserted else ""
-            merged["expval_match_score"] = match.get("match_score", "") if inserted else ""
-            merged["expval_match_confidence"] = match.get("match_confidence", "") if inserted else ""
-            merged["expval_match_reason"] = match.get("match_reason", "") if inserted else ""
-            merged["expval_manual_required"] = match.get("manual_required", "") if inserted else ""
-            out_rows.append(merged)
+        merged = dict(raw)
+        for col in MERGE_PROVENANCE_COLUMNS:
+            merged.setdefault(col, "")
+        partition_plan = mapping_plans.get(lrow.get("partition_key", ""), {})
+        target_value_column = safe_cell(partition_plan.get("target_value_column", "")) or EXPERIMENTAL_VALUE_COLUMN
+        merged.setdefault(target_value_column, "")
+        row_id = lrow.get("lnpdb_row_id", "")
+        merged["lnpdb_row_id"] = row_id
+        row_order.append(row_id)
+        mutable_rows[row_id] = merged
 
+    source_partitions = sorted(
+        {row.get("partition_key") or "unknown_figure_table" for row in expval_rows},
+        key=natural_partition_sort_key,
+    )
+    progress_dir = output_root / "merge_progress"
+    clear_generated_csvs(progress_dir)
+    progress_rows: list[dict[str, Any]] = []
+    cumulative_inserted = 0
+
+    for step, partition_key in enumerate(source_partitions, start=1):
+        partition_candidates = accepted_by_partition.get(partition_key, [])
+        candidates_by_target: dict[str, list[dict[str, Any]]] = defaultdict(list)
+        for candidate in partition_candidates:
+            candidates_by_target[candidate.get("lnpdb_row_id", "")].append(candidate)
+        inserted_this_step = 0
+        for target_row_id, matches in candidates_by_target.items():
+            if mode == "fill_existing" and len(matches) > 1:
+                continue
+            merged = mutable_rows.get(target_row_id)
+            if merged is None:
+                continue
+            for match in matches:
+                erow = expvals.get(match.get("expval_id", ""), {})
+                source_value_column = safe_cell(match.get("source_value_column", "")) or "value_text"
+                target_value_column = safe_cell(match.get("target_value_column", "")) or EXPERIMENTAL_VALUE_COLUMN
+                extracted_value = row_payload(erow).get(source_value_column, "") or erow.get("value_text", "")
+                target_col = find_exact_column(list(merged.keys()), target_value_column)
+                if target_col is None:
+                    target_col = target_value_column
+                    merged[target_col] = ""
+                inserted = False
+                if not safe_cell(merged.get(target_col)).strip():
+                    merged[target_col] = extracted_value
+                    inserted = True
+                if not inserted:
+                    continue
+                inserted_this_step += 1
+                merged["merged_experimental_value"] = extracted_value
+                merged["expval_source_file"] = erow.get("source_file", "")
+                merged["expval_source_sheet"] = erow.get("source_sheet", "")
+                merged["expval_source_row"] = erow.get("source_row", "")
+                merged["expval_source_table_type"] = erow.get("source_table_type", "")
+                merged["expval_value_column"] = source_value_column
+                merged["expval_value_text"] = extracted_value
+                merged["expval_x_pixel"] = erow.get("x_pixel", "")
+                merged["expval_y_pixel"] = erow.get("y_pixel", "")
+                merged["expval_x_center"] = erow.get("x_center", "")
+                merged["expval_y_center"] = erow.get("y_center", "")
+                merged["expval_match_score"] = match.get("match_score", "")
+                merged["expval_match_confidence"] = match.get("match_confidence", "")
+                merged["expval_match_reason"] = match.get("match_reason", "")
+                merged["expval_manual_required"] = match.get("manual_required", "")
+                if mode == "fill_existing":
+                    break
+
+        cumulative_inserted += inserted_this_step
+        snapshot_rows = [mutable_rows[row_id] for row_id in row_order]
+        snapshot_name = f"{step:03d}_{safe_path_component(partition_key)}.csv"
+        snapshot_path = progress_dir / snapshot_name
+        write_csv(snapshot_path, snapshot_rows)
+        partition_source_files = sorted(
+            {
+                row.get("source_file", "")
+                for row in expval_rows
+                if (row.get("partition_key") or "unknown_figure_table") == partition_key
+            }
+        )
+        progress_rows.append(
+            {
+                "step": step,
+                "partition_key": partition_key,
+                "source_files": "|".join(partition_source_files),
+                "accepted_candidates": len(partition_candidates),
+                "inserted_this_step": inserted_this_step,
+                "cumulative_inserted": cumulative_inserted,
+                "snapshot_file": str(snapshot_path),
+            }
+        )
+
+    out_rows = [mutable_rows[row_id] for row_id in row_order]
+    write_csv(
+        output_root / "merge_progress_manifest.csv",
+        progress_rows,
+        [
+            "step",
+            "partition_key",
+            "source_files",
+            "accepted_candidates",
+            "inserted_this_step",
+            "cumulative_inserted",
+            "snapshot_file",
+        ],
+    )
     write_csv(output_root / "merged_lnpdb_like.csv", out_rows)
-    return {"merged_rows": len(out_rows), "output": str(output_root / "merged_lnpdb_like.csv"), "merge_mode": mode}
+    return {
+        "merged_rows": len(out_rows),
+        "inserted_values": cumulative_inserted,
+        "progress_steps": len(progress_rows),
+        "progress_manifest": str(output_root / "merge_progress_manifest.csv"),
+        "output": str(output_root / "merged_lnpdb_like.csv"),
+        "merge_mode": mode,
+    }
 
 
 def validate_outputs(output_root: Path, merge_mode: str = "fill_existing") -> tuple[bool, list[str], dict[str, Any]]:
@@ -1572,9 +2051,12 @@ def validate_outputs(output_root: Path, merge_mode: str = "fill_existing") -> tu
         "input_inventory.csv",
         "figure_table_key_map.csv",
         "normalized_expvals.csv",
+        "combined_lnpdb_target.csv",
         "normalized_lnpdb_rows.csv",
         "partition_inventory.csv",
+        "partition_mapping_rules.csv",
         "merge_candidates.csv",
+        "merge_progress_manifest.csv",
         "merged_lnpdb_like.csv",
     ]
     ok = True
@@ -1599,6 +2081,7 @@ def validate_outputs(output_root: Path, merge_mode: str = "fill_existing") -> tu
     conflicts_count = len(read_csv_flexible(output_root / "merge_conflicts.csv")) if (output_root / "merge_conflicts.csv").exists() else 0
     unmatched_expvals = len(read_csv_flexible(output_root / "merge_unmatched_expvals.csv")) if (output_root / "merge_unmatched_expvals.csv").exists() else 0
     unmatched_lnpdb = len(read_csv_flexible(output_root / "merge_unmatched_lnpdb_rows.csv")) if (output_root / "merge_unmatched_lnpdb_rows.csv").exists() else 0
+    progress_steps = len(read_csv_flexible(output_root / "merge_progress_manifest.csv")) if (output_root / "merge_progress_manifest.csv").exists() else 0
 
     flags = []
     flag_seq = 0
@@ -1636,6 +2119,7 @@ def validate_outputs(output_root: Path, merge_mode: str = "fill_existing") -> tu
         "unmatched_expval_rows": unmatched_expvals,
         "unmatched_lnpdb_rows": unmatched_lnpdb,
         "manual_required_rows": len(flags),
+        "merge_progress_steps": progress_steps,
         "output_files": [str(p) for p in output_root.rglob("*") if p.is_file()],
         "warnings": [m for m in messages if "missing" in m or "failed" in m],
     }
@@ -1663,7 +2147,11 @@ def run_stage(stage: str, args: argparse.Namespace, config: dict[str, Any]) -> d
         elif stage == "03_normalize_lnpdb":
             result = normalize_lnpdb(output_root)
         elif stage == "04_build_match_candidates":
-            result = build_match_candidates(output_root)
+            result = build_match_candidates(
+                output_root,
+                llm_provider_from_args(args, config),
+                llm_model_from_args(args, config),
+            )
         elif stage == "05_merge_values":
             result = merge_values(output_root, getattr(args, "mode", "fill_existing"))
         elif stage == "06_validate_merge":
@@ -1700,7 +2188,9 @@ def run_all(args: argparse.Namespace, config: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Local merge runner with optional LLM-based figure/table key classification.")
+    parser = argparse.ArgumentParser(
+        description="Local merge runner with figure/table partitioning and optional LLM-generated schema/value mapping plans."
+    )
     parser.add_argument("--config", default=str(DEFAULT_CONFIG), help="Path to merge_manifest.json.")
     sub = parser.add_subparsers(dest="command", required=True)
 

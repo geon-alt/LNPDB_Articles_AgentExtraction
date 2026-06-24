@@ -5,7 +5,9 @@ This workspace is for building and operating a local CLI with optional LLM-based
 1. Figure/image-extracted experimental value tables.
 2. User-curated LNPDB-like tables.
 
-The purpose is to insert extracted experimental values into the LNPDB-like rows using both table metadata and extracted image table metadata.
+The purpose is to insert extracted experimental values into one paper-level LNPDB-like target table using both target table metadata and extracted image table metadata.
+
+One run has one logical target: a single CSV/Excel file or a folder of target Excel files that must be combined. Experimental-value sources are multiple figure/table CSV files and should remain separate until partition matching.
 
 ## Agent Role
 
@@ -28,15 +30,18 @@ Before implementing or running the merge CLI, read:
 
 - Do not modify original extracted-value files.
 - Do not modify original LNPDB-like files.
+- Treat each run as one paper with one logical target table.
+- If the target input is a folder, combine its Excel files into `combined_lnpdb_target.csv`.
 - Always write outputs to a separate output directory.
 - Always keep provenance columns for every inserted value.
 - Do not match rows using numeric values alone.
 - Do not overwrite an existing non-empty LNPDB-like value unless the old and new values are equivalent after numeric normalization.
-- Treat `experimental_value` as the only fillable target value column.
-- Use all other non-empty target row cells as flexible matching context, regardless of their column names.
+- Select one source value column and one target value column per figure/table partition before row matching.
+- Map source and target columns using column meaning and observed values, including many-to-one and one-to-many column relationships.
 - If a row has multiple plausible matches, do not choose silently; write it to conflict/review output.
 - If a value cannot be traced to `source_file`, `source_sheet`, and source row, do not insert it.
 - Preserve all original LNPDB-like columns in output.
+- Save cumulative merge snapshots after each source figure/table partition.
 - Tolerate extra columns in both input file types.
 - Prefer deterministic matching. Fuzzy matching is allowed only as a last step and must be logged with confidence and reason.
 - Do not use Gemini, Vertex, OpenAI API, web APIs, or credential-based services for this merge workflow.

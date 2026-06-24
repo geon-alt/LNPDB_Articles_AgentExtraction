@@ -5,7 +5,7 @@
 Check:
 
 - `F:\내 드라이브\LNPDB_update_1\Supplementrays\expvals`
-- supported extensions: `.csv`, `.xlsx`, `.xlsm`, `.xls`
+- supported source extension: `.csv`
 - file permissions and synced-drive availability
 
 Action:
@@ -17,14 +17,13 @@ Action:
 
 Check:
 
-- `F:\내 드라이브\LNPDB_update_1\Supplementrays`
-- `F:\내 드라이브\LNPDB_update_1\Source_head_tail_separated_f`
-- `F:\내 드라이브\LNPDB_update_1\Source_DOI_added_f`
+- exactly one `--lnpdb-root` is supplied
+- the target root is a CSV/Excel file or a folder containing Excel files
 
 Action:
 
-- Confirm whether output files are nested more deeply.
-- Exclude extracted-value output folders from LNPDB-like search if needed.
+- If using a target folder, confirm it contains `.xlsx`, `.xlsm`, or `.xls` files.
+- If using a CSV target, pass the CSV file directly rather than its folder.
 
 ## Excel Sheet Cannot Be Read
 

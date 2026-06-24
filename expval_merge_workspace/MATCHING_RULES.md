@@ -28,27 +28,41 @@ figure_key
 partition_key = figure_key
 ```
 
-Match order:
-
-```text
-same figure_key/table_key
-same item_id
-item_id partial match
-remaining global fallback
-```
+Rows may be matched only inside the same figure/table partition. A cross-partition global fallback is not allowed.
 
 `paper_key`, DOI, and paper title are not used to split or score rows. The CLI assumes all supplied inputs for a run belong to the same paper.
 
 The CLI must write these grouped rows under `partitioned/` and list them in `partition_inventory.csv`.
 
-### Tier 1: Explicit Identifier Match
+### Tier 1: Partition Schema and Value Mapping
+
+For each figure/table partition, inspect the original source and target columns and their observed unique values.
+
+The mapping plan must select:
+
+- the source experimental-value column
+- the target column that receives the experimental value
+- source-to-target column relations
+- explicit categorical value mappings when labels differ
+- fixed target values when a target-side constant is supported by the data
+
+Relations may be:
+
+- one source column to one target column
+- multiple source columns to one target column
+- one source column to multiple target columns
+- multiple source columns to multiple target columns
+
+The LLM may create the mapping plan, but row assignment must apply the saved plan deterministically. Do not call the LLM once per row pair.
+
+### Tier 2: Explicit Identifier Match
 
 Accept when these fields agree:
 
 - same `Item_ID`, `figure_name`, table label, or normalized figure/table/panel ID
 - same formulation/group/condition or only one possible extracted value exists for the item
 
-### Tier 2: Figure/Panel + Label Match
+### Tier 3: Figure/Panel + Label Match
 
 Accept when:
 
@@ -56,7 +70,7 @@ Accept when:
 - extracted `X_Label`, `Group`, `row_label`, or `col_label` maps to LNPDB-like formulation, group, metric, or condition fields
 - only one candidate remains after filtering
 
-### Tier 3: File/Sheet Context Match
+### Tier 4: File/Sheet Context Match
 
 Accept with medium confidence when:
 
@@ -64,7 +78,7 @@ Accept with medium confidence when:
 - label/group context is consistent
 - no stronger match is available
 
-### Tier 4: Conservative Fuzzy Match
+### Tier 5: Conservative Fuzzy Match
 
 Allowed only when:
 
@@ -77,7 +91,7 @@ Do not use fuzzy matching to resolve scientific ambiguity.
 
 ## Fields Used For Matching
 
-The target value column is strict, but all other target columns are flexible matching context.
+The selected target value column is excluded from matching. Other source and target columns may participate through the partition mapping plan.
 
 Extracted-value side:
 
@@ -118,17 +132,13 @@ source_sheet
 
 In addition to the named fields above, every non-empty original LNPDB-like cell except `experimental_value` should be available as match context. This allows target files with different column names to match when the values themselves contain figure IDs, formulation names, group names, treatment names, model names, condition labels, or metric labels.
 
-## Value Column
+## Value Columns
 
-The CLI may insert extracted values into one target column only:
+The partition mapping plan must explicitly select both `source_value_column` and `target_value_column`.
 
-```text
-experimental_value
-```
+`experimental_value` remains the preferred target default, but an existing equivalent target column such as `Experiment_value` may be selected when supported by the target schema. Never infer the destination independently for each row.
 
-If `experimental_value` does not exist in the LNPDB-like input, the merged output may create it. Other value-like columns such as `original_values`, `aggregated_value`, `Value`, or `value` must not be filled by this merge workflow.
-
-Rows are eligible for insertion only when `experimental_value` is blank after trimming whitespace. If `experimental_value` already has a non-empty value, do not overwrite it and do not write extracted-value provenance into that row.
+Rows are eligible for insertion only when the selected target value column is blank after trimming whitespace.
 
 Always add provenance columns:
 

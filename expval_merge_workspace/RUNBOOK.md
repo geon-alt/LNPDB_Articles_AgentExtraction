@@ -20,9 +20,7 @@ Default paths:
 ```bash
 python Expval_Merge_Runner.py observe ^
   --expval-root "F:\내 드라이브\LNPDB_update_1\Supplementrays\expvals" ^
-  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\Supplementrays" ^
-  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\Source_head_tail_separated_f" ^
-  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\Source_DOI_added_f" ^
+  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\paper_target.xlsx" ^
   --output-root "F:\내 드라이브\LNPDB_update_1\expval_merge_outputs"
 ```
 
@@ -30,6 +28,8 @@ Expected output:
 
 - `input_inventory.csv`
 - `observe_report.json`
+
+Use exactly one `--lnpdb-root`. It may be a target CSV/Excel file or a folder of target Excel files.
 
 ## 3. Build Figure/Table Key Map
 
@@ -66,6 +66,8 @@ python Expval_Merge_Runner.py normalize-lnpdb --config expval_merge_workspace/me
 
 Check:
 
+- `combined_lnpdb_target.csv`
+- `target_combine_report.json`
 - `normalized_expvals.csv`
 - `normalized_lnpdb_rows.csv`
 - warnings files
@@ -81,12 +83,16 @@ Review:
 - `partition_inventory.csv`
 - `partitioned/expvals/...`
 - `partitioned/lnpdb_like/...`
+- `partition_mapping_rules.csv`
+- `partition_mapping_rules_review_flags.csv`
 - `merge_candidates.csv`
 - `merge_conflicts.csv`
 - `merge_unmatched_expvals.csv`
 - `merge_unmatched_lnpdb_rows.csv`
 
 Do not proceed if high-severity conflicts are unexpected.
+
+The mapping stage selects the source and target value columns, links source/target columns, and maps differing categorical values. Review plans that combine or split columns before merging.
 
 ## 6. Merge
 
@@ -113,6 +119,7 @@ Expected:
 - `merge_qc_report.json`
 - `merge_review_flags.csv`
 - merged output file parses
+- `merge_progress_manifest.csv` lists cumulative figure/table snapshots
 
 ## 8. Human Review
 

@@ -4,16 +4,14 @@ This document defines the intended stages for a future `expval-merge` CLI.
 
 ## CLI Purpose
 
-Merge extracted experimental values from image-derived CSV/Excel files into LNPDB-like tables while preserving all original table metadata and recording full provenance.
+Merge extracted experimental values from figure/table CSV/Excel source files into one paper-level LNPDB-like target table while preserving all original target metadata and recording full provenance.
 
 ## Default Command Shape
 
 ```bash
 python Expval_Merge_Runner.py observe ^
   --expval-root "F:\내 드라이브\LNPDB_update_1\Supplementrays\expvals" ^
-  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\Supplementrays" ^
-  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\Source_head_tail_separated_f" ^
-  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\Source_DOI_added_f" ^
+  --lnpdb-root "F:\내 드라이브\LNPDB_update_1\paper_target.xlsx" ^
   --output-root "F:\내 드라이브\LNPDB_update_1\expval_merge_outputs"
 ```
 
@@ -27,8 +25,8 @@ Purpose: Inventory all candidate extracted-value files and LNPDB-like files.
 
 Inputs:
 
-- extracted-value root
-- one or more LNPDB-like search roots
+- extracted-value source root containing figure/table CSV files
+- one LNPDB-like target path: a single CSV/Excel file or one folder of Excel files
 
 Outputs:
 
@@ -39,6 +37,8 @@ Validation:
 
 - At least one extracted-value file is found.
 - At least one LNPDB-like file is found.
+- Exactly one LNPDB-like target root is supplied.
+- If the target root is a folder, only Excel files are combined into the target.
 - Each file has readable extension: `.csv`, `.xlsx`, `.xlsm`, `.xls`.
 
 ### 01_build_figure_table_key_map
@@ -86,10 +86,12 @@ Purpose: Read LNPDB-like tables and preserve all original columns while adding m
 
 Inputs:
 
-- LNPDB-like files under the configured roots
+- the single logical LNPDB-like target, possibly assembled from multiple Excel files in one folder
 
 Outputs:
 
+- `combined_lnpdb_target.csv`
+- `target_combine_report.json`
 - `normalized_lnpdb_rows.csv`
 - `lnpdb_file_inventory.csv`
 
@@ -97,6 +99,7 @@ Validation:
 
 - Original row order and source file/sheet/row provenance are preserved.
 - Original columns are not dropped.
+- Multiple target Excel files from one folder are treated as one logical target table.
 
 ### 04_build_match_candidates
 
@@ -109,6 +112,9 @@ Inputs:
 
 Outputs:
 
+- `partition_mapping_rules.json`
+- `partition_mapping_rules.csv`
+- `partition_mapping_rules_review_flags.csv`
 - `merge_candidates.csv`
 - `merge_conflicts.csv`
 - `merge_unmatched_expvals.csv`
@@ -116,6 +122,9 @@ Outputs:
 
 Validation:
 
+- Every paired figure/table partition has a reusable schema/value mapping plan.
+- The plan selects source and target value columns.
+- The plan supports one-to-one, many-to-one, and one-to-many column relationships.
 - Candidate rows include match score, matched fields, and reason.
 - Conflicts are separated from accepted one-to-one matches.
 
@@ -132,6 +141,8 @@ Inputs:
 Outputs:
 
 - `merged_lnpdb_like.csv`
+- `merge_progress_manifest.csv`
+- `merge_progress/*.csv`
 - optional per-source-file merged workbooks/csv files
 
 Validation:
@@ -139,6 +150,7 @@ Validation:
 - All original LNPDB-like columns are present.
 - Inserted values have provenance columns.
 - Existing conflicting values are not overwritten silently.
+- Cumulative intermediate outputs are written after each source figure/table partition is applied.
 
 ### 06_validate_merge
 

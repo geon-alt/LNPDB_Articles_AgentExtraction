@@ -21,6 +21,29 @@ error
 - `expval`
 - `lnpdb_like`
 
+For `lnpdb_like`, a valid one-paper run has either one target file row or multiple Excel file rows from one target folder.
+
+## `combined_lnpdb_target.csv`
+
+The logical target table for the paper.
+
+Behavior:
+
+- written for both single-file and Excel-folder target inputs
+- preserves all original target columns
+- adds target provenance helper columns:
+
+```text
+__target_source_file
+__target_source_sheet
+__target_source_row
+__target_combined_row_id
+```
+
+## `target_combine_report.json`
+
+Summary of target files and combined row count.
+
 ## `normalized_expvals.csv`
 
 Required columns are listed in `INPUT_SCHEMA.md` under canonical extracted-value columns.
@@ -91,6 +114,29 @@ partitioned/expvals/<figure_or_table_key>.csv
 partitioned/lnpdb_like/<figure_or_table_key>.csv
 ```
 
+Partition CSVs include the original input columns plus canonical provenance/helper columns.
+
+## `partition_mapping_rules.json`
+
+One reusable schema/value mapping plan per figure/table partition:
+
+```text
+source_value_column
+target_value_column
+relations
+fixed_target_values
+confidence
+needs_review
+reason
+method
+```
+
+Each relation can connect one or more source columns to one or more target columns and can contain explicit source/target value tuples.
+
+## `partition_mapping_rules.csv`
+
+Human-readable mapping-plan summary with the complete plan in `mapping_plan_json`.
+
 ## `merge_candidates.csv`
 
 Columns:
@@ -102,6 +148,8 @@ expval_id
 match_tier
 lnpdb_partition_key
 expval_partition_key
+source_value_column
+target_value_column
 match_score
 match_confidence
 matched_fields
@@ -122,8 +170,8 @@ Required behavior:
 
 - Preserve all original LNPDB-like columns.
 - Add the provenance columns from `MATCHING_RULES.md`.
-- Insert values only into `experimental_value`.
-- Fill only rows where `experimental_value` is blank.
+- Insert values only into the partition plan's selected `target_value_column`.
+- Fill only rows where that selected target value column is blank.
 - Do not fill `original_values`, `aggregated_value`, `Value`, `value`, or other value-like columns.
 - Preserve original row identity through `lnpdb_row_id`.
 
@@ -150,6 +198,36 @@ expval_manual_required
 ```
 
 If an existing value column is filled, `merged_experimental_value` may mirror that value for audit.
+
+## `merge_progress_manifest.csv`
+
+One row per source figure/table partition in merge order.
+
+Columns:
+
+```text
+step
+partition_key
+source_files
+accepted_candidates
+inserted_this_step
+cumulative_inserted
+snapshot_file
+```
+
+## `merge_progress/<step>_<figure_or_table_key>.csv`
+
+Cumulative intermediate target table after applying one figure/table source partition.
+
+Example:
+
+```text
+merge_progress/001_figure_1.csv
+merge_progress/002_figure_2.csv
+merge_progress/003_figure_3.csv
+```
+
+These files are intended to verify that experimental values are progressively filled figure by figure.
 
 ## `merge_conflicts.csv`
 

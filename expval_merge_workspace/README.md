@@ -1,20 +1,19 @@
 # Experimental Value Merge Workspace
 
-This workspace defines the rules for a future CLI that merges figure/image-extracted experimental values into LNPDB-like tables.
+This workspace defines a CLI that merges figure/image-extracted experimental values into LNPDB-like tables.
 
 It is separate from `agent_workspace` because this is not the article extraction pipeline itself. It is a downstream curation/merge workflow.
 
 ## Default Input Roots
 
-Extracted image value files:
+Extracted image value files. These are figure/table-specific CSV/Excel source files and are not combined into one source table:
 
 - `F:\내 드라이브\LNPDB_update_1\Supplementrays\expvals`
 
-LNPDB-like table search roots:
+LNPDB-like target. A run is for one paper and therefore uses one logical target table:
 
-- `F:\내 드라이브\LNPDB_update_1\Supplementrays`
-- `F:\내 드라이브\LNPDB_update_1\Source_head_tail_separated_f`
-- `F:\내 드라이브\LNPDB_update_1\Source_DOI_added_f`
+- one CSV/Excel file, or
+- one folder containing Excel files to be combined into one target table
 
 ## Documents
 
@@ -29,4 +28,4 @@ LNPDB-like table search roots:
 
 ## Core Principle
 
-Never overwrite source spreadsheets. The CLI must create a merged copy, normalized intermediate tables, and review reports so every inserted value can be audited back to its extracted image table row.
+Never overwrite source spreadsheets. The CLI creates a combined target copy, figure/table partitions, a reusable source-target schema/value mapping plan for each partition, deterministic row matches, per-figure cumulative merge snapshots, a final merged copy, and review reports.

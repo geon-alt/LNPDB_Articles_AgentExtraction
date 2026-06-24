@@ -1,3 +1,5 @@
 __pycache__/
 */__pycache__/
 *.pyc
+expval_merge_workspace/merge_state.json
+expval_merge_workspace/logs/

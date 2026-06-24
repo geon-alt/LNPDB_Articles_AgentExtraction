@@ -1,6 +1,17 @@
 # Input Schema
 
-The CLI must accept heterogeneous CSV/Excel files and normalize them into canonical forms.
+The CLI accepts one paper at a time and normalizes heterogeneous tables into canonical forms.
+
+## Per-Paper Input Contract
+
+One run represents one paper.
+
+Inputs:
+
+- one LNPDB-like target: either a single CSV/Excel file or one folder of Excel files
+- multiple experimental-value source CSV/Excel files split by figure/table
+
+When the target input is a folder, only Excel files under that folder are treated as target files and combined into one logical target table. Experimental-value source files remain separate and are partitioned by their inferred figure/table keys.
 
 ## Extracted Image Value Tables
 
@@ -8,7 +19,7 @@ Expected source root:
 
 - `F:\내 드라이브\LNPDB_update_1\Supplementrays\expvals`
 
-Accepted extensions:
+Accepted source extensions:
 
 - `.csv`
 - `.xlsx`
@@ -148,13 +159,7 @@ Rules:
 - `paper_key` is retained only as a compatibility/provenance column and is not used for matching.
 - If `figure_name` is absent, preserve blank and rely on file/sheet/path inference later.
 
-## LNPDB-Like Tables
-
-Expected search roots:
-
-- `F:\내 드라이브\LNPDB_update_1\Supplementrays`
-- `F:\내 드라이브\LNPDB_update_1\Source_head_tail_separated_f`
-- `F:\내 드라이브\LNPDB_update_1\Source_DOI_added_f`
+## LNPDB-Like Target
 
 Accepted extensions:
 
@@ -162,6 +167,12 @@ Accepted extensions:
 - `.xlsx`
 - `.xlsm`
 - `.xls`
+
+Folder target behavior:
+
+- recursively find Excel files only
+- combine all sheets from all target Excel files into `combined_lnpdb_target.csv`
+- preserve source file, sheet, and row provenance for every combined target row
 
 ### LNPDB-Like Required Handling
 
@@ -235,6 +246,6 @@ existing_unit
 raw_columns_json
 ```
 
-`existing_value_text` must be read from `experimental_value` only. Other value-like columns may be preserved as original metadata, but they must not control whether the row is fillable.
+`existing_value_text` remains a canonical compatibility field read from `experimental_value`. Actual fill eligibility is checked against the partition mapping plan's selected `target_value_column`.
 
 Original columns must remain available in the merged output.

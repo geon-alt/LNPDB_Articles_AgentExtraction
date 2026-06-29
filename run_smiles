@@ -1,0 +1,34 @@
+cd "C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction"
+
+$PAPER = "C:\LNPDB_WORK\QS_2026_3"
+$LNPDB = "F:\내 드라이브\LNPDB_originalPLUSupdates.xlsx"
+$CMD = 'cmd /c codex exec --dangerously-bypass-approvals-and-sandbox --cd "{paper_folder}"'
+
+python SMILES_Extraction\run_smiles_text_agent.py `
+  --paper-folder "$PAPER" `
+  --agent custom `
+  --agent-command "$CMD" `
+  --lnpdb-db "$LNPDB" `
+  --output-dir "$PAPER\SMILES_Extraction_Results" `
+  --stream-agent-output
+
+Import-Csv "$PAPER\smiles_text_source_manifest.csv" |
+  Select-Object source_id,pdf_name,md_path,source_role |
+  Format-Table -AutoSize
+
+
+  Image-only
+cd "C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction"
+
+$PAPER = "C:\LNPDB_WORK\QS_2026_3"
+$MOLPY = "C:\Users\kogun\anaconda3\envs\mol_annotator_win\python.exe"
+$CMD = 'cmd /c codex exec --dangerously-bypass-approvals-and-sandbox --cd "{paper_folder}"'
+
+python SMILES_Extraction\run_smiles_image_agent.py `
+  --paper-folder "$PAPER" `
+  --agent custom `
+  --agent-command "$CMD" `
+  --mol-venv-python "$MOLPY" `
+  --mapping-json "$PAPER\total_figure_mapping.json" `
+  --output-dir "$PAPER\SMILES_Extraction_Results" `
+  --stream-agent-output

@@ -1,21 +1,37 @@
-$PAPER="F:\내 드라이브\EXTRACT-TEST\QS_2026"
+$PAPER = "F:\내 드라이브\EXTRACT-TEST\QS_2026_3"
 
-$CMD='cmd /c codex exec --cd "C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction" --dangerously-bypass-approvals-and-sandbox --add-dir "{paper_folder}" -'
+$CMD = 'cmd /c codex exec --cd "C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction" --dangerously-bypass-approvals-and-sandbox --add-dir "{paper_folder}" -'
 
-$RunnerArgs=@(
+# 06에서 사용할 기존 LNPDB / 컬럼-값 설명 reference
+$env:LNPDB_REFERENCE_ROOT = "F:\내 드라이브\LNPDB (1).csv"
+$env:LNPDB_REFERENCE_ROOT = "F:\내 드라이브\LNPDB_originalPLUSupdates.xlsx"
+$env:LNPDB_COLUMN_GUIDE_ROOT = "F:\내 드라이브\LNPDB_new\column_guides" # 하고 넣기
+
+# reference 확인, 선택 사항이지만 추천
+$InspectArgs = @(
+  "inspect-reference",
+  "--paper-folder", $PAPER,
+  "--output-json", "agent_workspace\tasks\06_reference_context_QS_2026_debug.json"
+)
+
+python Agent_Task_Runner.py @InspectArgs
+
+# 전체 active workflow 실행
+$RunnerArgs = @(
   "run-agent-active",
   "--paper-folder", $PAPER,
   "--agent", "custom",
   "--agent-command", $CMD,
-  "--stages", "03_split_excel_blocks_batch",
-  "--no-skip-valid",
-  "--max-agent-retries", "1"
+  "--stages",
+    "03_figure_mapping",
+    "03_split_excel_blocks_batch",
+    "04_figure_separate",
+    "04_ft_excel_matcher",
+    "05_smiles_structure_resolution",
+    "06_unified_lnpdb_extraction",
+    "07_finalize_unified_table",
+  "--max-agent-retries", "1",
+  "--stream-agent-output"
 )
 
 python Agent_Task_Runner.py @RunnerArgs
-
-python Agent_Task_Runner.py run-agent-active `
-  --paper-folder "$PAPER" `
-  --agent custom `
-  --agent-command $CMD `
-  --max-agent-retries 1

@@ -44,6 +44,24 @@ LOG_DIR = WORKSPACE / "logs"
 SUPPORTED_EXTENSIONS = {".csv", ".xlsx", ".xlsm", ".xls"}
 EXCEL_EXTENSIONS = {".xlsx", ".xlsm", ".xls"}
 REFERENCE_EXTENSIONS = {".md", ".markdown", ".txt", ".pdf"}
+REFERENCE_CONTEXT_EXTENSIONS = {".csv", ".tsv", ".xlsx", ".xlsm", ".xls", ".txt", ".md", ".markdown", ".json"}
+TEXT_REFERENCE_EXTENSIONS = {".txt", ".md", ".markdown"}
+JSON_REFERENCE_EXTENSIONS = {".json"}
+TABULAR_REFERENCE_EXTENSIONS = {".csv", ".tsv", ".xlsx", ".xlsm", ".xls"}
+TEXT_ENCODINGS = ("utf-8-sig", "utf-8", "cp949", "latin-1")
+SKIP_REFERENCE_DIR_NAMES = {
+    ".git",
+    "__pycache__",
+    ".pytest_cache",
+    ".mypy_cache",
+    "node_modules",
+    "outputs",
+    "output",
+    "logs",
+    "cache",
+    "tmp",
+    "temp",
+}
 
 STAGE_ORDER = [
     "00_observe_inputs",
@@ -109,6 +127,46 @@ LNPDB_CANONICAL_COLUMNS = [
     "existing_value_text",
     "existing_unit",
     "raw_columns_json",
+]
+
+REFERENCE_TARGET_COLUMNS = [
+    "Aqueous_buffer",
+    "Dialysis_buffer",
+    "Mixing_method",
+    "Model",
+    "Model_type",
+    "Model_target",
+    "Route_of_administration",
+    "Cargo",
+    "Cargo_type",
+    "Dose_ug_nucleicacid",
+    "Experiment_method",
+    "Experiment_batching",
+    "formulation_id",
+    "Formulation_Name",
+    "formulation_name",
+    "IL_name",
+    "IL_SMILES",
+    "IL_molarratio",
+    "HL_name",
+    "HL_SMILES",
+    "HL_molarratio",
+    "CHL_name",
+    "CHL_SMILES",
+    "CHL_molarratio",
+    "PEG_name",
+    "PEG_SMILES",
+    "PEG_molarratio",
+    "Fifth_component_name",
+    "Fifth_component_SMILES",
+    "Fifth_component_molarratio",
+    "IL_to_nucleicacid_massratio",
+    "metric_type",
+    "unit",
+    "replicate_type",
+    "group_label",
+    "condition_text",
+    "existing_unit",
 ]
 
 MERGE_PROVENANCE_COLUMNS = [
@@ -249,6 +307,10 @@ def resolve_codex_command() -> str:
 
 def reference_roots_from_args(args: argparse.Namespace, config: dict[str, Any]) -> list[Path]:
     return resolve_roots(getattr(args, "reference_root", None), config.get("default_reference_roots"))
+
+
+def column_guide_roots_from_args(args: argparse.Namespace, config: dict[str, Any]) -> list[Path]:
+    return resolve_roots(getattr(args, "column_guide_root", None), config.get("default_column_guide_roots"))
 
 
 def normalize_text(value: Any) -> str:
@@ -628,8 +690,8 @@ def build_sheet_context(role: str, source_file: Path, source_sheet: str, df: Any
     }
 
 
-def figure_table_prompt(context: dict[str, Any]) -> dict[str, Any]:
-    return {
+def figure_table_prompt(context: dict[str, Any], reference_context: dict[str, Any] | None = None) -> dict[str, Any]:
+    prompt = {
         "task": "Infer the single figure/table key for this extracted-value or LNPDB-like table block.",
         "rules": [
             "Return one canonical key such as 'figure 2b', 'supplementary figure 12a', 'table 1', or 'supplementary table 3'.",
@@ -647,6 +709,15 @@ def figure_table_prompt(context: dict[str, Any]) -> dict[str, Any]:
         },
         "context": context,
     }
+    if reference_context:
+        prompt["lnpdb_reference_context"] = render_reference_context_for_prompt(reference_context)
+        prompt["rules"].extend(
+            [
+                "Use lnpdb_reference_context only as schema/value guidance; paper/table evidence remains primary for figure/table key inference.",
+                "Human-curated definitions in lnpdb_reference_context outrank frequency examples.",
+            ]
+        )
+    return prompt
 
 
 def parse_llm_key_response(text: str) -> dict[str, Any]:
@@ -774,7 +845,8 @@ def partition_mapping_prompt(
     partition_key: str,
     source_rows: list[dict[str, Any]],
     target_rows: list[dict[str, Any]],
-    reference_context: dict[str, Any] | None = None,
+    partition_reference_context: dict[str, Any] | None = None,
+    lnpdb_reference_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     prompt = {
         "task": "Create a reusable row-matching plan between one source experimental-value table and one target table.",
@@ -825,14 +897,24 @@ def partition_mapping_prompt(
         "source": schema_summary(source_rows),
         "target": schema_summary(target_rows),
     }
-    if reference_context:
-        prompt["reference_context"] = reference_context
+    if lnpdb_reference_context:
+        prompt["lnpdb_reference_context"] = render_reference_context_for_prompt(lnpdb_reference_context)
         prompt["rules"].extend(
             [
-                "When reference_context is present, read the reference_documents as the paper-level context before revising the mapping strategy.",
+                "Use lnpdb_reference_context for schema/value guidance when deciding target field normalization and value assignment/merge strategy.",
+                "Existing LNPDB values in lnpdb_reference_context are examples, not a closed vocabulary.",
+                "Human-curated definitions in lnpdb_reference_context are higher priority than frequency examples.",
+                "LNPDB target fields should be normalized concise scalar values; do not copy full source prose into LNPDB fields.",
+            ]
+        )
+    if partition_reference_context:
+        prompt["partition_reference_context"] = partition_reference_context
+        prompt["rules"].extend(
+            [
+                "When partition_reference_context is present, read the reference documents as paper-level context before revising the mapping strategy.",
                 "Use the reference documents to infer label order, figure captions, formulation names, and missing label-to-formulation mappings.",
                 "Do not invent target values that are absent from the supplied target unique values or sample rows.",
-                "If reference_context still does not make the mapping deterministic, keep needs_review true.",
+                "If partition_reference_context still does not make the mapping deterministic, keep needs_review true.",
             ]
         )
     return prompt
@@ -887,6 +969,384 @@ def iter_reference_files(roots: list[Path]) -> list[Path]:
     return sorted(files, key=lambda path: (path.suffix.lower() == ".pdf", str(path).lower()))
 
 
+def should_skip_reference_path(path: Path) -> bool:
+    if path.name.startswith("~$"):
+        return True
+    for part in path.parts:
+        if part.startswith(".") or part.lower() in SKIP_REFERENCE_DIR_NAMES:
+            return True
+    return False
+
+
+def iter_reference_context_files(root: Path | None, warnings: list[str]) -> list[Path]:
+    if root is None or not str(root).strip():
+        return []
+    try:
+        if root.is_file():
+            if root.suffix.lower() in REFERENCE_CONTEXT_EXTENSIONS and not root.name.startswith("~$"):
+                return [root]
+            warnings.append(f"Unsupported reference file type skipped: {root}")
+            return []
+        if root.is_dir():
+            files: list[Path] = []
+            for path in root.rglob("*"):
+                if not path.is_file() or should_skip_reference_path(path):
+                    continue
+                if path.suffix.lower() in REFERENCE_CONTEXT_EXTENSIONS:
+                    files.append(path)
+            return sorted(files, key=lambda p: str(p).lower())
+        warnings.append(f"Reference path does not exist: {root}")
+        return []
+    except Exception as exc:
+        warnings.append(f"Could not scan reference path {root}: {exc}")
+        return []
+
+
+def read_text_with_fallback(path: Path, max_chars: int | None = None) -> tuple[str, str]:
+    for encoding in TEXT_ENCODINGS:
+        try:
+            text = path.read_text(encoding=encoding)
+            return (text[:max_chars] if max_chars else text), ""
+        except UnicodeDecodeError:
+            continue
+        except Exception as exc:
+            return "", f"Could not read text file {path}: {exc}"
+    try:
+        text = path.read_text(errors="replace")
+        return (text[:max_chars] if max_chars else text), ""
+    except Exception as exc:
+        return "", f"Could not read text file {path}: {exc}"
+
+
+def read_csv_with_fallback(path: Path) -> tuple[Any | None, str]:
+    require_pandas()
+    sep = "\t" if path.suffix.lower() == ".tsv" else ","
+    last_error = ""
+    for encoding in TEXT_ENCODINGS:
+        try:
+            return pd.read_csv(path, sep=sep, encoding=encoding), ""
+        except Exception as exc:
+            last_error = str(exc)
+    return None, f"Could not read delimited file {path}: {last_error}"
+
+
+def read_spreadsheet_sheets(path: Path) -> tuple[list[tuple[str, Any]], str]:
+    require_pandas()
+    try:
+        book = pd.ExcelFile(path)
+    except Exception as exc:
+        return [], f"Could not open spreadsheet {path}: {exc}"
+    sheets: list[tuple[str, Any]] = []
+    warnings: list[str] = []
+    for sheet_name in book.sheet_names:
+        try:
+            sheets.append((str(sheet_name), pd.read_excel(book, sheet_name=sheet_name)))
+        except Exception as exc:
+            warnings.append(f"{path}::{sheet_name}: {exc}")
+    return sheets, "; ".join(warnings)
+
+
+def compact_json_text(data: Any, max_chars: int) -> str:
+    text = json.dumps(data, ensure_ascii=False, indent=2, default=str)
+    if len(text) <= max_chars:
+        return text
+    return text[:max_chars] + "\n[truncated]"
+
+
+def data_frame_preview_markdown(df: Any, source: str, max_rows: int = 50, max_chars: int = 20_000) -> str:
+    records = dataframe_to_records(df)
+    columns = [str(c) for c in getattr(df, "columns", [])]
+    lines = [f"Source: {source}", "Columns: " + ", ".join(columns)]
+    if records:
+        preview_columns = columns[:40]
+        lines.append("| " + " | ".join(preview_columns) + " |")
+        lines.append("| " + " | ".join(["---"] * len(preview_columns)) + " |")
+        for row in records[:max_rows]:
+            values = [compact_sample_value(row.get(col), max_len=160).replace("|", "/") for col in preview_columns]
+            lines.append("| " + " | ".join(values) + " |")
+    text = "\n".join(lines)
+    if len(text) > max_chars:
+        return text[:max_chars] + "\n[truncated]"
+    return text
+
+
+def add_column_summary(
+    columns_summary: dict[str, dict[str, Any]],
+    requested_name: str,
+    actual_name: str,
+    source: str,
+    values: list[Any],
+    max_unique_values_per_column: int,
+    max_examples_per_column: int,
+) -> None:
+    entry = columns_summary.setdefault(
+        requested_name,
+        {
+            "column_exists": True,
+            "sources": [],
+            "non_empty_count": 0,
+            "unique_count": 0,
+            "top_values": [],
+            "example_values": [],
+            "_counts": defaultdict(int),
+            "_examples_seen": set(),
+        },
+    )
+    entry["column_exists"] = True
+    if source not in entry["sources"]:
+        entry["sources"].append(source)
+    for value in values:
+        text = safe_cell(value).strip()
+        if not text:
+            continue
+        entry["non_empty_count"] += 1
+        entry["_counts"][text] += 1
+        if len(entry["example_values"]) < max_examples_per_column and text not in entry["_examples_seen"]:
+            entry["example_values"].append(text)
+            entry["_examples_seen"].add(text)
+
+
+def finalize_column_summaries(columns_summary: dict[str, dict[str, Any]], max_unique_values_per_column: int) -> dict[str, dict[str, Any]]:
+    finalized: dict[str, dict[str, Any]] = {}
+    for column, entry in columns_summary.items():
+        counts = entry.pop("_counts", {})
+        entry.pop("_examples_seen", None)
+        sorted_counts = sorted(counts.items(), key=lambda item: (-item[1], normalize_text(item[0])))
+        entry["unique_count"] = len(sorted_counts)
+        entry["top_values"] = [
+            {"value": value, "count": count}
+            for value, count in sorted_counts[:max_unique_values_per_column]
+        ]
+        finalized[column] = entry
+    return finalized
+
+
+def summarize_lnpdb_dataframe(
+    df: Any,
+    source: str,
+    target_columns: list[str],
+    columns_summary: dict[str, dict[str, Any]],
+    max_unique_values_per_column: int,
+    max_examples_per_column: int,
+) -> None:
+    actual_columns = [str(c) for c in getattr(df, "columns", [])]
+    for target in target_columns:
+        actual = find_exact_column(actual_columns, target)
+        if not actual:
+            continue
+        add_column_summary(
+            columns_summary,
+            target,
+            actual,
+            source,
+            df[actual].tolist(),
+            max_unique_values_per_column,
+            max_examples_per_column,
+        )
+    for actual in actual_columns:
+        if any(compact_key(actual) == compact_key(target) for target in target_columns):
+            continue
+        if any(token in compact_key(actual) for token in ("buffer", "model", "cargo", "route", "formulation", "lipid", "smiles", "ratio", "metric", "unit")):
+            add_column_summary(
+                columns_summary,
+                actual,
+                actual,
+                source,
+                df[actual].tolist(),
+                max_unique_values_per_column,
+                max_examples_per_column,
+            )
+
+
+def collect_reference_context(
+    lnpdb_root: Path | list[Path] | None,
+    column_guide_root: Path | list[Path] | None,
+    target_columns: list[str] | None = None,
+    max_unique_values_per_column: int = 40,
+    max_examples_per_column: int = 20,
+    max_text_chars_per_file: int = 20_000,
+) -> dict[str, Any]:
+    target_columns = target_columns or REFERENCE_TARGET_COLUMNS
+    warnings: list[str] = []
+    lnpdb_source_paths: list[str] = []
+    lnpdb_free_text_notes: list[dict[str, Any]] = []
+    columns_summary: dict[str, dict[str, Any]] = {}
+    guide_paths: list[str] = []
+    guide_blocks: list[dict[str, Any]] = []
+
+    lnpdb_roots = lnpdb_root if isinstance(lnpdb_root, list) else ([lnpdb_root] if lnpdb_root else [])
+    column_guide_roots = column_guide_root if isinstance(column_guide_root, list) else ([column_guide_root] if column_guide_root else [])
+
+    for root in lnpdb_roots:
+        lnpdb_files = iter_reference_context_files(root, warnings)
+        for path in lnpdb_files:
+            suffix = path.suffix.lower()
+            if suffix in {".csv", ".tsv"}:
+                df, warning = read_csv_with_fallback(path)
+                if warning:
+                    warnings.append(warning)
+                    continue
+                lnpdb_source_paths.append(str(path))
+                summarize_lnpdb_dataframe(df, str(path), target_columns, columns_summary, max_unique_values_per_column, max_examples_per_column)
+            elif suffix in EXCEL_EXTENSIONS:
+                sheets, warning = read_spreadsheet_sheets(path)
+                if warning:
+                    warnings.append(warning)
+                if not sheets:
+                    continue
+                lnpdb_source_paths.append(str(path))
+                for sheet_name, df in sheets:
+                    summarize_lnpdb_dataframe(
+                        df,
+                        f"{path}::{sheet_name}",
+                        target_columns,
+                        columns_summary,
+                        max_unique_values_per_column,
+                        max_examples_per_column,
+                    )
+            elif suffix in TEXT_REFERENCE_EXTENSIONS:
+                text, warning = read_text_with_fallback(path, max_text_chars_per_file)
+                if warning:
+                    warnings.append(warning)
+                    continue
+                lnpdb_source_paths.append(str(path))
+                lnpdb_free_text_notes.append({"source_path": str(path), "content": text, "included_chars": len(text)})
+            elif suffix in JSON_REFERENCE_EXTENSIONS:
+                text, warning = read_text_with_fallback(path, max_text_chars_per_file)
+                if warning:
+                    warnings.append(warning)
+                    continue
+                try:
+                    data = json.loads(text)
+                    content = compact_json_text(data, max_text_chars_per_file)
+                except Exception:
+                    content = text
+                lnpdb_source_paths.append(str(path))
+                lnpdb_free_text_notes.append({"source_path": str(path), "content": content, "included_chars": len(content)})
+
+    for root in column_guide_roots:
+        guide_files = iter_reference_context_files(root, warnings)
+        for path in guide_files:
+            suffix = path.suffix.lower()
+            if suffix in {".csv", ".tsv"}:
+                df, warning = read_csv_with_fallback(path)
+                if warning:
+                    warnings.append(warning)
+                    continue
+                guide_paths.append(str(path))
+                content = data_frame_preview_markdown(df, str(path), max_chars=max_text_chars_per_file)
+                guide_blocks.append({"source_path": str(path), "content": content, "included_chars": len(content)})
+            elif suffix in EXCEL_EXTENSIONS:
+                sheets, warning = read_spreadsheet_sheets(path)
+                if warning:
+                    warnings.append(warning)
+                if not sheets:
+                    continue
+                guide_paths.append(str(path))
+                for sheet_name, df in sheets:
+                    source = f"{path}::{sheet_name}"
+                    content = data_frame_preview_markdown(df, source, max_chars=max_text_chars_per_file)
+                    guide_blocks.append({"source_path": source, "content": content, "included_chars": len(content)})
+            elif suffix in TEXT_REFERENCE_EXTENSIONS:
+                text, warning = read_text_with_fallback(path, max_text_chars_per_file)
+                if warning:
+                    warnings.append(warning)
+                    continue
+                guide_paths.append(str(path))
+                guide_blocks.append({"source_path": str(path), "content": text, "included_chars": len(text)})
+            elif suffix in JSON_REFERENCE_EXTENSIONS:
+                text, warning = read_text_with_fallback(path, max_text_chars_per_file)
+                if warning:
+                    warnings.append(warning)
+                    continue
+                try:
+                    content = compact_json_text(json.loads(text), max_text_chars_per_file)
+                except Exception:
+                    content = text
+                guide_paths.append(str(path))
+                guide_blocks.append({"source_path": str(path), "content": content, "included_chars": len(content)})
+
+    for root in lnpdb_roots:
+        if root and not any(str(path).startswith(str(root)) or str(path) == str(root) for path in lnpdb_source_paths):
+            warnings.append(f"No readable LNPDB reference files found under: {root}")
+    for root in column_guide_roots:
+        if root and not any(str(path).startswith(str(root)) or str(path) == str(root) for path in guide_paths):
+            warnings.append(f"No readable human column/value guide files found under: {root}")
+    if not lnpdb_roots and not column_guide_roots:
+        warnings.append("No external LNPDB reference schema/value context was available; proceed using paper evidence only.")
+
+    finalized_columns = finalize_column_summaries(columns_summary, max_unique_values_per_column)
+    return {
+        "has_any_reference": bool(finalized_columns or lnpdb_free_text_notes or guide_blocks),
+        "lnpdb_reference": {
+            "available": bool(finalized_columns or lnpdb_free_text_notes),
+            "source_paths": sorted(set(lnpdb_source_paths)),
+            "columns": finalized_columns,
+            "free_text_notes": lnpdb_free_text_notes,
+        },
+        "human_column_guides": {
+            "available": bool(guide_blocks),
+            "source_paths": sorted(set(guide_paths)),
+            "text_blocks": guide_blocks,
+        },
+        "warnings": warnings,
+    }
+
+
+def render_reference_context_for_prompt(reference_context: dict[str, Any]) -> str:
+    if not reference_context or not reference_context.get("has_any_reference"):
+        warning_text = "\n".join(f"- {warning}" for warning in reference_context.get("warnings", [])) if reference_context else ""
+        return (
+            "[Existing LNPDB Column/Value Examples]\n"
+            "No external LNPDB reference schema/value context was available; proceed using paper evidence only.\n\n"
+            "[Human Curated Column and Value Definitions]\n"
+            "No human-curated column/value guide was available.\n\n"
+            "[Warnings / Missing Reference Notes]\n"
+            + (warning_text or "- No reference sources were provided.")
+        )
+
+    lines: list[str] = []
+    lines.append("[Existing LNPDB Column/Value Examples]")
+    lines.append("Existing LNPDB values are examples, not a closed vocabulary.")
+    lnpdb_ref = reference_context.get("lnpdb_reference", {})
+    columns = lnpdb_ref.get("columns", {})
+    if columns:
+        for column, summary in columns.items():
+            lines.append(f"- {column}: exists={summary.get('column_exists', False)}, non_empty={summary.get('non_empty_count', 0)}, unique={summary.get('unique_count', 0)}")
+            sources = summary.get("sources", [])[:5]
+            if sources:
+                lines.append(f"  sources: {'; '.join(sources)}")
+            top_values = summary.get("top_values", [])[:10]
+            if top_values:
+                rendered = "; ".join(f"{item.get('value')} ({item.get('count')})" for item in top_values)
+                lines.append(f"  top_values: {rendered}")
+            examples = summary.get("example_values", [])[:8]
+            if examples:
+                lines.append(f"  examples: {'; '.join(examples)}")
+    else:
+        lines.append("- No tabular LNPDB column/value examples were available.")
+    for note in lnpdb_ref.get("free_text_notes", [])[:5]:
+        lines.append(f"\nReference note from {note.get('source_path')}:\n{note.get('content', '')}")
+
+    lines.append("\n[Human Curated Column and Value Definitions]")
+    lines.append("Human-curated definitions are higher priority than frequency examples.")
+    guide = reference_context.get("human_column_guides", {})
+    blocks = guide.get("text_blocks", [])
+    if blocks:
+        for block in blocks[:8]:
+            lines.append(f"\nGuide from {block.get('source_path')}:\n{block.get('content', '')}")
+    else:
+        lines.append("- No human-curated column/value guide was available.")
+
+    lines.append("\n[Warnings / Missing Reference Notes]")
+    for warning in reference_context.get("warnings", []):
+        lines.append(f"- {warning}")
+    if not reference_context.get("warnings"):
+        lines.append("- none")
+    lines.append("\nPrompt rules: LNPDB target fields should be normalized concise scalar values. Do not copy full source prose into LNPDB fields. Put source sentences/captions only in evidence/provenance fields.")
+    return "\n".join(lines)
+
+
 def read_reference_text(path: Path, max_chars: int | None = None) -> tuple[str, str]:
     suffix = path.suffix.lower()
     if suffix in {".md", ".markdown", ".txt"}:
@@ -939,7 +1399,7 @@ def compact_reference_text(text: str, max_chars: int) -> tuple[str, str]:
     return compacted, "start_middle_end_compacted"
 
 
-def collect_reference_context(
+def collect_partition_document_context(
     partition_key: str,
     reference_roots: list[Path],
     source_rows: list[dict[str, Any]],
@@ -1059,7 +1519,7 @@ def call_codex_mapping_planner(prompt: dict[str, Any], model: str) -> tuple[dict
     schema = mapping_plan_response_schema()
     prompt_text = (
         "Build the table-to-table mapping plan from the supplied JSON. "
-        "The JSON may include source rows, target rows, and optional reference documents read from the paper extraction folder. "
+        "The JSON may include source rows, target rows, optional LNPDB schema/value guidance, and optional reference documents read from the paper extraction folder. "
         "Do not inspect additional files, run commands, or modify anything. Return JSON only.\n\n"
         + json.dumps(prompt, ensure_ascii=False)
     )
@@ -1203,7 +1663,12 @@ def read_inventory(output_root: Path, role: str) -> list[Path]:
     return rows
 
 
-def build_figure_table_key_map(output_root: Path, provider: str = "none", model: str = "") -> dict[str, Any]:
+def build_figure_table_key_map(
+    output_root: Path,
+    provider: str = "none",
+    model: str = "",
+    reference_context: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     flags: list[dict[str, Any]] = []
     llm_attempted = 0
@@ -1233,7 +1698,7 @@ def build_figure_table_key_map(output_root: Path, provider: str = "none", model:
                 continue
             for sheet, df in tables:
                 context = build_sheet_context(role, path, sheet, df)
-                prompt = figure_table_prompt(context)
+                prompt = figure_table_prompt(context, reference_context)
                 heuristic_key = context.get("heuristic_key", "")
                 result = {
                     "inferred_key": heuristic_key,
@@ -1766,6 +2231,7 @@ def build_partition_mapping_plans(
     provider: str = "heuristic",
     model: str = "",
     reference_roots: list[Path] | None = None,
+    lnpdb_reference_context: dict[str, Any] | None = None,
 ) -> dict[str, dict[str, Any]]:
     exp_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     target_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
@@ -1800,13 +2266,18 @@ def build_partition_mapping_plans(
             if provider == "codex":
                 try:
                     llm_plan, raw_response = call_codex_mapping_planner(
-                        partition_mapping_prompt(partition_key, source_rows, target_rows),
+                        partition_mapping_prompt(
+                            partition_key,
+                            source_rows,
+                            target_rows,
+                            lnpdb_reference_context=lnpdb_reference_context,
+                        ),
                         model,
                     )
                     plan = validate_mapping_plan(llm_plan, partition_key, source_rows, target_rows)
                     method = f"codex:{model or 'default'}"
                     if reference_roots and (plan.get("needs_review") or plan.get("confidence") == "low"):
-                        reference_context = collect_reference_context(
+                        reference_context = collect_partition_document_context(
                             partition_key,
                             reference_roots,
                             source_rows,
@@ -1820,7 +2291,8 @@ def build_partition_mapping_plans(
                                         partition_key,
                                         source_rows,
                                         target_rows,
-                                        reference_context,
+                                        partition_reference_context=reference_context,
+                                        lnpdb_reference_context=lnpdb_reference_context,
                                     ),
                                     model,
                                 )
@@ -1851,7 +2323,7 @@ def build_partition_mapping_plans(
                     plan = validate_mapping_plan(heuristic, partition_key, source_rows, target_rows)
                     fallback_needs_review = bool(plan.get("needs_review", False))
                     if reference_roots and fallback_needs_review:
-                        reference_context = collect_reference_context(
+                        reference_context = collect_partition_document_context(
                             partition_key,
                             reference_roots,
                             source_rows,
@@ -1932,11 +2404,12 @@ def build_match_candidates(
     provider: str = "heuristic",
     model: str = "",
     reference_roots: list[Path] | None = None,
+    lnpdb_reference_context: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     expvals = dataframe_to_records(read_csv_flexible(output_root / "normalized_expvals.csv"))
     lnpdb_rows = dataframe_to_records(read_csv_flexible(output_root / "normalized_lnpdb_rows.csv"))
     partition_report = write_partition_outputs(output_root, expvals, lnpdb_rows)
-    plans = build_partition_mapping_plans(output_root, expvals, lnpdb_rows, provider, model, reference_roots)
+    plans = build_partition_mapping_plans(output_root, expvals, lnpdb_rows, provider, model, reference_roots, lnpdb_reference_context)
     exp_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     target_by_partition: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in expvals:
@@ -2378,10 +2851,39 @@ def validate_outputs(output_root: Path, merge_mode: str = "fill_existing") -> tu
     return ok, messages, report
 
 
+def collect_reference_context_from_args(args: argparse.Namespace, config: dict[str, Any], use_config_defaults: bool = True) -> dict[str, Any]:
+    lnpdb_default = config.get("default_lnpdb_roots") if use_config_defaults else None
+    guide_default = config.get("default_column_guide_roots") if use_config_defaults else None
+    lnpdb_roots = resolve_roots(getattr(args, "lnpdb_root", None), lnpdb_default)
+    column_guide_roots = resolve_roots(getattr(args, "column_guide_root", None), guide_default)
+    context = collect_reference_context(lnpdb_roots, column_guide_roots)
+    debug_path = getattr(args, "reference_context_debug_json", None)
+    if debug_path:
+        write_json(Path(debug_path), context)
+    return context
+
+
+def summarize_reference_context(reference_context: dict[str, Any]) -> dict[str, Any]:
+    lnpdb_ref = reference_context.get("lnpdb_reference", {})
+    guide = reference_context.get("human_column_guides", {})
+    return {
+        "has_any_reference": bool(reference_context.get("has_any_reference")),
+        "lnpdb_reference_available": bool(lnpdb_ref.get("available")),
+        "lnpdb_source_paths": len(lnpdb_ref.get("source_paths", [])),
+        "lnpdb_columns_with_examples": len(lnpdb_ref.get("columns", {})),
+        "lnpdb_free_text_notes": len(lnpdb_ref.get("free_text_notes", [])),
+        "human_column_guides_available": bool(guide.get("available")),
+        "human_guide_source_paths": len(guide.get("source_paths", [])),
+        "human_guide_text_blocks": len(guide.get("text_blocks", [])),
+        "warnings": reference_context.get("warnings", []),
+    }
+
+
 def run_stage(stage: str, args: argparse.Namespace, config: dict[str, Any]) -> dict[str, Any]:
     output_root = output_root_from_args(args, config)
     expval_roots = resolve_roots(getattr(args, "expval_root", None), config.get("default_expval_root"))
     lnpdb_roots = resolve_roots(getattr(args, "lnpdb_root", None), config.get("default_lnpdb_roots"))
+    reference_context = collect_reference_context_from_args(args, config)
     append_log({"action": "stage_start", "stage": stage, "output_root": str(output_root)})
     update_state(stage, "running", {"output_root": str(output_root)})
     try:
@@ -2392,6 +2894,7 @@ def run_stage(stage: str, args: argparse.Namespace, config: dict[str, Any]) -> d
                 output_root,
                 llm_provider_from_args(args, config),
                 llm_model_from_args(args, config),
+                reference_context,
             )
         elif stage == "02_normalize_expvals":
             result = normalize_expvals(output_root)
@@ -2403,6 +2906,7 @@ def run_stage(stage: str, args: argparse.Namespace, config: dict[str, Any]) -> d
                 llm_provider_from_args(args, config),
                 llm_model_from_args(args, config),
                 reference_roots_from_args(args, config),
+                reference_context,
             )
         elif stage == "05_merge_values":
             result = merge_values(output_root, getattr(args, "mode", "fill_existing"))
@@ -2450,6 +2954,15 @@ def build_parser() -> argparse.ArgumentParser:
         p.add_argument("--config", default=argparse.SUPPRESS, help="Path to merge_manifest.json.")
         p.add_argument("--expval-root", action="append", help="Extracted-value file or folder. Can be repeated.")
         p.add_argument("--lnpdb-root", action="append", help="LNPDB-like file or folder. Can be repeated.")
+        p.add_argument(
+            "--column-guide-root",
+            "--schema-guide-root",
+            "--value-guide-root",
+            action="append",
+            dest="column_guide_root",
+            help="Optional human-curated column/value guide file or folder. Can be repeated.",
+        )
+        p.add_argument("--reference-context-debug-json", help="Optional path to write collected reference context JSON.")
         p.add_argument("--output-root", help="Output folder. Defaults to manifest default_output_root.")
         p.add_argument("--llm-provider", choices=["none", "heuristic", "codex", "openai"], default=argparse.SUPPRESS)
         p.add_argument("--llm-model", default=argparse.SUPPRESS)
@@ -2464,7 +2977,7 @@ def build_parser() -> argparse.ArgumentParser:
             ),
         )
 
-    for command in ["observe", "build-key-map", "normalize-expvals", "normalize-lnpdb", "build-candidates", "validate", "run-all"]:
+    for command in ["observe", "build-key-map", "normalize-expvals", "normalize-lnpdb", "build-candidates", "validate", "run-all", "inspect-reference"]:
         p = sub.add_parser(command)
         add_common(p)
         if command in {"validate", "run-all"}:
@@ -2490,6 +3003,15 @@ def main() -> int:
         "validate": "06_validate_merge",
     }
     try:
+        if args.command == "inspect-reference":
+            reference_context = collect_reference_context_from_args(args, config, use_config_defaults=False)
+            result = {
+                "status": "success",
+                "summary": summarize_reference_context(reference_context),
+                "debug_json": getattr(args, "reference_context_debug_json", "") or "",
+            }
+            print(json.dumps(result, ensure_ascii=False, indent=2, default=str))
+            return 0
         if args.command == "run-all":
             result = run_all(args, config)
             print(json.dumps(result, ensure_ascii=False, indent=2, default=str))

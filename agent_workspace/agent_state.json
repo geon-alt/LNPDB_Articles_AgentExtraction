@@ -2,9 +2,9 @@
   "schema_version": 1,
   "project": "LNPDB_Articles_AgentExtraction",
   "mode": "external_cli_agent_workspace",
-  "active_paper_folder": "F:\\내 드라이브\\EXTRACT-TEST\\QS_2026",
+  "active_paper_folder": "F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3",
   "current_stage": "07_finalize_unified_table",
-  "last_updated": "2026-06-22T15:17:52+00:00",
+  "last_updated": "2026-06-29T10:16:54+00:00",
   "stage_status": {
     "00_marker": {
       "status": "next_stage_selected",
@@ -35,7 +35,7 @@
     },
     "03_figure_mapping": {
       "status": "validated",
-      "updated": "2026-06-22T15:00:15+00:00",
+      "updated": "2026-06-29T10:02:02+00:00",
       "detail": {
         "ok": true,
         "messages": [
@@ -47,7 +47,7 @@
     },
     "03_split_excel_blocks_batch": {
       "status": "validated",
-      "updated": "2026-06-22T15:00:15+00:00",
+      "updated": "2026-06-29T10:03:24+00:00",
       "detail": {
         "ok": true,
         "messages": [
@@ -60,7 +60,7 @@
     },
     "04_ft_excel_matcher": {
       "status": "validated",
-      "updated": "2026-06-22T15:04:11+00:00",
+      "updated": "2026-06-29T10:04:59+00:00",
       "detail": {
         "ok": true,
         "messages": [
@@ -71,7 +71,7 @@
     },
     "04_figure_separate": {
       "status": "validated",
-      "updated": "2026-06-22T15:00:15+00:00",
+      "updated": "2026-06-29T10:03:24+00:00",
       "detail": {
         "ok": true,
         "messages": [
@@ -84,26 +84,41 @@
     },
     "05_smiles_structure_resolution": {
       "status": "validated",
-      "updated": "2026-06-22T15:09:19+00:00",
+      "updated": "2026-06-29T10:06:22+00:00",
       "detail": {
         "ok": true,
         "messages": [
           "rows=68",
           "name_columns=['Name', 'compound_id']",
-          "smiles_columns=['SMILES', 'resolved_smiles']"
+          "smiles_columns=['SMILES', 'resolved_smiles']",
+          "image_structure_smiles_disabled=true",
+          "image_structure_smiles_rows_used=0",
+          "novel_pil_smiles_without_reference_or_manual=0"
         ]
       }
     },
     "06_unified_lnpdb_extraction": {
       "status": "validated",
-      "updated": "2026-06-22T15:17:52+00:00",
+      "updated": "2026-06-29T10:16:44+00:00",
       "detail": {
         "ok": true,
         "messages": [
-          "rows=685",
+          "rows=321",
           "selected_items=71",
           "missing_required_columns=0",
           "empty_item_ids=0",
+          "excel_value_rows_populated=106",
+          "excel_value_rows_without_excel_provenance=0",
+          "excel_value_rows_numeric_parse_failures=0",
+          "value_metric_prose_rows=0",
+          "image_digitized_value_rows_used=0",
+          "smiles_output_columns_forced_blank=true",
+          "nonempty_output_smiles_cells=0",
+          "prose_like_condition_rows=0",
+          "invalid_model_rows=0",
+          "invalid_batching_rows=0",
+          "invalid_dose_rows=0",
+          "lost_readout_specificity_rows=0",
           "review_flags_exists=True",
           "json_parses=True"
         ]
@@ -111,13 +126,38 @@
     },
     "07_finalize_unified_table": {
       "status": "validated",
-      "updated": "2026-06-22T15:17:52+00:00",
+      "updated": "2026-06-29T10:16:54+00:00",
       "detail": {
         "ok": true,
         "messages": [
-          "final_rows=685",
-          "lnpdb_like_rows=685",
-          "qc_report_parses=true"
+          "final_rows=321",
+          "lnpdb_like_rows=321",
+          "source_evidence_rows=405",
+          "figure_evidence_map_rows=578",
+          "qc_report_parses=true",
+          "row_id_in_final=True",
+          "row_id_in_lnpdb_like=True",
+          "empty_row_ids=0",
+          "duplicate_row_ids=0",
+          "empty_evidence_ids=0",
+          "duplicate_evidence_ids=0",
+          "missing_map_evidence_ids=0",
+          "missing_map_item_ids=0",
+          "empty_supported_columns=0",
+          "invalid_supported_columns_count=0",
+          "missing_figure_item_evidence=0",
+          "markdown_sentence_index_rows=1062",
+          "duplicate_global_sentence_ids=0",
+          "missing_source_sentence_ids=0",
+          "missing_figure_map_sentence_ids=0",
+          "lnp_buffer_rows_missing_global_methods_evidence=0",
+          "image_structure_smiles_disabled=true",
+          "image_structure_smiles_rows_used=0",
+          "smiles_output_columns_forced_blank=true",
+          "nonempty_output_smiles_cells=0",
+          "excel_value_rows_without_excel_provenance=0",
+          "excel_value_rows_numeric_parse_failures=0",
+          "image_digitized_value_rows_used=0"
         ]
       }
     }
@@ -128,9 +168,34 @@
     "detail": {
       "ok": true,
       "messages": [
-        "final_rows=685",
-        "lnpdb_like_rows=685",
-        "qc_report_parses=true"
+        "final_rows=321",
+        "lnpdb_like_rows=321",
+        "source_evidence_rows=405",
+        "figure_evidence_map_rows=578",
+        "qc_report_parses=true",
+        "row_id_in_final=True",
+        "row_id_in_lnpdb_like=True",
+        "empty_row_ids=0",
+        "duplicate_row_ids=0",
+        "empty_evidence_ids=0",
+        "duplicate_evidence_ids=0",
+        "missing_map_evidence_ids=0",
+        "missing_map_item_ids=0",
+        "empty_supported_columns=0",
+        "invalid_supported_columns_count=0",
+        "missing_figure_item_evidence=0",
+        "markdown_sentence_index_rows=1062",
+        "duplicate_global_sentence_ids=0",
+        "missing_source_sentence_ids=0",
+        "missing_figure_map_sentence_ids=0",
+        "lnp_buffer_rows_missing_global_methods_evidence=0",
+        "image_structure_smiles_disabled=true",
+        "image_structure_smiles_rows_used=0",
+        "smiles_output_columns_forced_blank=true",
+        "nonempty_output_smiles_cells=0",
+        "excel_value_rows_without_excel_provenance=0",
+        "excel_value_rows_numeric_parse_failures=0",
+        "image_digitized_value_rows_used=0"
       ]
     }
   },

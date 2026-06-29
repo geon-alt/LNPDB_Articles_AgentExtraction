@@ -4,6 +4,8 @@ This repository is an agent workspace for the LNPDB article extraction pipeline.
 
 The default workflow is API-free external CLI agent workflow. Legacy Gemini/API scripts remain available only as compatibility mode and must not be treated as the default path for active judgment stages.
 
+`agent_workspace/legacy_context/` is a read-only legacy-code reference area for external agents. Agents may inspect it to understand prior output shapes, naming conventions, deterministic helper logic, and edge cases, but must not execute or import Gemini/API-dependent legacy scripts in the active workflow. Original legacy folders remain in place for compatibility, and the context copy may be regenerated from those source folders.
+
 ## Project Purpose
 
 Process LNPDB article extraction work one paper folder at a time:
@@ -58,6 +60,16 @@ Use `--stream-agent-output` when operators need to watch the external CLI agent'
 
 `03_figure_mapping`, `03_split_excel_blocks`, `03_split_excel_blocks_batch`, `04_figure_separate`, `04_ft_excel_matcher`, `05_smiles_structure_resolution`, `06_unified_lnpdb_extraction`, and `07_finalize_unified_table` are active agent stages. The coding agent may run these after manual review is complete.
 
+Stage `06_unified_lnpdb_extraction` extracts experimental conditions and formulation composition together, and now may populate `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` only from reliable mapped Excel/source-data blocks. Graph image digitization, pixel/axis extraction, heatmap color estimation, caption-only numeric inference, and hallucinated values remain disabled. Populated value rows require Excel/source-data provenance in `evidence_excel`, `block_csv_path`, or related Excel fields.
+
+Stage 06 may include optional LNPDB reference context from existing DB/reference files and human-curated column/value guide files. Use that context only to normalize concise scalar condition/formulation fields; do not treat existing values as a closed vocabulary. Prefer column-specific existing LNPDB examples over generic examples; for `Experiment_method`, preserve readout-specific labels such as `flow_cytometry_CD8_T_cells` when that is the established style. Missing reference context is not a blocker. Reference context never permits prose condition fields: split rows when conditions differ, and keep source prose in `evidence_text`.
+
+The current active workflow completely excludes molecule-structure-image-based SMILES extraction. Do not run or use DECIMER, MolScribe, `worker_mol.py`, structure-recognition `pipeline.py`, `recognition.py`, `segmentation.py`, molecule image crops, or image-derived SMILES outputs. Stage 05 may still produce compound inventory / SMILES QC artifacts, but Stage 06 and 07 must not project any SMILES into `unified_extraction.csv`, `unified_extraction_final.csv`, or `unified_extraction_lnpdb_like.csv`. Preserve component names and molar ratios, force `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` blank, and do not treat blank output SMILES as a manual-review issue.
+
+Stage 07 finalization writes the LNPDB-like value table separately from source evidence. It also builds `markdown_sentence_index/` from source markdown files, excluding markdown table regions, and uses numbered global sentence IDs such as `QS_2026:S000145` as the primary text-evidence anchor. Use `unified_extraction_source_evidence.csv` for unique evidence/source objects with `evidence_summary` and `evidence_sentence_ids`, and `unified_extraction_figure_evidence_map.csv` for grouped figure/item evidence mappings from each evidence source object to supported LNPDB scientific condition/formulation columns. Do not require noisy per-cell mappings for administrative/provenance columns.
+
+Treat one selected `paper_folder` as one paper-level document package. Multiple markdown/PDF sources under that folder, including main article and supplementary information, share the same `Paper_ID` unless explicitly marked otherwise. Stage 07 may use global methods/protocol evidence from any source document in the same paper package to support condition/formulation rows from another source document, but only for broadly applicable context such as LNP preparation, formulation composition rules, dosing protocols, or assay methods. Source provenance must still record the sentence IDs/source document that supplied the evidence.
+
 For the API-free workflow, use `03_figure_mapping`, `03_split_excel_blocks_batch`, `04_figure_separate`, `04_ft_excel_matcher`, `05_smiles_structure_resolution`, and `06_unified_lnpdb_extraction` in `external_agent` mode where judgment is needed; `07_finalize_unified_table` defaults to `heuristic`. These modes must not import the legacy Gemini scripts:
 
 - `0_mark_down_gen/03_figure_mapping.py`
@@ -70,6 +82,8 @@ For the API-free workflow, use `03_figure_mapping`, `03_split_excel_blocks_batch
 - scripts under `4_Extract_Exp_Vals/`
 
 Legacy mode is a compatibility mode for running the old Gemini/API scripts and may require the old credential files and helper modules.
+
+When external-agent task markdown lists `## Legacy context files`, those paths are informational only. Read them as context; `AGENT_INSTRUCTIONS.md`, `PIPELINE_SPEC.md`, `STAGE_CONTRACTS.md`, and `OUTPUT_SCHEMA.md` override legacy behavior.
 
 ## Required Human Intervention
 

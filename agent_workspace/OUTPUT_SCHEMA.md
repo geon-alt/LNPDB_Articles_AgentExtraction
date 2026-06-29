@@ -191,13 +191,20 @@ Minimum expectations:
 - Columns include at least one name identifier: `Name` or `compound_id`.
 - Columns include at least one SMILES field: `SMILES` or `resolved_smiles`.
 - Unresolved compounds should keep a row with blank SMILES and `manual_required=true`.
+- Active workflow SMILES may only come from exact LNPDB/reference name or alias matches, curated/local known mappings, text/name/IUPAC deterministic lookup that does not rely on structure images, or explicitly manual-verified curated files.
+- Non-empty SMILES must not come from DECIMER, MolScribe, `worker_mol.py`, molecule image crops, image structure recognition, `recognition.py`, or `segmentation.py`.
+- Novel pILs should remain blank unless an exact text/reference/manual-curated SMILES entry is present. Use reason `Structure-image-based SMILES extraction is disabled; no exact text/reference SMILES was available.` when appropriate.
+- Current unified extraction outputs do not project SMILES from this file. Stage 06/07 force all formulation/component SMILES output columns blank.
 
 ## `unified_extraction.csv`
 
 Expected shape:
 
-- Long-format CSV with one row per figure/table item, formulation/condition, metric, and value.
-- It replaces separate experimental condition, formulation, and value extraction outputs.
+- Long-format CSV with one row per figure/table item, formulation/condition context, and experimental metric/value context when reliable mapped Excel/source-data values exist.
+- `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` may be populated only from mapped Excel/source-data blocks with Excel provenance.
+- Graph image digitization, pixel/axis extraction, bar-height estimation, heatmap color estimation, caption-only numeric inference, and hallucinated values are disabled.
+- `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` are compatibility columns and must remain blank in current unified outputs. Preserve component name and molar-ratio columns.
+- It replaces separate experimental condition, formulation, and Excel-backed value extraction outputs for the active workflow.
 
 Required columns:
 
@@ -268,8 +275,16 @@ Validation rules:
 - CSV parses.
 - Required columns exist.
 - `Item_ID` is non-empty for every row.
-- `original_values` is preserved as a string exactly as extracted.
-- Missing exact values must remain blank with `manual_required=true`; do not hallucinate values.
+- `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` may be populated only when the value comes from a reliable mapped Excel/source-data block.
+- Populated value rows must include Excel/source-data provenance in `evidence_excel`, `excel_file`, `excel_sheet`, or `block_csv_path`.
+- `original_values` and `aggregated_value` should be numeric-like or pipe-separated numeric-like values unless a future categorical metric is explicitly enabled.
+- Do not populate value columns from graph images, pixel/axis extraction, visual estimation, heatmap colors, captions alone, or hallucinated values.
+- `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` must be blank. Blank SMILES are not a manual-review issue in the current workflow.
+- Condition fields must be concise scalar LNPDB-style values. Prose belongs only in `evidence_text`.
+- Multiple panel/model/route/dose/method contexts must not be merged into one scalar field; split rows by panel/item/block context or leave uncertain fields blank with `manual_required=true`.
+- Missing condition/formulation fields should remain blank with `manual_required=true` where review is needed.
+- Optional LNPDB reference examples and human-curated guide definitions may guide normalization, but output fields should still contain concise scalar values supported by paper evidence.
+- Prefer column-specific existing LNPDB examples over generic examples. `Experiment_method` may include assay+readout specificity, e.g. `flow_cytometry_CD8_T_cells`, when needed to preserve panel identity.
 - `confidence` and `reason` should explain nontrivial extraction decisions.
 
 ## `unified_extraction_review_flags.csv`
@@ -285,7 +300,7 @@ Minimum expectations:
   - `issue`
   - `severity`
   - `reason`
-- Rows identify manual review needs such as missing metadata, unresolved SMILES, formulation/value mismatch, or missing evidence.
+- Rows identify manual review needs such as missing metadata, formulation/value mismatch, ambiguous Excel value mapping, or missing evidence. Blank output SMILES are expected and are not review flags by themselves.
 
 ## `unified_extraction_final.csv`
 
@@ -300,5 +315,54 @@ Minimum expectations:
 Minimum expectations:
 
 - CSV parses.
-- Contains LNPDB-facing rows derived from `unified_extraction_final.csv`.
+- Contains LNPDB-facing value rows derived from `unified_extraction_final.csv`.
+- Contains deterministic stable `row_id` values such as `<Paper_ID>_R000001`.
+- Does not repeat large source evidence text fields; evidence is normalized into the source evidence and figure evidence map tables.
 - Does not invent missing scientific values during projection.
+
+## `unified_extraction_source_evidence.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- One row per unique evidence phrase/source span/source object.
+- Contains deterministic `evidence_id` values such as `<Paper_ID>_E000001`.
+- Contains compact `evidence_summary`, pipe-separated `evidence_sentence_ids`, and optional `evidence_sentence_texts`.
+- `evidence_sentence_ids` references `markdown_sentence_index/markdown_sentence_index_all.csv` using global IDs such as `QS_2026:S000145`.
+- `evidence_text_exact` may be blank or compact when sentence IDs are available; it is retained for backward compatibility and fallback review only.
+- Includes source provenance fields such as `source_pdf`, `source_page`, `source_image`, `evidence_excel`, `excel_file`, `excel_sheet`, `block_id`, and `block_csv_path`.
+- Includes placeholder PDF/image bbox and character offset columns for later UI highlighting; these may be blank.
+
+## `markdown_sentence_index/`
+
+Minimum expectations:
+
+- Contains numbered sentence indexes generated from source markdown files, excluding markdown table regions and generated/output folders.
+- Per-source outputs: `<source_md_id>.sentences.md`, `<source_md_id>.sentences.csv`, and `<source_md_id>.sentences.json`.
+- Combined outputs: `markdown_sentence_index_all.csv` and `markdown_sentence_index_manifest.json`.
+- Sentence IDs are deterministic per source markdown file: `[S000001]`, `[S000002]`, etc.
+- `global_sentence_id` values use `<source_md_id>:<sentence_id>`, for example `QS_2026:S000145`.
+- Table rows such as pipe tables and table separator rows are excluded by design.
+
+## `paper_source_context.json`
+
+Minimum expectations:
+
+- Describes the selected `paper_folder` as one paper-level document package with one `Paper_ID`.
+- Lists source documents discovered under the folder with `source_doc_id`, `source_document_type`, `source_md_path`, optional `source_pdf_path`, `source_md_id`, `title`, `doi`, and `priority`.
+- `source_document_type` values include `main_article`, `supplementary_information`, `source_data`, `reporting_summary`, or `unknown`.
+- Global methods/protocol evidence may cross source documents within this same paper package, but evidence must not be merged across different paper folders.
+
+## `unified_extraction_figure_evidence_map.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Figure/item-level bridge table connecting each `evidence_id` to the LNPDB scientific condition, formulation, and Excel-backed metric/value columns it supports.
+- Required fields include `Paper_ID`, `Item_ID`, `evidence_id`, `supported_columns`, `supported_column_count`, `supported_row_ids`, `supported_formulation_ids`, `support_scope`, optional `evidence_sentence_ids`, optional `evidence_summary`, `confidence`, `manual_required`, and `reason`.
+- `supported_columns` contains pipe-separated LNPDB scientific condition/formulation columns and Excel-backed value columns only. Semicolon-separated legacy files remain readable. It must not contain administrative, provenance, or reason columns.
+- Excel value evidence may support `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` when `evidence_source_type` is `excel_block_value` or `source_data_excel`.
+- At least one evidence map row should exist for each `Item_ID` with non-empty scientific condition/formulation/value columns, unless the item is a manual-review placeholder.
+- This is intentionally not a per-cell evidence table. UI lookup can use: `row_id + Item_ID + column_name -> figure_evidence_map rows whose supported_columns include column_name -> evidence_id -> source_evidence evidence_sentence_ids -> markdown_sentence_index`.
+- `methods_global` evidence may support rows whose figures came from a different source document in the same paper package. For example, main-article LNP preparation sentences can support supplementary LNP rows with populated `Aqueous_buffer`, `Dialysis_buffer`, and `Mixing_method`.
+- Global LNP preparation evidence should not be attached to PBS-only, untreated, free drug, or free mRNA rows unless the row is explicitly an LNP/pLNP formulation row.

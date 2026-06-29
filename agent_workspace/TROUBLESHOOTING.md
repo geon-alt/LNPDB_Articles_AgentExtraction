@@ -1,5 +1,17 @@
 # Troubleshooting
 
+## Legacy context accidentally treated as runtime code
+
+Cause:
+- An external-agent task read `agent_workspace/legacy_context/` and then tried to execute or import a Gemini/API-dependent reference script.
+- The context copy is stale after original legacy folders changed.
+
+Fix:
+- Treat `agent_workspace/legacy_context/` as read-only reference only.
+- Follow `AGENT_INSTRUCTIONS.md`, `PIPELINE_SPEC.md`, `STAGE_CONTRACTS.md`, and `OUTPUT_SCHEMA.md`; they override legacy behavior.
+- Do not execute or import Gemini/API-dependent legacy scripts unless the operator explicitly requests legacy mode.
+- Regenerate the context copy with `python agent_workspace/tools/build_legacy_context.py` when needed.
+
 ## find_api ModuleNotFoundError
 
 Symptom:
@@ -150,13 +162,18 @@ Fix:
 
 ## SMILES unresolved
 
+Current unified extraction outputs intentionally force `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` blank. Blank SMILES in `unified_extraction.csv`, `unified_extraction_final.csv`, or `unified_extraction_lnpdb_like.csv` are expected and should not be treated as a manual-review issue.
+
 Cause:
 - Compound name is ambiguous, unavailable in deterministic lookup tools, or only shown as an image.
 
 Fix:
 - Check `compound_inventory_standardized.csv`, `smiles_resolved.csv`, and `smiles_resolution_qc.csv`.
-- Use OPSIN, PubChem, CIR, local LNPDB references, or MolScribe/DECIMER helper outputs when available.
-- Leave unresolved SMILES blank with `manual_required=true`.
+- Use OPSIN, PubChem, CIR, local LNPDB references, text/IUPAC deterministic lookup, or manually curated/manual-verified SMILES files only for Stage 05 QC artifacts.
+- Do not use DECIMER, MolScribe, `worker_mol.py`, molecule image crops, image recognition, `recognition.py`, or `segmentation.py` in the active workflow.
+- Do not project SMILES into current unified extraction outputs.
+- Preserve component names and molar ratios.
+- Do not set `manual_required=true` solely because output SMILES columns are blank.
 
 ## Figure evidence missing
 
@@ -168,15 +185,19 @@ Fix:
 - If Marker image is suspect, render the PDF page fallback.
 - Record `evidence_image` only when the path exists and supports the extracted interpretation.
 
-## CLI agent hallucinated values
+## CLI agent hallucinated fields
 
 Cause:
-- A value was inferred without supporting Excel, markdown, image, or PDF evidence.
+- A condition or formulation field was inferred without supporting Excel, markdown, image, or PDF evidence.
+- Stage 06 populated experimental numeric assay/readout columns without reliable Excel/source-data provenance.
+- A value appears to come from graph image digitization, pixel/axis extraction, visual estimation, heatmap color, caption-only inference, or hallucination.
 
 Fix:
-- Remove unsupported values.
-- Preserve `original_values` exactly from evidence.
-- Add `evidence_text`, `evidence_excel`, or `evidence_image`.
+- Remove unsupported condition/formulation fields.
+- Keep `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` only when backed by mapped Excel/source-data blocks.
+- Add `evidence_excel`, `excel_file`, `excel_sheet`, or `block_csv_path` for populated value rows.
+- Leave value columns blank when no reliable Excel/source-data mapping exists.
+- Add `evidence_text`, `evidence_excel`, or `evidence_image` for condition/formulation fields.
 - Set `confidence="low"` and `manual_required=true` when evidence is incomplete.
 
 ## Legacy Gemini script accidentally imported

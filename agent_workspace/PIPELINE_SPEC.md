@@ -4,6 +4,8 @@ This document defines the pipeline stages that external coding agents should fol
 
 Legacy Gemini/API-assisted scripts under `1_Extract_Exp_Figs/`, `2_Extract_SMILES/`, `3_Extract_Formula_by_Figs/`, and `4_Extract_Exp_Vals/` are preserved for manual legacy mode only. The default API-free workflow uses external CLI agent task files or deterministic heuristics and must not require `find_api.py`, `LLM_API.py`, `LLM_Batch.py`, Vertex/Gemini credentials, or hard-coded API keys.
 
+`agent_workspace/legacy_context/` is a read-only context copy/index for external agents. It may be inspected to understand old implementation logic, expected output shapes, and naming conventions, but active stages must not execute or import Gemini/API-dependent legacy scripts unless the operator explicitly requests legacy mode. The original legacy folders remain in place, and `agent_workspace/tools/build_legacy_context.py` can regenerate the context copy.
+
 ## PRE_AGENT_STAGES
 
 ### 00_marker
@@ -161,52 +163,77 @@ Active agent stages must not run unless `.manual_select_review_done` exists.
 
 ### 05_smiles_structure_resolution
 
-- Purpose: Resolve compound names, IUPAC names, and structure-derived SMILES without Gemini/API dependencies.
+- Purpose: Resolve compound names and text/reference/manual-curated SMILES without Gemini/API dependencies. Molecule-structure-image-based SMILES extraction is disabled in the active workflow.
 - Legacy scripts preserved under: `2_Extract_SMILES/`.
 - Default mode: `external_agent`.
-- Required input files: markdown/PDF sources, mapped source images when available, `total_figure_mapping.json` when available.
+- Required input files: markdown/PDF sources and `total_figure_mapping.json` when available. Source images may be listed for provenance but must not be used for SMILES extraction.
 - Expected output files: `compound_inventory_standardized.csv`, `smiles_resolved.csv`, `smiles_resolution_qc.csv`.
 - Success criteria:
   - `smiles_resolved.csv` exists and parses.
   - It includes a name identifier column and a SMILES/resolved SMILES column.
   - Unresolved or ambiguous compounds are marked for manual review.
+  - `image_structure_smiles_rows_used=0`.
+  - Novel pILs remain blank unless exact text/reference/manual-curated SMILES are present.
+  - These Stage 05 artifacts are not projected into current unified extraction outputs; Stage 06/07 force all output SMILES columns blank.
 - If failed, check:
-  - Deterministic lookup tools such as OPSIN, PubChem, CIR, or local LNPDB references.
-  - Structure-image helper outputs from MolScribe/DECIMER when used.
+  - Deterministic text/name/IUPAC lookup tools such as OPSIN, PubChem, CIR, or local LNPDB references.
+  - Do not use DECIMER, MolScribe, molecule image crops, `worker_mol.py`, structure-recognition `pipeline.py`, `recognition.py`, or `segmentation.py`.
 - Retry: Yes, after resolving tool/input availability.
 
 ### 06_unified_lnpdb_extraction
 
-- Purpose: Build one figure/table-item-level long table combining experimental conditions, formulation composition, experimental values, and provenance.
+- Purpose: Build one figure/table-item-level long table combining experimental conditions, formulation composition, Excel/source-data assay values when reliably mapped, and provenance.
 - Default mode: `external_agent`.
-- Replaces old independent extraction from `1_Extract_Exp_Figs/`, `3_Extract_Formula_by_Figs/`, and `4_Extract_Exp_Vals/`.
+- Replaces old independent condition/formulation extraction from `1_Extract_Exp_Figs/` and `3_Extract_Formula_by_Figs/` for the active API-free workflow.
+- Experimental numeric assay/readout values may be extracted only from reliable mapped Excel/source-data blocks. The active 06 stage must not run or depend on legacy scripts under `4_Extract_Exp_Vals/`, and must not perform figure-image digitization.
 - Required input files: `.manual_select_review_done`, `fig_table_lnpdb_classified.csv`, `total_figure_mapping.json`, `excel_mapping.json`, `excel_block_inventory.csv`, `Exp_Excel_Blocks/`, markdown files.
-- Optional input files: `separated_panels_gemini/`, `compound_inventory_standardized.csv`, `text_extracted_iupac.csv`, `smiles_resolved.csv`, outputs from `2_Extract_SMILES/`.
+- Optional input files: `separated_panels_gemini/`, `compound_inventory_standardized.csv`, `text_extracted_iupac.csv`, `smiles_resolved.csv`, existing LNPDB reference DB files, and human-curated column/value guide files. `smiles_resolved.csv` may be used only for optional internal QC and must not populate output SMILES columns. Image-based structure-recognition outputs from `2_Extract_SMILES/FromImage/` are out of scope.
+- Optional reference context:
+  - Existing LNPDB references may be discovered from `LNPDB_reference.*` or `lnpdb_reference.*` in the paper folder, `reference/`, `agent_workspace/reference/`, or `LNPDB_REFERENCE_ROOT`.
+  - Human guides may be discovered from `column_guides/`, `schema_guides/`, `value_guides/`, `reference/`, matching `agent_workspace/` folders, or `LNPDB_COLUMN_GUIDE_ROOT`, `LNPDB_SCHEMA_GUIDE_ROOT`, `LNPDB_VALUE_GUIDE_ROOT`.
+  - Missing or unreadable reference files are warnings only and must not block 06.
 - Expected output files: `unified_extraction.csv`, `unified_extraction.json`, `unified_extraction_review_flags.csv`.
 - Success criteria:
   - `unified_extraction.csv` exists, parses, and contains required columns.
-  - Rows use long format: one row per item/formulation/condition/metric/value.
-  - Excel numeric values are treated as authoritative for experimental values.
+  - Rows use long format: one row per item/formulation/condition context.
+  - Excel blocks are used for sheet/block identity, labels, headers, formulation names, group labels, condition context, provenance, and reliable source-data assay/readout values.
+  - `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` may be populated only from mapped Excel/source-data blocks with provenance.
+  - Graph image digitization, pixel/axis extraction, bar-height estimation, heatmap color estimation, caption-only inferred values, and hallucinated values are disallowed.
+  - `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` are present for compatibility but forced blank; component names and molar ratios remain populated when supported.
   - Figure/PDF images provide labels, axes, legends, panel identity, and visual context.
   - Markdown provides captions, methods context, dose, model, route, and formulation descriptions.
-  - Missing exact values remain blank with `manual_required=true`.
+  - Optional LNPDB reference examples and human-curated guide definitions are used only to normalize concise scalar LNPDB-style condition/formulation fields.
+  - Column-specific existing LNPDB examples are preferred over generic examples. If `Experiment_method` examples use assay+readout labels such as `flow_cytometry_CD8_T_cells`, preserve that style instead of reducing to `flow_cytometry`.
+  - Condition fields are concise scalar values only. Full prose, semicolon-joined contexts, `or`-merged contexts, and multi-method bundles belong in `evidence_text` or require split rows/manual review.
+  - Missing condition/formulation fields remain blank with `manual_required=true` where review is needed.
 - If failed, check:
   - `excel_mapping.json` links selected items to block CSVs.
   - `total_figure_mapping.json` contains source image/PDF provenance.
-  - External CLI agent did not hallucinate unsupported values.
+  - Populated value columns have Excel/source-data provenance and numeric-like `original_values`/`aggregated_value`.
+  - Condition columns pass scalar validation for `Model`, `Experiment_batching`, `Dose_ug_nucleicacid`, and prose-like mixed contexts.
+  - External CLI agent did not hallucinate unsupported condition/formulation fields or numeric readout values and did not use image digitization.
 - Retry: Yes, after fixing missing evidence or mappings.
 
 ### 07_finalize_unified_table
 
-- Purpose: Finalize the unified extraction into final and LNPDB-like CSVs with a QC report.
+- Purpose: Finalize the unified extraction into an LNPDB-like value table plus numbered markdown sentence indexes, paper-package source-document context, normalized source-evidence, and figure/item-level evidence map tables with a QC report.
 - Default mode: `heuristic`.
 - Required input files: `unified_extraction.csv`, `unified_extraction_review_flags.csv`.
-- Expected output files: `unified_extraction_final.csv`, `unified_extraction_lnpdb_like.csv`, `unified_extraction_qc_report.json`.
+- Expected output files: `markdown_sentence_index/markdown_sentence_index_all.csv`, `markdown_sentence_index/markdown_sentence_index_manifest.json`, `paper_source_context.json`, `unified_extraction_final.csv`, `unified_extraction_lnpdb_like.csv`, `unified_extraction_source_evidence.csv`, `unified_extraction_figure_evidence_map.csv`, `unified_extraction_qc_report.json`.
 - Success criteria:
-  - Final and LNPDB-like CSVs parse.
+  - Final and LNPDB-like CSVs parse and contain unique stable `row_id` values.
+  - `unified_extraction_source_evidence.csv` parses and contains unique `evidence_id` values.
+  - `markdown_sentence_index/markdown_sentence_index_all.csv` parses when source markdown exists and has unique `global_sentence_id` values.
+  - Non-empty `evidence_sentence_ids` in source evidence and figure evidence map rows refer to existing sentence index IDs.
+  - `unified_extraction_figure_evidence_map.csv` parses and maps evidence rows to supported LNPDB scientific condition/formulation columns by `Item_ID`.
+  - Evidence mapping is grouped by figure/item evidence source; per-cell administrative/provenance mappings are not required.
+  - Source-text evidence should prefer `evidence_summary + evidence_sentence_ids`; fuzzy full-sentence matching is a fallback only.
+  - One selected `paper_folder` is one paper package. Main article, supplementary information, source data, and reporting summary markdown/PDF files under that folder are source documents for the same `Paper_ID`.
+  - Global methods/protocol evidence may support rows derived from another source document in the same paper package. This is allowed for broadly applicable LNP preparation/formulation/dosing/method context, not for unrelated or value-bearing assay readouts.
   - QC report JSON parses.
   - No missing scientific value is invented during finalization.
 - If failed, check:
   - `unified_extraction.csv` required columns.
+  - Evidence IDs and row IDs are unique and linked.
   - Manual review flags and low-confidence row counts.
 - Retry: Yes, after fixing unified extraction rows.

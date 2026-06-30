@@ -1,0 +1,91 @@
+PIPELINE_SPEC.md
+기존 파이프라인을 agentic workflow로 어떻게 쪼갰는지 정의
+초반 marker 실행, figure table list 만들기, 어떤 figure table 추출힐지 정하기 -> 사람이 직접 한다.
+
+STAGE_CONTRACTS.md
+입력 파일
+실행 명령
+출력 파일
+검증 조건
+실패 시 처리
+
+### OUTPUT_SCHEMA.md ###
+fig_table_inventory.csv
+fig_table_lnpdb_classified.csv
+total_figure_mapping.json
+excel_block_inventory.csv
+excel_mapping.json
+unified_extraction.csv
+unified_extraction_final.csv
+같은 파일들이 최소 어떤 컬럼/키를 가져야 하는지 설명합니다.
+
+### AGENT_INSTRUCTIONS.md ###
+ agent에게 주는 운영 원칙
+기존 코드는 참고용
+판단/매핑/통합은 Codex CLI, Claude Code 같은 외부 coding agent가 task 파일을 읽고 수행
+find_api.py
+LLM_API.py
+LLM_Batch.py
+Vertex/Gemini credentials
+hard-coded API keys
+이런 것에 의존하지 않도록 강요
+
+### RUNBOOK.md ###
+ 실행 절차
+실제 명령어 존재
+사람이 직접 단계별로 볼 수도 있고, run-agent-active로 agent가 task 생성 → 실행 → 검증 → 재시도까지 하도록 할 수도 있습니다.
+
+### pipeline_manifest.json ###
+이 파일은 사람이 처음부터 자세히 읽기보다는, PIPELINE_SPEC.md를 읽은 뒤 “실제 stage order가 어떻게 등록되어 있나” 확인하는 용도
+
+### agent_state.json ###
+ 현재 실행 상태 저장
+
+### task_queue.json ###
+
+### TROUBLESHOOTING.md ###
+
+문제가 생긴 뒤 보는 파일입니다.\
+특히 당신이 이전에 겪은 문제와 직접 관련 있는 항목이 있습니다.
+
+### Agent_Task_Runner.py ###
+1. 현재 paper folder 상태 관찰
+2. 다음 stage 결정
+3. stage 실행 또는 external agent task 생성
+4. 결과 검증
+5. 실패 시 task에 feedback 추가
+6. retry 또는 다음 단계 진행
+7. state/log 업데이트
+어떤 stage를 할지를 결정
+
+### agent_workspace/tasks/ .md
+ LLM이 봐야 할 내용이 직접 들어감
+
+ 공통 구조
+## External Agent Task: <stage>
+
+Target paper folder: <paper_folder>
+
+## Stage Purpose
+이 stage의 목적
+
+## Required Input Files
+반드시 있어야 하는 입력 파일
+
+## Optional Input Files
+있으면 참고할 파일
+
+## Source Assets Found
+실제로 paper folder 안에서 발견된 파일 목록
+
+## Expected Output Files
+이 stage가 만들어야 하는 파일
+
+## Work Instructions
+LLM/agent가 실제로 수행해야 하는 단계별 지시
+
+## Validation Command
+python Agent_Task_Runner.py validate --stage <stage> --paper-folder "<paper_folder>"
+
+## Constraints
+금지사항

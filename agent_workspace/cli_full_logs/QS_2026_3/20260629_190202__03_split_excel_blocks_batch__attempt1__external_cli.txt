@@ -1,0 +1,2510 @@
+===== EXTERNAL CLI RUN LOG =====
+timestamp_start: 2026-06-29T19:02:02.328834
+paper_folder: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+stage: 03_split_excel_blocks_batch
+attempt: 1
+project_root: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+cwd: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+external_agent_command_template: cmd /c codex exec --cd C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction --dangerously-bypass-approvals-and-sandbox --add-dir {paper_folder} -
+final_command: cmd /c codex exec --cd C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction --dangerously-bypass-approvals-and-sandbox --add-dir F:\내 드라이브\EXTRACT-TEST\QS_2026_3 -
+final_command_argv: ["cmd", "/c", "codex", "exec", "--cd", "C:\\Users\\kogun\\PycharmProjects\\LNPDB_Articles_AgentExtraction", "--dangerously-bypass-approvals-and-sandbox", "--add-dir", "F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3", "-"]
+task_file: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md
+mode: external_agent
+
+===== BEGIN PROMPT SENT TO EXTERNAL CLI =====
+You are an external CLI coding agent working in the LNPDB_Articles_AgentExtraction repository.
+
+Stage: 03_split_excel_blocks_batch
+Target paper folder: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+Task file: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md
+
+Read and complete the task markdown below. Use the target paper folder from both this prompt and the task file.
+
+Hard constraints:
+- Do not use Gemini/API/find_api/LLM_API/LLM_Batch.
+- Do not run legacy Gemini scripts.
+- Follow agent_workspace/OUTPUT_SCHEMA.md.
+- Create or modify the required output files so Agent_Task_Runner.py validation passes.
+- If exact fields are missing, leave them blank and set manual_required=true.
+- Record evidence/provenance for nontrivial extracted data.
+- Do not delete original PDF or Excel files.
+- If overwrite is needed, create a backup or follow the runner backup policy.
+- Stage-specific task markdown instructions have priority.
+- If you fail, record the cause and what you changed.
+
+Task markdown:
+
+# External Agent Task: 03_split_excel_blocks_batch
+
+Target paper folder: `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`
+
+## Stage Purpose
+Split experimental Excel workbooks/sheets into API-free table blocks and classify block type by direct CLI agent judgment.
+
+## Required Input Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\.manual_select_review_done`
+- Excel files under `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel`
+
+Excel files found:
+- `Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx`
+
+## Expected Output Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel_Blocks`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\three_core_result_all.json`
+
+## Work Instructions
+1. Inspect the `Exp_Excel` folder.
+2. Read Excel workbooks and sheets.
+3. Split sheets into candidate blocks using merged cells, blank rows/columns, borders, fills, headers, and numeric density.
+4. Prefer API-free helper logic such as `0_mark_down_gen/sheet_block_splitter.py`, `0_mark_down_gen/03_split_excel_blocks.py` pure utilities, or a deterministic helper script.
+5. Do not use Gemini or LLM judgment.
+6. Save each block CSV under `Exp_Excel_Blocks/`.
+7. Create `excel_block_inventory.csv` with required columns:
+   - `excel_file`
+   - `excel_sheet`
+   - `block_id`
+   - `group_id`
+   - `element_id`
+   - `block_csv_path`
+   - `block_meta_path`
+   - `block_type`
+8. Classify `block_type` by direct inspection as one of:
+   - `title_and_table`
+   - `table_body`
+   - `table_title`
+   - `multi_table`
+   - `note`
+   - `other`
+9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+10. If useful, create or run an API-free helper such as `agent_workspace/tools/api_free_excel_block_splitter.py`; use pandas/openpyxl deterministic parsing only.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026_3"
+```
+
+## Constraints
+- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+- Do not import or require `find_api.py`.
+- Do not use Gemini, Vertex, `LLM_API.py`, or `LLM_Batch.py`.
+- Do not hard-code API keys or credentials.
+## Legacy context files
+
+These files are reference-only. Do not execute or import Gemini/API-dependent scripts. Use them only to understand prior deterministic logic, expected output shapes, and naming conventions. Current stage contract and `AGENT_INSTRUCTIONS.md` override legacy behavior.
+
+- `agent_workspace/legacy_context/by_stage/03_split_excel_blocks_batch/README.md` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks.py` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/sheet_block_splitter.py` (exists)
+- `agent_workspace/legacy_context/README.md` (context policy)
+- `agent_workspace/legacy_context/LEGACY_CODE_INDEX.md` (stage-by-stage index)
+
+
+===== END PROMPT SENT TO EXTERNAL CLI =====
+===== BEGIN EXTERNAL CLI OUTPUT =====
+OpenAI Codex v0.142.4
+--------
+workdir: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019f12d4-2b5f-79e2-b432-986b94b3876c
+--------
+user
+You are an external CLI coding agent working in the LNPDB_Articles_AgentExtraction repository.
+
+Stage: 03_split_excel_blocks_batch
+Target paper folder: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+Task file: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md
+
+Read and complete the task markdown below. Use the target paper folder from both this prompt and the task file.
+
+Hard constraints:
+- Do not use Gemini/API/find_api/LLM_API/LLM_Batch.
+- Do not run legacy Gemini scripts.
+- Follow agent_workspace/OUTPUT_SCHEMA.md.
+- Create or modify the required output files so Agent_Task_Runner.py validation passes.
+- If exact fields are missing, leave them blank and set manual_required=true.
+- Record evidence/provenance for nontrivial extracted data.
+- Do not delete original PDF or Excel files.
+- If overwrite is needed, create a backup or follow the runner backup policy.
+- Stage-specific task markdown instructions have priority.
+- If you fail, record the cause and what you changed.
+
+Task markdown:
+
+# External Agent Task: 03_split_excel_blocks_batch
+
+Target paper folder: `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`
+
+## Stage Purpose
+Split experimental Excel workbooks/sheets into API-free table blocks and classify block type by direct CLI agent judgment.
+
+## Required Input Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\.manual_select_review_done`
+- Excel files under `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel`
+
+Excel files found:
+- `Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx`
+
+## Expected Output Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel_Blocks`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\three_core_result_all.json`
+
+## Work Instructions
+1. Inspect the `Exp_Excel` folder.
+2. Read Excel workbooks and sheets.
+3. Split sheets into candidate blocks using merged cells, blank rows/columns, borders, fills, headers, and numeric density.
+4. Prefer API-free helper logic such as `0_mark_down_gen/sheet_block_splitter.py`, `0_mark_down_gen/03_split_excel_blocks.py` pure utilities, or a deterministic helper script.
+5. Do not use Gemini or LLM judgment.
+6. Save each block CSV under `Exp_Excel_Blocks/`.
+7. Create `excel_block_inventory.csv` with required columns:
+   - `excel_file`
+   - `excel_sheet`
+   - `block_id`
+   - `group_id`
+   - `element_id`
+   - `block_csv_path`
+   - `block_meta_path`
+   - `block_type`
+8. Classify `block_type` by direct inspection as one of:
+   - `title_and_table`
+   - `table_body`
+   - `table_title`
+   - `multi_table`
+   - `note`
+   - `other`
+9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+10. If useful, create or run an API-free helper such as `agent_workspace/tools/api_free_excel_block_splitter.py`; use pandas/openpyxl deterministic parsing only.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026_3"
+```
+
+## Constraints
+- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+- Do not import or require `find_api.py`.
+- Do not use Gemini, Vertex, `LLM_API.py`, or `LLM_Batch.py`.
+- Do not hard-code API keys or credentials.
+## Legacy context files
+
+These files are reference-only. Do not execute or import Gemini/API-dependent scripts. Use them only to understand prior deterministic logic, expected output shapes, and naming conventions. Current stage contract and `AGENT_INSTRUCTIONS.md` override legacy behavior.
+
+- `agent_workspace/legacy_context/by_stage/03_split_excel_blocks_batch/README.md` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks.py` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/sheet_block_splitter.py` (exists)
+- `agent_workspace/legacy_context/README.md` (context policy)
+- `agent_workspace/legacy_context/LEGACY_CODE_INDEX.md` (stage-by-stage index)
+
+
+codex
+I’ll inspect the stage schema, task file, and existing helpers first, then generate the block outputs deterministically from the Excel files and run the runner validation.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw agent_workspace\\OUTPUT_SCHEMA.md" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw agent_workspace\\tasks\\03_split_excel_blocks_batch_QS_2026_3.md" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -Force \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\" | Format-Table -AutoSize" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -Force \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\\Exp_Excel\" | Format-Table -AutoSize" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 173ms:
+# External Agent Task: 03_split_excel_blocks_batch
+
+Target paper folder: `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3`
+
+## Stage Purpose
+Split experimental Excel workbooks/sheets into API-free table blocks and classify block type by direct CLI agent judgment.
+
+## Required Input Files
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\.manual_select_review_done`
+- Excel files under `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\Exp_Excel`
+
+Excel files found:
+- `Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx`
+
+## Expected Output Files
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\Exp_Excel_Blocks`
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\three_core_result_all.json`
+
+## Work Instructions
+1. Inspect the `Exp_Excel` folder.
+2. Read Excel workbooks and sheets.
+3. Split sheets into candidate blocks using merged cells, blank rows/columns, borders, fills, headers, and numeric density.
+4. Prefer API-free helper logic such as `0_mark_down_gen/sheet_block_splitter.py`, `0_mark_down_gen/03_split_excel_blocks.py` pure utilities, or a deterministic helper script.
+5. Do not use Gemini or LLM judgment.
+6. Save each block CSV under `Exp_Excel_Blocks/`.
+7. Create `excel_block_inventory.csv` with required columns:
+   - `excel_file`
+   - `excel_sheet`
+   - `block_id`
+   - `group_id`
+   - `element_id`
+   - `block_csv_path`
+   - `block_meta_path`
+   - `block_type`
+8. Classify `block_type` by direct inspection as one of:
+   - `title_and_table`
+   - `table_body`
+   - `table_title`
+   - `multi_table`
+   - `note`
+   - `other`
+9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+10. If useful, create or run an API-free helper such as `agent_workspace/tools/api_free_excel_block_splitter.py`; use pandas/openpyxl deterministic parsing only.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3"
+```
+
+## Constraints
+- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+- Do not import or require `find_api.py`.
+- Do not use Gemini, Vertex, `LLM_API.py`, or `LLM_Batch.py`.
+- Do not hard-code API keys or credentials.
+## Legacy context files
+
+These files are reference-only. Do not execute or import Gemini/API-dependent scripts. Use them only to understand prior deterministic logic, expected output shapes, and naming conventions. Current stage contract and `AGENT_INSTRUCTIONS.md` override legacy behavior.
+
+- `agent_workspace/legacy_context/by_stage/03_split_excel_blocks_batch/README.md` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks.py` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/sheet_block_splitter.py` (exists)
+- `agent_workspace/legacy_context/README.md` (context policy)
+- `agent_workspace/legacy_context/LEGACY_CODE_INDEX.md` (stage-by-stage index)
+
+
+ succeeded in 173ms:
+# Output Schema
+
+This file records expected artifact shapes for validation. Existing scripts may include extra columns or keys; agents should tolerate extra fields but require the minimum fields below when the artifact exists.
+
+## `fig_table_inventory.csv`
+
+Minimum expectations:
+
+- CSV parses with pandas or a standard CSV reader.
+- Row count is greater than zero for papers with figures/tables.
+- One identifier column exists: `item_id`, `pdf_item_id`, or `item`.
+- Useful optional columns: `caption`, `label`, `type`, `page`, `source_file`.
+
+## `fig_table_lnpdb_classified.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- It preserves an FT identifier column.
+- It contains some relevance/classification signal.
+- After manual review, it should contain `manual_select`.
+
+Useful optional columns:
+
+- `is_lnpdb`
+- `lnpdb_class`
+- `reason`
+- `manual_select`
+- `excel_item_id`
+- `matched_blocks`
+- `matched_block_csv_path`
+
+## `.manual_select_review_done`
+
+Minimum expectations:
+
+- File exists in the paper folder.
+- Its content may be empty; existence is the gate for active agent stages.
+
+## `total_figure_mapping.json`
+
+Expected shape:
+
+```json
+{
+  "source_folder_name": {
+    "figure 1": {
+      "source_image": "relative/or/absolute/path.png",
+      "source_pdf": "relative/or/absolute/source.pdf",
+      "source_page": 3,
+      "source_quality": "ok",
+      "fallback_render": "pdf_page_renders/source_page_003.png",
+      "selected_source_for_paneling": "relative/or/absolute/path.png",
+      "manual_required": false,
+      "confidence": "high",
+      "reason": "short rationale",
+      "panels": {
+        "A": "relative/or/absolute/panel.png"
+      }
+    }
+  }
+}
+```
+
+Validation rules:
+
+- JSON parses.
+- Top-level value is an object.
+- At least one nested mapping exists when selected figure/table rows exist.
+- Any local path fields found in values should resolve to existing files or be logged as missing.
+- `source_image` is a primary candidate, not guaranteed ground truth.
+- Optional fallback fields are allowed for Marker crop failures:
+  - `source_pdf`
+  - `source_page`
+  - `source_quality`
+  - `fallback_render`
+  - `selected_source_for_paneling`
+  - `manual_required`
+  - `confidence`
+  - `reason`
+- Allowed `source_quality` values:
+  - `ok`
+  - `suspect_crop`
+  - `missing_image`
+  - `caption_image_mismatch`
+  - `pdf_page_render_fallback`
+  - `manual_required`
+- If `fallback_render` or `selected_source_for_paneling` is present and is a local path, it should resolve under the paper folder or as an absolute file path.
+- If boundaries or source identity remain uncertain, set `manual_required` to `true` and do not invent panel crops.
+
+## `excel_block_inventory.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Each row describes one block or table candidate.
+- Required useful columns when generated by current code:
+  - `excel_file`
+  - `excel_sheet`
+  - `block_id`
+  - `group_id`
+  - `element_id`
+  - `block_csv_path`
+  - `block_meta_path`
+  - `block_type`
+
+Validation rules:
+
+- Non-empty `block_csv_path` resolves under the paper folder.
+- Block CSV files parse as CSV.
+- `Exp_Excel_Blocks/` exists when rows exist.
+
+## `three_core_result_all.json`
+
+Minimum expectations:
+
+- JSON parses.
+- Top-level value is a list.
+- Rows include `excel_file`, `excel_sheet`, and `result` when produced by current code.
+
+## `separated_panels_gemini/`
+
+Minimum expectations:
+
+- Directory exists when panel separation is performed.
+- Contains image files or subfolders with image files.
+- Recorded panel paths in mapping JSON exist.
+
+## `excel_mapping.json`
+
+Expected shape:
+
+```json
+{
+  "figure 1": [
+    {
+      "pdf_item_id": "figure 1",
+      "excel_item_id": "table or block id",
+      "excel_file": "source.xlsx",
+      "excel_sheet": "Sheet1",
+      "block_id": "block id",
+      "block_csv_path": "Exp_Excel_Blocks/source/Sheet1/block.csv",
+      "reason": "short rationale"
+    }
+  ]
+}
+```
+
+Validation rules:
+
+- JSON parses.
+- Top-level value is an object.
+- Non-empty `block_csv_path` values resolve under the paper folder.
+
+## `excel_mapping_rows.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Useful columns:
+  - `pdf_item_id`
+  - `excel_item_id`
+  - `excel_file`
+  - `excel_sheet`
+  - `block_id`
+  - `block_csv_path`
+  - `reason`
+
+## `compound_inventory_standardized.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- One row per compound/name candidate.
+- Useful columns:
+  - `compound_id`
+  - `Name`
+  - `alias`
+  - `source_type`
+  - `source_path`
+  - `Item_ID`
+  - `evidence_text`
+  - `manual_required`
+  - `reason`
+
+## `smiles_resolved.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Columns include at least one name identifier: `Name` or `compound_id`.
+- Columns include at least one SMILES field: `SMILES` or `resolved_smiles`.
+- Unresolved compounds should keep a row with blank SMILES and `manual_required=true`.
+- Active workflow SMILES may only come from exact LNPDB/reference name or alias matches, curated/local known mappings, text/name/IUPAC deterministic lookup that does not rely on structure images, or explicitly manual-verified curated files.
+- Non-empty SMILES must not come from DECIMER, MolScribe, `worker_mol.py`, molecule image crops, image structure recognition, `recognition.py`, or `segmentation.py`.
+- Novel pILs should remain blank unless an exact text/reference/manual-curated SMILES entry is present. Use reason `Structure-image-based SMILES extraction is disabled; no exact text/reference SMILES was available.` when appropriate.
+- Current unified extraction outputs do not project SMILES from this file. Stage 06/07 force all formulation/component SMILES output columns blank.
+
+## `unified_extraction.csv`
+
+Expected shape:
+
+- Long-format CSV with one row per figure/table item, formulation/condition context, and experimental metric/value context when reliable mapped Excel/source-data values exist.
+- `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` may be populated only from mapped Excel/source-data blocks with Excel provenance.
+- Graph image digitization, pixel/axis extraction, bar-height estimation, heatmap color estimation, caption-only numeric inference, and hallucinated values are disabled.
+- `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` are compatibility columns and must remain blank in current unified outputs. Preserve component name and molar-ratio columns.
+- It replaces separate experimental condition, formulation, and Excel-backed value extraction outputs for the active workflow.
+
+Required columns:
+
+- `Paper_ID`
+- `Item_ID`
+- `visual_type`
+- `source_type`
+- `source_image`
+- `source_pdf`
+- `source_page`
+- `selected_source_for_paneling`
+- `excel_file`
+- `excel_sheet`
+- `block_id`
+- `block_csv_path`
+- `Aqueous_buffer`
+- `Dialysis_buffer`
+- `Mixing_method`
+- `Model`
+- `Model_type`
+- `Model_target`
+- `Route_of_administration`
+- `Cargo`
+- `Cargo_type`
+- `Dose_ug_nucleicacid`
+- `Experiment_method`
+- `Experiment_batching`
+- `formulation_id`
+- `Formulation_Name`
+- `IL_name`
+- `IL_SMILES`
+- `IL_molarratio`
+- `HL_name`
+- `HL_SMILES`
+- `HL_molarratio`
+- `CHL_name`
+- `CHL_SMILES`
+- `CHL_molarratio`
+- `PEG_name`
+- `PEG_SMILES`
+- `PEG_molarratio`
+- `Fifth_component_name`
+- `Fifth_component_SMILES`
+- `Fifth_component_molarratio`
+- `IL_to_nucleicacid_massratio`
+- `condition_1_name`
+- `condition_1_value`
+- `condition_2_name`
+- `condition_2_value`
+- `condition_3_name`
+- `condition_3_value`
+- `condition_4_name`
+- `condition_4_value`
+- `metric_type`
+- `original_values`
+- `aggregated_value`
+- `unit`
+- `replicate_type`
+- `evidence_text`
+- `evidence_image`
+- `evidence_excel`
+- `confidence`
+- `manual_required`
+- `reason`
+
+Validation rules:
+
+- CSV parses.
+- Required columns exist.
+- `Item_ID` is non-empty for every row.
+- `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` may be populated only when the value comes from a reliable mapped Excel/source-data block.
+- Populated value rows must include Excel/source-data provenance in `evidence_excel`, `excel_file`, `excel_sheet`, or `block_csv_path`.
+- `original_values` and `aggregated_value` should be numeric-like or pipe-separated numeric-like values unless a future categorical metric is explicitly enabled.
+- Do not populate value columns from graph images, pixel/axis extraction, visual estimation, heatmap colors, captions alone, or hallucinated values.
+- `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` must be blank. Blank SMILES are not a manual-review issue in the current workflow.
+- Condition fields must be concise scalar LNPDB-style values. Prose belongs only in `evidence_text`.
+- Multiple panel/model/route/dose/method contexts must not be merged into one scalar field; split rows by panel/item/block context or leave uncertain fields blank with `manual_required=true`.
+- Missing condition/formulation fields should remain blank with `manual_required=true` where review is needed.
+- Optional LNPDB reference examples and human-curated guide definitions may guide normalization, but output fields should still contain concise scalar values supported by paper evidence.
+- Prefer column-specific existing LNPDB examples over generic examples. `Experiment_method` may include assay+readout specificity, e.g. `flow_cytometry_CD8_T_cells`, when needed to preserve panel identity.
+- `confidence` and `reason` should explain nontrivial extraction decisions.
+
+## `unified_extraction_review_flags.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Useful columns:
+  - `Paper_ID`
+  - `Item_ID`
+  - `block_id`
+  - `field`
+  - `issue`
+  - `severity`
+  - `reason`
+- Rows identify manual review needs such as missing metadata, formulation/value mismatch, ambiguous Excel value mapping, or missing evidence. Blank output SMILES are expected and are not review flags by themselves.
+
+## `unified_extraction_final.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Preserves `unified_extraction.csv` rows after final normalization/review.
+- Keeps provenance columns needed to audit source evidence.
+
+## `unified_extraction_lnpdb_like.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Contains LNPDB-facing value rows derived from `unified_extraction_final.csv`.
+- Contains deterministic stable `row_id` values such as `<Paper_ID>_R000001`.
+- Does not repeat large source evidence text fields; evidence is normalized into the source evidence and figure evidence map tables.
+- Does not invent missing scientific values during projection.
+
+## `unified_extraction_source_evidence.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- One row per unique evidence phrase/source span/source object.
+- Contains deterministic `evidence_id` values such as `<Paper_ID>_E000001`.
+- Contains compact `evidence_summary`, pipe-separated `evidence_sentence_ids`, and optional `evidence_sentence_texts`.
+- `evidence_sentence_ids` references `markdown_sentence_index/markdown_sentence_index_all.csv` using global IDs such as `QS_2026:S000145`.
+- `evidence_text_exact` may be blank or compact when sentence IDs are available; it is retained for backward compatibility and fallback review only.
+- Includes source provenance fields such as `source_pdf`, `source_page`, `source_image`, `evidence_excel`, `excel_file`, `excel_sheet`, `block_id`, and `block_csv_path`.
+- Includes placeholder PDF/image bbox and character offset columns for later UI highlighting; these may be blank.
+
+## `markdown_sentence_index/`
+
+Minimum expectations:
+
+- Contains numbered sentence indexes generated from source markdown files, excluding markdown table regions and generated/output folders.
+- Per-source outputs: `<source_md_id>.sentences.md`, `<source_md_id>.sentences.csv`, and `<source_md_id>.sentences.json`.
+- Combined outputs: `markdown_sentence_index_all.csv` and `markdown_sentence_index_manifest.json`.
+- Sentence IDs are deterministic per source markdown file: `[S000001]`, `[S000002]`, etc.
+- `global_sentence_id` values use `<source_md_id>:<sentence_id>`, for example `QS_2026:S000145`.
+- Table rows such as pipe tables and table separator rows are excluded by design.
+
+## `paper_source_context.json`
+
+Minimum expectations:
+
+- Describes the selected `paper_folder` as one paper-level document package with one `Paper_ID`.
+- Lists source documents discovered under the folder with `source_doc_id`, `source_document_type`, `source_md_path`, optional `source_pdf_path`, `source_md_id`, `title`, `doi`, and `priority`.
+- `source_document_type` values include `main_article`, `supplementary_information`, `source_data`, `reporting_summary`, or `unknown`.
+- Global methods/protocol evidence may cross source documents within this same paper package, but evidence must not be merged across different paper folders.
+
+## `unified_extraction_figure_evidence_map.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Figure/item-level bridge table connecting each `evidence_id` to the LNPDB scientific condition, formulation, and Excel-backed metric/value columns it supports.
+- Required fields include `Paper_ID`, `Item_ID`, `evidence_id`, `supported_columns`, `supported_column_count`, `supported_row_ids`, `supported_formulation_ids`, `support_scope`, optional `evidence_sentence_ids`, optional `evidence_summary`, `confidence`, `manual_required`, and `reason`.
+- `supported_columns` contains pipe-separated LNPDB scientific condition/formulation columns and Excel-backed value columns only. Semicolon-separated legacy files remain readable. It must not contain administrative, provenance, or reason columns.
+- Excel value evidence may support `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` when `evidence_source_type` is `excel_block_value` or `source_data_excel`.
+- At least one evidence map row should exist for each `Item_ID` with non-empty scientific condition/formulation/value columns, unless the item is a manual-review placeholder.
+- This is intentionally not a per-cell evidence table. UI lookup can use: `row_id + Item_ID + column_name -> figure_evidence_map rows whose supported_columns include column_name -> evidence_id -> source_evidence evidence_sentence_ids -> markdown_sentence_index`.
+- `methods_global` evidence may support rows whose figures came from a different source document in the same paper package. For example, main-article LNP preparation sentences can support supplementary LNP rows with populated `Aqueous_buffer`, `Dialysis_buffer`, and `Mixing_method`.
+- Global LNP preparation evidence should not be attached to PBS-only, untreated, free drug, or free mRNA rows unless the row is explicitly an LNP/pLNP formulation row.
+
+
+ succeeded in 230ms:
+
+
+    디렉터리: F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel
+
+
+Mode          LastWriteTime Length Name                           
+----          ------------- ------ ----                           
+------ 2026-05-24  오전 11:32 280195 41565_2025_2102_MOESM7_ESM.xlsx
+------ 2026-05-24  오전 11:25  32088 41565_2025_2102_MOESM5_ESM.xlsx
+------ 2026-05-24  오전 11:26 226279 41565_2025_2102_MOESM6_ESM.xlsx
+------ 2026-05-24  오전 11:33  13780 41565_2025_2102_MOESM3_ESM.xlsx
+------ 2026-05-24  오전 11:33  23573 41565_2025_2102_MOESM4_ESM.xlsx
+
+
+
+ succeeded in 232ms:
+
+
+    디렉터리: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+
+
+Mode          LastWriteTime   Length Name                          
+----          -------------   ------ ----                          
+d----- 2026-06-29   오전 1:43          41565_2025_2102_MOESM1_ESM    
+d----- 2026-06-29   오전 1:43          Exp_Excel                     
+d----- 2026-06-29   오전 1:43          QS_2026                       
+------ 2026-06-28  오후 11:56      262 .manual_select_review_done    
+------ 2026-05-23  오전 11:40 21789001 41565_2025_2102_MOESM1_ESM.pdf
+------ 2026-05-30  오후 12:28    48695 fig_table_inventory.csv       
+------ 2026-06-29   오후 3:20    60452 fig_table_lnpdb_classified.csv
+------ 2026-05-23  오전 11:34  6293942 QS_2026.pdf                   
+------ 2026-06-29   오후 5:34     1207 paper_source_context.json     
+------ 2026-06-29   오후 7:01    54123 total_figure_mapping.json     
+
+
+
+codex
+The required gate file and five workbooks are present. I’m checking the runner’s validation logic and the legacy deterministic splitter shape so the generated CSV/JSON matches what this repo expects.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'rg -n "03_split_excel_blocks_batch|excel_block_inventory|three_core_result_all|Exp_Excel_Blocks" Agent_Task_Runner.py agent_workspace -g "*.py" -g "*.md"' in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 150ms:
+Agent_Task_Runner.py:57:    "03_split_excel_blocks_batch",
+Agent_Task_Runner.py:68:    "03_split_excel_blocks_batch",
+Agent_Task_Runner.py:79:    "03_split_excel_blocks_batch": "external_agent",
+Agent_Task_Runner.py:102:    "03_split_excel_blocks_batch": [
+Agent_Task_Runner.py:103:        "agent_workspace/legacy_context/by_stage/03_split_excel_blocks_batch/README.md",
+Agent_Task_Runner.py:105:        "agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py",
+Agent_Task_Runner.py:136:    "03_split_excel_blocks_batch",
+Agent_Task_Runner.py:179:    "03_split_excel_blocks_batch": {
+Agent_Task_Runner.py:180:        "script": "0_mark_down_gen/03_split_excel_blocks_batch.py",
+Agent_Task_Runner.py:181:        "outputs": ["excel_block_inventory.csv", "three_core_result_all.json", "Exp_Excel_Blocks"],
+Agent_Task_Runner.py:430:    "Exp_Excel_Blocks",
+Agent_Task_Runner.py:1422:    elif stage == "03_split_excel_blocks_batch":
+Agent_Task_Runner.py:1430:        content = f"""# External Agent Task: 03_split_excel_blocks_batch
+Agent_Task_Runner.py:1445:- `{paper_folder / "Exp_Excel_Blocks"}`
+Agent_Task_Runner.py:1446:- `{paper_folder / "excel_block_inventory.csv"}`
+Agent_Task_Runner.py:1447:- `{paper_folder / "three_core_result_all.json"}`
+Agent_Task_Runner.py:1455:6. Save each block CSV under `Exp_Excel_Blocks/`.
+Agent_Task_Runner.py:1456:7. Create `excel_block_inventory.csv` with required columns:
+Agent_Task_Runner.py:1472:9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+Agent_Task_Runner.py:1477:python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "{paper_folder}"
+Agent_Task_Runner.py:1481:- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+Agent_Task_Runner.py:1552:        require_existing_file(paper_folder / "excel_block_inventory.csv", stage)
+Agent_Task_Runner.py:1564:- `{paper_folder / "excel_block_inventory.csv"}`
+Agent_Task_Runner.py:1574:3. Read `excel_block_inventory.csv`.
+Agent_Task_Runner.py:1663:        require_existing_file(paper_folder / "excel_block_inventory.csv", stage)
+Agent_Task_Runner.py:1664:        if not (paper_folder / "Exp_Excel_Blocks").is_dir():
+Agent_Task_Runner.py:1665:            raise FileNotFoundError(f"{stage} requires a directory: {paper_folder / 'Exp_Excel_Blocks'}")
+Agent_Task_Runner.py:1719:- `{paper_folder / "excel_block_inventory.csv"}`
+Agent_Task_Runner.py:1720:- `{paper_folder / "Exp_Excel_Blocks"}`
+Agent_Task_Runner.py:1803:5. Extract experimental numeric assay/readout values only from mapped Excel/source-data blocks (`Exp_Excel_Blocks/`, source-data Excel files, `excel_mapping.json`, `excel_mapping_rows.csv`, and referenced `block_csv_path` files).
+Agent_Task_Runner.py:2050:            "excel_block_inventory.csv",
+Agent_Task_Runner.py:2095:    block_root = paper_folder / "Exp_Excel_Blocks"
+Agent_Task_Runner.py:2125:                rel_dir = Path("Exp_Excel_Blocks") / safe_name(excel_file.stem) / safe_name(sheet_name)
+Agent_Task_Runner.py:2165:    write_csv_dicts(paper_folder / "excel_block_inventory.csv", inventory_rows, fieldnames)
+Agent_Task_Runner.py:2166:    write_json(paper_folder / "three_core_result_all.json", summary)
+Agent_Task_Runner.py:3949:    inventory = paper_folder / "excel_block_inventory.csv"
+Agent_Task_Runner.py:4026:    if stage == "03_split_excel_blocks_batch":
+Agent_Task_Runner.py:4281:    if stage == "03_split_excel_blocks_batch":
+Agent_Task_Runner.py:4282:        inv = paper_folder / "excel_block_inventory.csv"
+Agent_Task_Runner.py:4283:        summary = paper_folder / "three_core_result_all.json"
+Agent_Task_Runner.py:4284:        block_dir = paper_folder / "Exp_Excel_Blocks"
+Agent_Task_Runner.py:4595:        "excel_block_inventory.csv": (paper_folder / "excel_block_inventory.csv").exists(),
+Agent_Task_Runner.py:4700:    if stage == "03_split_excel_blocks_batch":
+Agent_Task_Runner.py:4701:        module = import_module_from_path("stage_03_split_excel_blocks_batch", script)
+agent_workspace\TROUBLESHOOTING.md:19:- The failure appears while running `03_figure_mapping`, `03_split_excel_blocks_batch`, `04_figure_separate`, or `04_ft_excel_matcher`.
+agent_workspace\TROUBLESHOOTING.md:101:- `excel_block_inventory.csv` exists but listed block CSVs do not.
+agent_workspace\TROUBLESHOOTING.md:105:- Check `Exp_Excel_Blocks/`.
+agent_workspace\TROUBLESHOOTING.md:106:- Rerun `03_split_excel_blocks_batch` only after checking whether save failed or inventory paths are stale.
+agent_workspace\TROUBLESHOOTING.md:137:- Validate `excel_mapping.json` and `excel_block_inventory.csv`.
+agent_workspace\TROUBLESHOOTING.md:147:- Revalidate `excel_block_inventory.csv`.
+agent_workspace\TROUBLESHOOTING.md:148:- Confirm files exist under `Exp_Excel_Blocks/`.
+agent_workspace\OUTPUT_SCHEMA.md:91:## `excel_block_inventory.csv`
+agent_workspace\OUTPUT_SCHEMA.md:111:- `Exp_Excel_Blocks/` exists when rows exist.
+agent_workspace\OUTPUT_SCHEMA.md:113:## `three_core_result_all.json`
+agent_workspace\OUTPUT_SCHEMA.md:142:      "block_csv_path": "Exp_Excel_Blocks/source/Sheet1/block.csv",
+agent_workspace\tools\build_unified_extraction_qs2026.py:1305:                        "excel_block_inventory.csv",
+agent_workspace\tools\build_legacy_context.py:34:    "Exp_Excel_Blocks",
+agent_workspace\tools\build_legacy_context.py:75:    "03_split_excel_blocks_batch": {
+agent_workspace\tools\build_legacy_context.py:79:            "full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py",
+agent_workspace\tools\build_legacy_context.py:263:            "agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py",
+agent_workspace\tools\api_free_excel_block_splitter.py:4:03_split_excel_blocks_batch.py script. It wraps the deterministic workbook
+agent_workspace\tools\api_free_excel_block_splitter.py:78:    backup_root = paper_folder / "_agent_backups" / f"03_split_excel_blocks_batch_{timestamp}"
+agent_workspace\tools\api_free_excel_block_splitter.py:80:    for name in ("excel_block_inventory.csv", "three_core_result_all.json", "Exp_Excel_Blocks"):
+agent_workspace\tools\api_free_excel_block_splitter.py:245:    block_root = paper_folder / "Exp_Excel_Blocks"
+agent_workspace\tools\api_free_excel_block_splitter.py:298:                rel_dir = Path("Exp_Excel_Blocks") / safe_name(excel_file.stem) / safe_name(sheet_name)
+agent_workspace\tools\api_free_excel_block_splitter.py:360:    write_csv_dicts(paper_folder / "excel_block_inventory.csv", inventory_rows, INVENTORY_FIELDS)
+agent_workspace\tools\api_free_excel_block_splitter.py:361:    write_json(paper_folder / "three_core_result_all.json", summary_rows)
+agent_workspace\tools\api_free_excel_block_splitter.py:368:            rel_to_paper(paper_folder / "excel_block_inventory.csv", paper_folder),
+agent_workspace\tools\api_free_excel_block_splitter.py:369:            rel_to_paper(paper_folder / "three_core_result_all.json", paper_folder),
+agent_workspace\legacy_context\LEGACY_CODE_INDEX.md:9:| `03_split_excel_blocks_batch` | `full_copy/0_mark_down_gen/03_split_excel_blocks.py`<br>`full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py`<br>`full_copy/0_mark_down_gen/sheet_block_splitter.py` | Excel/source-data sheet splitting, block IDs, block previews, and deterministic helper conventions. | read-only reference | Do not execute/import Gemini/API-dependent scripts. |
+agent_workspace\STAGE_CONTRACTS.md:141:- Treat as utility-stage failure and run/fix `03_split_excel_blocks_batch` only after import and input checks pass.
+agent_workspace\STAGE_CONTRACTS.md:143:## 03_split_excel_blocks_batch
+agent_workspace\STAGE_CONTRACTS.md:151:python Agent_Task_Runner.py run --stage 03_split_excel_blocks_batch --paper-folder "<PAPER_FOLDER>"
+agent_workspace\STAGE_CONTRACTS.md:155:- `excel_block_inventory.csv`
+agent_workspace\STAGE_CONTRACTS.md:156:- `three_core_result_all.json`
+agent_workspace\STAGE_CONTRACTS.md:157:- `Exp_Excel_Blocks/`
+agent_workspace\STAGE_CONTRACTS.md:163:- `Exp_Excel_Blocks/` exists when inventory has rows.
+agent_workspace\STAGE_CONTRACTS.md:206:- required: `.manual_select_review_done`, `fig_table_lnpdb_classified.csv`, `fig_table_inventory.csv`, `excel_block_inventory.csv`
+agent_workspace\STAGE_CONTRACTS.md:260:- required: `.manual_select_review_done`, `fig_table_lnpdb_classified.csv`, `total_figure_mapping.json`, `excel_mapping.json`, `excel_block_inventory.csv`, `Exp_Excel_Blocks/`, markdown files
+agent_workspace\STAGE_CONTRACTS.md:302:- Check `block_csv_path` files under `Exp_Excel_Blocks/`.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:1:# External Agent Task: 03_split_excel_blocks_batch
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:20:- `F:\내 드라이브\EXTRACT-TEST\QS_2026\Exp_Excel_Blocks`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:21:- `F:\내 드라이브\EXTRACT-TEST\QS_2026\excel_block_inventory.csv`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:22:- `F:\내 드라이브\EXTRACT-TEST\QS_2026\three_core_result_all.json`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:30:6. Save each block CSV under `Exp_Excel_Blocks/`.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:31:7. Create `excel_block_inventory.csv` with required columns:
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:47:9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:52:python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026"
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026.md:56:- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:1:# External Agent Task: 03_split_excel_blocks_batch
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:20:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_1\Exp_Excel_Blocks`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:21:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_1\excel_block_inventory.csv`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:22:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_1\three_core_result_all.json`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:30:6. Save each block CSV under `Exp_Excel_Blocks/`.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:31:7. Create `excel_block_inventory.csv` with required columns:
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:47:9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:52:python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026_1"
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_1.md:56:- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+agent_workspace\AGENT_INSTRUCTIONS.md:61:`03_figure_mapping`, `03_split_excel_blocks`, `03_split_excel_blocks_batch`, `04_figure_separate`, `04_ft_excel_matcher`, `05_smiles_structure_resolution`, `06_unified_lnpdb_extraction`, and `07_finalize_unified_table` are active agent stages. The coding agent may run these after manual review is complete.
+agent_workspace\AGENT_INSTRUCTIONS.md:73:For the API-free workflow, use `03_figure_mapping`, `03_split_excel_blocks_batch`, `04_figure_separate`, `04_ft_excel_matcher`, `05_smiles_structure_resolution`, and `06_unified_lnpdb_extraction` in `external_agent` mode where judgment is needed; `07_finalize_unified_table` defaults to `heuristic`. These modes must not import the legacy Gemini scripts:
+agent_workspace\AGENT_INSTRUCTIONS.md:76:- `0_mark_down_gen/03_split_excel_blocks_batch.py`
+agent_workspace\RUNBOOK.md:68:Current 06 behavior extracts condition + formulation rows and may populate experimental assay/readout value columns only from reliable mapped Excel/source-data blocks. Populate `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` only when the value is backed by `Exp_Excel_Blocks/`, source-data Excel, `excel_mapping.json`, `excel_mapping_rows.csv`, or a referenced `block_csv_path`.
+agent_workspace\RUNBOOK.md:88:python Agent_Task_Runner.py run --stage 03_split_excel_blocks_batch --paper-folder "<PAPER_FOLDER>"
+agent_workspace\PIPELINE_SPEC.md:99:- Expected output files: This file primarily supplies functions; current artifact generation is handled by `03_split_excel_blocks_batch.py`.
+agent_workspace\PIPELINE_SPEC.md:108:### 03_split_excel_blocks_batch
+agent_workspace\PIPELINE_SPEC.md:111:- Script: `0_mark_down_gen/03_split_excel_blocks_batch.py`
+agent_workspace\PIPELINE_SPEC.md:113:- Expected output files: `excel_block_inventory.csv`, `three_core_result_all.json`, `Exp_Excel_Blocks/`, optional `excel_block_usage_inventory.csv`.
+agent_workspace\PIPELINE_SPEC.md:115:  - `excel_block_inventory.csv` exists and has at least one row when Excel inputs exist.
+agent_workspace\PIPELINE_SPEC.md:117:  - `Exp_Excel_Blocks/` contains saved block CSV/JSON files.
+agent_workspace\PIPELINE_SPEC.md:151:- Required input files: `fig_table_lnpdb_classified.csv`, `fig_table_inventory.csv`, `excel_block_inventory.csv`, block CSV files, source PDFs.
+agent_workspace\PIPELINE_SPEC.md:189:- Required input files: `.manual_select_review_done`, `fig_table_lnpdb_classified.csv`, `total_figure_mapping.json`, `excel_mapping.json`, `excel_block_inventory.csv`, `Exp_Excel_Blocks/`, markdown files.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:1:# External Agent Task: 03_split_excel_blocks_batch
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:20:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel_Blocks`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:21:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:22:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\three_core_result_all.json`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:30:6. Save each block CSV under `Exp_Excel_Blocks/`.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:31:7. Create `excel_block_inventory.csv` with required columns:
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:47:9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:52:python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026_3"
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:56:- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:64:- `agent_workspace/legacy_context/by_stage/03_split_excel_blocks_batch/README.md` (exists)
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md:66:- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py` (exists)
+agent_workspace\tasks\04_ft_excel_matcher_QS_2026.md:12:- `F:\내 드라이브\EXTRACT-TEST\QS_2026\excel_block_inventory.csv`
+agent_workspace\tasks\04_ft_excel_matcher_QS_2026.md:22:3. Read `excel_block_inventory.csv`.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:1:# External Agent Task: 03_split_excel_blocks_batch
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:20:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_2\Exp_Excel_Blocks`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:21:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_2\excel_block_inventory.csv`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:22:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_2\three_core_result_all.json`
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:30:6. Save each block CSV under `Exp_Excel_Blocks/`.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:31:7. Create `excel_block_inventory.csv` with required columns:
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:47:9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:52:python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026_2"
+agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_2.md:56:- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+agent_workspace\tasks\04_ft_excel_matcher_QS_2026_1.md:12:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_1\excel_block_inventory.csv`
+agent_workspace\tasks\04_ft_excel_matcher_QS_2026_1.md:22:3. Read `excel_block_inventory.csv`.
+agent_workspace\tasks\04_ft_excel_matcher_QS_2026_2.md:12:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_2\excel_block_inventory.csv`
+agent_workspace\tasks\04_ft_excel_matcher_QS_2026_2.md:22:3. Read `excel_block_inventory.csv`.
+agent_workspace\tasks\04_ft_excel_matcher_QS_2026_3.md:12:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+agent_workspace\tasks\04_ft_excel_matcher_QS_2026_3.md:22:3. Read `excel_block_inventory.csv`.
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_3.md:13:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_3.md:14:- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel_Blocks`
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_3.md:147:5. Extract experimental numeric assay/readout values only from mapped Excel/source-data blocks (`Exp_Excel_Blocks/`, source-data Excel files, `excel_mapping.json`, `excel_mapping_rows.csv`, and referenced `block_csv_path` files).
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_2.md:13:- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_2\excel_block_inventory.csv`
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_2.md:14:- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_2\Exp_Excel_Blocks`
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_2.md:671:5. Extract experimental numeric assay/readout values only from mapped Excel/source-data blocks (`Exp_Excel_Blocks/`, source-data Excel files, `excel_mapping.json`, `excel_mapping_rows.csv`, and referenced `block_csv_path` files).
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_1.md:13:- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_1\excel_block_inventory.csv`
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_1.md:14:- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_1\Exp_Excel_Blocks`
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026_1.md:192:5. Extract experimental numeric assay/readout values only from mapped Excel/source-data blocks (`Exp_Excel_Blocks/`, source-data Excel files, `excel_mapping.json`, `excel_mapping_rows.csv`, and referenced `block_csv_path` files).
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026.md:13:- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026\excel_block_inventory.csv`
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026.md:14:- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026\Exp_Excel_Blocks`
+agent_workspace\tasks\06_unified_lnpdb_extraction_QS_2026.md:144:5. Extract experimental numeric assay/readout values only from mapped Excel/source-data blocks (`Exp_Excel_Blocks/`, source-data Excel files, `excel_mapping.json`, `excel_mapping_rows.csv`, and referenced `block_csv_path` files).
+agent_workspace\legacy_context\full_copy\0_mark_down_gen\04_FT-Excel_matcher.py:90:    inventory_path = folder / "excel_block_inventory.csv"
+agent_workspace\legacy_context\full_copy\0_mark_down_gen\04_FT-Excel_matcher.py:241:        raise FileNotFoundError("excel_block_inventory.csv has no readable blocks")
+agent_workspace\legacy_context\full_copy\0_mark_down_gen\04_figure_saperate_gemini.py:45:    "Exp_Excel_Blocks",
+agent_workspace\legacy_context\full_copy\0_mark_down_gen\03_split_excel_blocks_batch.py:1344:    out_dir = folder / "Exp_Excel_Blocks" / Path(excel_file).stem / safe_sheet
+agent_workspace\legacy_context\full_copy\0_mark_down_gen\03_split_excel_blocks_batch.py:1459:    (folder / "three_core_result_all.json").write_text(json.dumps(all_results, ensure_ascii=False, indent=2), encoding="utf-8")
+agent_workspace\legacy_context\full_copy\0_mark_down_gen\03_split_excel_blocks_batch.py:1461:        pd.DataFrame(inventory_rows).to_csv(folder / "excel_block_inventory.csv", index=False, encoding="utf-8-sig")
+agent_workspace\legacy_context\full_copy\0_mark_down_gen\03_split_excel_blocks_batch.py:1464:    return {"summary_path": str(folder / "three_core_result_all.json"), "inventory_path": str(folder / "excel_block_inventory.csv"), "usage_inventory_path": str(folder / "excel_block_usage_inventory.csv"), "block_count": len(inventory_rows)}
+agent_workspace\legacy_context\by_stage\03_split_excel_blocks_batch\README.md:1:# 03_split_excel_blocks_batch
+agent_workspace\legacy_context\by_stage\03_split_excel_blocks_batch\README.md:7:- `full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py`
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw agent_workspace\\legacy_context\\full_copy\\0_mark_down_gen\\sheet_block_splitter.py" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -Force \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\\Exp_Excel_Blocks\" -ErrorAction SilentlyContinue | Select-Object -First 20 | Format-Table -AutoSize" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw agent_workspace\\legacy_context\\by_stage\\03_split_excel_blocks_batch\\README.md" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 158ms:
+# 03_split_excel_blocks_batch
+
+Purpose: Excel/source-data sheet splitting, block IDs, block previews, and deterministic helper conventions.
+
+Reference paths:
+- `full_copy/0_mark_down_gen/03_split_excel_blocks.py`
+- `full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py`
+- `full_copy/0_mark_down_gen/sheet_block_splitter.py`
+
+Allowed use:
+- Read-only reference for prior deterministic logic, expected output shapes, and naming conventions.
+
+Do not use:
+- `find_api.py`
+- `LLM_API.py`
+- `LLM_Batch.py`
+- `google.genai`
+- `Vertex/Gemini/GCS code`
+- Do not execute or import Gemini/API-dependent scripts in active workflow.
+
+Notes:
+Read for prior Excel block shape and naming conventions. Do not execute API-dependent paths.
+
+
+ succeeded in 162ms:
+from pathlib import Path
+
+import pandas as pd
+from openpyxl import load_workbook
+
+
+def normalize_cell_text(v) -> str:
+    if v is None:
+        return ""
+    s = str(v).strip()
+    if s.lower() in {"nan", "none", "null"}:
+        return ""
+    return s
+
+
+def is_numeric_like(value: str) -> bool:
+    if value is None:
+        return False
+    s = str(value).strip()
+    if s == "":
+        return False
+    s_lower = s.lower()
+    if s_lower in {"nan", "na", "n/a", "none", "null", "inf", "-inf"}:
+        return True
+    s_clean = s.replace(",", "")
+    percent_clean = s_clean[:-1] if s_clean.endswith("%") else s_clean
+    import re
+    sci_pattern = r'^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$'
+    if re.fullmatch(sci_pattern, percent_clean):
+        return True
+    frac_pattern = r'^[+-]?\d+\s*/\s*[+-]?\d+$'
+    if re.fullmatch(frac_pattern, s_clean):
+        return True
+    return False
+
+
+def load_sheet_df_and_ws(excel_path: Path, sheet_name: str):
+    suffix = excel_path.suffix.lower()
+    if suffix == ".csv":
+        df = pd.read_csv(excel_path, dtype=str).fillna("")
+        return df, None
+    df = pd.read_excel(excel_path, sheet_name=sheet_name, dtype=str).fillna("")
+    wb = load_workbook(excel_path, data_only=True)
+    if sheet_name not in wb.sheetnames:
+        raise ValueError(f"?쒗듃瑜?李얠쓣 ???놁뒿?덈떎: {sheet_name}")
+    ws = wb[sheet_name]
+    return df, ws
+
+
+def build_ws_grid(ws):
+    max_row = ws.max_row
+    max_col = ws.max_column
+    merged_map = {}
+    for mr in ws.merged_cells.ranges:
+        min_col, min_row, max_col_r, max_row_r = mr.bounds
+        anchor_val = ws.cell(min_row, min_col).value
+        for r in range(min_row, max_row_r + 1):
+            for c in range(min_col, max_col_r + 1):
+                merged_map[(r, c)] = {
+                    "anchor": (min_row, min_col),
+                    "range": (min_row, max_row_r, min_col, max_col_r),
+                    "value": anchor_val,
+                }
+    cells = {}
+    for r in range(1, max_row + 1):
+        for c in range(1, max_col + 1):
+            cell = ws.cell(r, c)
+            raw_value = cell.value
+            merged_info = merged_map.get((r, c))
+            display_value = merged_info["value"] if merged_info else raw_value
+            display_text = normalize_cell_text(display_value)
+            border = cell.border
+            fill = cell.fill
+            font = cell.font
+            has_border = False
+            if border:
+                for side in [border.left, border.right, border.top, border.bottom]:
+                    if side and side.style not in (None, ""):
+                        has_border = True
+                        break
+            has_fill = False
+            if fill and getattr(fill, "fill_type", None):
+                if fill.fill_type not in (None, "", "none"):
+                    has_fill = True
+            is_bold = bool(font and getattr(font, "bold", False))
+            is_merged = merged_info is not None
+            is_numeric = is_numeric_like(display_text)
+            occupied = bool(display_text)
+            cells[(r, c)] = {
+                "row": r,
+                "col": c,
+                "value": raw_value,
+                "display_value": display_text,
+                "is_empty": (display_text == ""),
+                "is_numeric": is_numeric,
+                "is_merged": is_merged,
+                "merged_range": merged_info["range"] if merged_info else None,
+                "has_border": has_border,
+                "has_fill": has_fill,
+                "is_bold": is_bold,
+                "occupied": occupied,
+            }
+    return {"cells": cells, "max_row": max_row, "max_col": max_col}
+
+
+
+def build_occupancy_mask(grid):
+    max_row = grid["max_row"]
+    max_col = grid["max_col"]
+    mask = [[0] * (max_col + 1) for _ in range(max_row + 1)]
+    for (r, c), info in grid["cells"].items():
+        if info["occupied"]:
+            mask[r][c] = 1
+    return mask
+
+
+def expand_component_coords(grid, coords):
+    expanded = set(coords)
+    for r, c in list(expanded):
+        info = grid["cells"].get((r, c)) or {}
+        merged_range = info.get("merged_range")
+        if not merged_range:
+            continue
+        mr1, mr2, mc1, mc2 = merged_range
+        for rr in range(mr1, mr2 + 1):
+            for cc in range(mc1, mc2 + 1):
+                expanded.add((rr, cc))
+    return expanded
+
+
+def extract_component_df_from_ws(ws, grid, coords):
+    if not coords:
+        return pd.DataFrame(), None
+
+    expanded = expand_component_coords(grid, coords)
+    bbox = trim_empty_edges(grid, bbox_from_coords(list(expanded)))
+    if bbox["r1"] > bbox["r2"] or bbox["c1"] > bbox["c2"]:
+        return pd.DataFrame(), bbox
+
+    component_cells = set(expanded)
+    full_df = extract_block_df_from_ws(ws, bbox).fillna("")
+    rows = bbox["r2"] - bbox["r1"] + 1
+    cols = bbox["c2"] - bbox["c1"] + 1
+    canvas = pd.DataFrame("", index=range(rows), columns=range(cols))
+
+    for abs_r, abs_c in component_cells:
+        if not (bbox["r1"] <= abs_r <= bbox["r2"] and bbox["c1"] <= abs_c <= bbox["c2"]):
+            continue
+        local_r = abs_r - bbox["r1"]
+        local_c = abs_c - bbox["c1"]
+        if local_r < full_df.shape[0] and local_c < full_df.shape[1]:
+            canvas.iat[local_r, local_c] = full_df.iat[local_r, local_c]
+
+    return canvas, bbox
+
+
+def build_numeric_mask(grid, bbox=None):
+    max_row = grid["max_row"]
+    max_col = grid["max_col"]
+    mask = [[0] * (max_col + 1) for _ in range(max_row + 1)]
+    if bbox is None:
+        r1, r2, c1, c2 = 1, max_row, 1, max_col
+    else:
+        r1, r2, c1, c2 = bbox["r1"], bbox["r2"], bbox["c1"], bbox["c2"]
+    for r in range(r1, r2 + 1):
+        for c in range(c1, c2 + 1):
+            info = grid["cells"][(r, c)]
+            if info["is_numeric"]:
+                mask[r][c] = 1
+    return mask
+
+
+def count_empty_rows_between(grid, upper_row: int, lower_row: int, c1: int, c2: int) -> int:
+    if lower_row <= upper_row + 1:
+        return 0
+    gap = 0
+    for rr in range(upper_row + 1, lower_row):
+        has_any = any(grid["cells"][(rr, cc)]["occupied"] for cc in range(c1, c2 + 1))
+        if has_any:
+            break
+        gap += 1
+    return gap
+
+
+def count_empty_cols_between(grid, left_col: int, right_col: int, r1: int, r2: int) -> int:
+    if right_col <= left_col + 1:
+        return 0
+    gap = 0
+    for cc in range(left_col + 1, right_col):
+        has_any = any(grid["cells"][(rr, cc)]["occupied"] for rr in range(r1, r2 + 1))
+        if has_any:
+            break
+        gap += 1
+    return gap
+
+
+def find_numeric_body_bbox(grid, bbox):
+    numeric_mask = build_numeric_mask(grid, bbox)
+    comps = connected_components(numeric_mask, grid["max_row"], grid["max_col"])
+    inside = []
+    for comp in comps:
+        comp = [(r, c) for r, c in comp if bbox["r1"] <= r <= bbox["r2"] and bbox["c1"] <= c <= bbox["c2"]]
+        if not comp:
+            continue
+        comp_bbox = bbox_from_coords(comp)
+        n_rows = comp_bbox["r2"] - comp_bbox["r1"] + 1
+        n_cols = comp_bbox["c2"] - comp_bbox["c1"] + 1
+        score = len(comp)
+        inside.append((score, n_rows, n_cols, comp_bbox))
+    if not inside:
+        return None
+    inside.sort(key=lambda x: (x[0], x[1], x[2]), reverse=True)
+    return inside[0][3]
+
+
+def compute_relative_numeric_body_features(bbox, numeric_body_bbox):
+    if not numeric_body_bbox:
+        return {
+            "has_numeric_body": False,
+            "numeric_body_bbox": None,
+            "title_to_body_gap_rows": None,
+            "left_body_margin_cols": None,
+        }
+    return {
+        "has_numeric_body": True,
+        "numeric_body_bbox": numeric_body_bbox,
+        "title_to_body_gap_rows": max(0, numeric_body_bbox["r1"] - bbox["r1"]),
+        "left_body_margin_cols": max(0, numeric_body_bbox["c1"] - bbox["c1"]),
+    }
+
+
+def dilate_mask(mask, max_row, max_col, row_radius=0, col_radius=1):
+    out = [[0] * (max_col + 1) for _ in range(max_row + 1)]
+    for r in range(1, max_row + 1):
+        for c in range(1, max_col + 1):
+            if mask[r][c] != 1:
+                continue
+            for rr in range(max(1, r - row_radius), min(max_row, r + row_radius) + 1):
+                for cc in range(max(1, c - col_radius), min(max_col, c + col_radius) + 1):
+                    out[rr][cc] = 1
+    return out
+
+
+def connected_components(mask, max_row, max_col):
+    visited = [[False] * (max_col + 1) for _ in range(max_row + 1)]
+    components = []
+    for r in range(1, max_row + 1):
+        for c in range(1, max_col + 1):
+            if mask[r][c] != 1 or visited[r][c]:
+                continue
+            stack = [(r, c)]
+            visited[r][c] = True
+            coords = []
+            while stack:
+                cr, cc = stack.pop()
+                coords.append((cr, cc))
+                for nr, nc in ((cr - 1, cc), (cr + 1, cc), (cr, cc - 1), (cr, cc + 1)):
+                    if 1 <= nr <= max_row and 1 <= nc <= max_col and mask[nr][nc] == 1 and not visited[nr][nc]:
+                        visited[nr][nc] = True
+                        stack.append((nr, nc))
+            components.append(coords)
+    return components
+
+
+def bbox_from_coords(coords):
+    rows = [r for r, _ in coords]
+    cols = [c for _, c in coords]
+    return {"r1": min(rows), "r2": max(rows), "c1": min(cols), "c2": max(cols)}
+
+
+# --- Start containment helpers ---
+
+def is_bbox_contained(inner_bbox, outer_bbox):
+    return (
+        outer_bbox["r1"] <= inner_bbox["r1"] <= inner_bbox["r2"] <= outer_bbox["r2"]
+        and outer_bbox["c1"] <= inner_bbox["c1"] <= inner_bbox["c2"] <= outer_bbox["c2"]
+    )
+
+
+def merge_contained_raw_elements(raw_elements):
+    if not raw_elements:
+        return []
+
+    ordered = sorted(
+        raw_elements,
+        key=lambda x: (
+            -((x["bbox"]["r2"] - x["bbox"]["r1"] + 1) * (x["bbox"]["c2"] - x["bbox"]["c1"] + 1)),
+            x["bbox"]["r1"],
+            x["bbox"]["c1"],
+        )
+    )
+
+    kept = []
+    for elem in ordered:
+        contained_in_existing = False
+        for parent in kept:
+            if is_bbox_contained(elem["bbox"], parent["bbox"]):
+                parent.setdefault("contained_element_ids", [])
+                if elem.get("element_id"):
+                    parent["contained_element_ids"].append(elem.get("element_id"))
+                contained_in_existing = True
+                break
+        if not contained_in_existing:
+            elem.setdefault("contained_element_ids", [])
+            kept.append(elem)
+
+    return sorted(kept, key=lambda x: (x["bbox"]["r1"], x["bbox"]["c1"]))
+
+# --- End containment helpers ---
+
+
+def trim_empty_edges(grid, bbox):
+    r1, r2, c1, c2 = bbox["r1"], bbox["r2"], bbox["c1"], bbox["c2"]
+    def row_has_content(r):
+        return any(grid["cells"][(r, c)]["occupied"] for c in range(c1, c2 + 1))
+    def col_has_content(c):
+        return any(grid["cells"][(r, c)]["occupied"] for r in range(r1, r2 + 1))
+    while r1 <= r2 and not row_has_content(r1):
+        r1 += 1
+    while r2 >= r1 and not row_has_content(r2):
+        r2 -= 1
+    while c1 <= c2 and not col_has_content(c1):
+        c1 += 1
+    while c2 >= c1 and not col_has_content(c2):
+        c2 -= 1
+    return {"r1": r1, "r2": r2, "c1": c1, "c2": c2}
+
+
+def expand_block_context(grid, bbox, up_rows=2, left_cols=1):
+    max_row = grid["max_row"]
+    max_col = grid["max_col"]
+    r1, r2, c1, c2 = bbox["r1"], bbox["r2"], bbox["c1"], bbox["c2"]
+    for rr in range(max(1, r1 - up_rows), r1):
+        row_text_cells = row_bold_cells = row_merged_cells = overlap_cols = 0
+        for cc in range(c1, c2 + 1):
+            info = grid["cells"][(rr, cc)]
+            if info["display_value"]:
+                row_text_cells += 1
+            if info["is_bold"]:
+                row_bold_cells += 1
+            if info["is_merged"]:
+                row_merged_cells += 1
+            if info["occupied"]:
+                overlap_cols += 1
+        if row_text_cells > 0 and (row_bold_cells > 0 or row_merged_cells > 0 or overlap_cols >= max(1, (c2 - c1 + 1) // 3)):
+            r1 = rr
+    for cc in range(max(1, c1 - left_cols), c1):
+        col_text_cells = 0
+        for rr in range(r1, r2 + 1):
+            if grid["cells"][(rr, cc)]["display_value"]:
+                col_text_cells += 1
+        if col_text_cells > 0:
+            c1 = cc
+    return {"r1": max(1, r1), "r2": min(max_row, r2), "c1": max(1, c1), "c2": min(max_col, c2)}
+
+
+def extract_block_df_from_ws(ws, bbox):
+    r1, r2, c1, c2 = bbox["r1"], bbox["r2"], bbox["c1"], bbox["c2"]
+    merged_map = {}
+    for mr in ws.merged_cells.ranges:
+        min_col, min_row, max_col_r, max_row_r = mr.bounds
+        anchor_val = ws.cell(min_row, min_col).value
+        for r in range(min_row, max_row_r + 1):
+            for c in range(min_col, max_col_r + 1):
+                merged_map[(r, c)] = anchor_val
+    rows = []
+    for r in range(r1, r2 + 1):
+        row_vals = []
+        for c in range(c1, c2 + 1):
+            v = merged_map[(r, c)] if (r, c) in merged_map else ws.cell(r, c).value
+            row_vals.append("" if v is None else str(v))
+        rows.append(row_vals)
+    return pd.DataFrame(rows).fillna("")
+
+
+def infer_block_title(ws, bbox):
+    r1, r2, c1, c2 = bbox["r1"], bbox["r2"], bbox["c1"], bbox["c2"]
+    title_candidates = []
+    for rr in range(r1, min(r1 + 2, r2) + 1):
+        texts = []
+        for cc in range(c1, c2 + 1):
+            s = normalize_cell_text(ws.cell(rr, cc).value)
+            if s:
+                texts.append(s)
+        if texts:
+            title_candidates.append(" | ".join(texts[:3]))
+    return title_candidates[0][:120] if title_candidates else f"R{r1}_C{c1}"
+
+
+def compute_block_features(grid, bbox):
+    r1, r2, c1, c2 = bbox["r1"], bbox["r2"], bbox["c1"], bbox["c2"]
+    n_rows = r2 - r1 + 1
+    n_cols = c2 - c1 + 1
+    total = max(1, n_rows * n_cols)
+    nonempty = numeric = text_cells = border_cells = fill_cells = bold_cells = merged_cells = 0
+    row_nonempty_counts = []
+    col_nonempty_counts = []
+    for r in range(r1, r2 + 1):
+        row_count = 0
+        for c in range(c1, c2 + 1):
+            info = grid["cells"][(r, c)]
+            if info["occupied"]:
+                nonempty += 1
+                row_count += 1
+            if info["is_numeric"]:
+                numeric += 1
+            if info["display_value"] and not info["is_numeric"]:
+                text_cells += 1
+            if info["has_border"]:
+                border_cells += 1
+            if info["has_fill"]:
+                fill_cells += 1
+            if info["is_bold"]:
+                bold_cells += 1
+            if info["is_merged"]:
+                merged_cells += 1
+        row_nonempty_counts.append(row_count)
+    for c in range(c1, c2 + 1):
+        col_count = 0
+        for r in range(r1, r2 + 1):
+            if grid["cells"][(r, c)]["occupied"]:
+                col_count += 1
+        col_nonempty_counts.append(col_count)
+    empty_rows_inside = sum(1 for x in row_nonempty_counts if x == 0)
+    empty_cols_inside = sum(1 for x in col_nonempty_counts if x == 0)
+    header_like_rows = 0
+    for r in range(r1, min(r1 + 3, r2) + 1):
+        txt = num = bold = 0
+        for c in range(c1, c2 + 1):
+            info = grid["cells"][(r, c)]
+            if info["display_value"] and not info["is_numeric"]:
+                txt += 1
+            if info["is_numeric"]:
+                num += 1
+            if info["is_bold"]:
+                bold += 1
+        if txt >= 1 and (bold >= 1 or txt >= num):
+            header_like_rows += 1
+    title_like_top_row = False
+    top_text = top_merged = top_bold = 0
+    for c in range(c1, c2 + 1):
+        info = grid["cells"][(r1, c)]
+        if info["display_value"]:
+            top_text += 1
+        if info["is_merged"]:
+            top_merged += 1
+        if info["is_bold"]:
+            top_bold += 1
+    title_like_top_row = (top_text > 0 and (top_merged > 0 or top_bold > 0))
+
+    numeric_body_bbox = find_numeric_body_bbox(grid, bbox)
+    numeric_body_features = compute_relative_numeric_body_features(bbox, numeric_body_bbox)
+
+    return {
+        "n_rows": n_rows, "n_cols": n_cols,
+        "nonempty_ratio": round(nonempty / total, 4),
+        "numeric_ratio": round(numeric / total, 4),
+        "text_ratio": round(text_cells / total, 4),
+        "border_ratio": round(border_cells / total, 4),
+        "fill_ratio": round(fill_cells / total, 4),
+        "bold_ratio": round(bold_cells / total, 4),
+        "merged_ratio": round(merged_cells / total, 4),
+        "empty_rows_inside": empty_rows_inside,
+        "empty_cols_inside": empty_cols_inside,
+        "header_like_rows": header_like_rows,
+        "title_like_top_row": title_like_top_row,
+        **numeric_body_features,
+    }
+
+
+def classify_block_route(block_obj):
+    f = block_obj["features"]
+    if f["n_rows"] < 1 or f["n_cols"] < 1:
+        return "skip", "too_small"
+    if f["nonempty_ratio"] < 0.08:
+        return "skip", "too_sparse"
+    if f["merged_ratio"] >= 0.08 or f["header_like_rows"] >= 2 or f["empty_cols_inside"] >= 1 or (f["title_like_top_row"] and f["n_rows"] >= 5):
+        return "41", "complex_layout"
+    return "40", "regular_table"
+
+
+def build_element_metadata(grid, elements):
+    ordered = sorted(elements, key=lambda x: (x["bbox"]["r1"], x["bbox"]["c1"]))
+    for idx, elem in enumerate(ordered, 1):
+        bbox = elem["bbox"]
+        prev_elem = ordered[idx - 2] if idx > 1 else None
+        next_elem = ordered[idx] if idx < len(ordered) else None
+
+        gap_rows_from_prev = None
+        gap_cols_from_prev = None
+        if prev_elem is not None:
+            prev_bbox = prev_elem["bbox"]
+            gap_rows_from_prev = count_empty_rows_between(
+                grid,
+                prev_bbox["r2"],
+                bbox["r1"],
+                min(prev_bbox["c1"], bbox["c1"]),
+                max(prev_bbox["c2"], bbox["c2"]),
+            )
+            gap_cols_from_prev = count_empty_cols_between(
+                grid,
+                prev_bbox["c2"],
+                bbox["c1"],
+                min(prev_bbox["r1"], bbox["r1"]),
+                max(prev_bbox["r2"], bbox["r2"]),
+            )
+
+        elem["reading_order_index"] = idx
+        elem["prev_element_id"] = prev_elem.get("element_id") if prev_elem else None
+        elem["next_element_id"] = next_elem.get("element_id") if next_elem else None
+        elem["gap_rows_from_prev"] = gap_rows_from_prev
+        elem["gap_cols_from_prev"] = gap_cols_from_prev
+        elem["element_hint"] = {
+            "has_numeric_body": elem["features"].get("has_numeric_body", False),
+            "title_to_body_gap_rows": elem["features"].get("title_to_body_gap_rows"),
+            "left_body_margin_cols": elem["features"].get("left_body_margin_cols"),
+        }
+    return ordered
+
+
+def group_elements_by_numeric_body(elements):
+    grouped = []
+    current = []
+    for elem in elements:
+        if not current:
+            current = [elem]
+            continue
+
+        prev = current[-1]
+        same_table_candidate = False
+        if prev["features"].get("has_numeric_body") and elem["features"].get("has_numeric_body"):
+            prev_gap = elem.get("gap_rows_from_prev")
+            prev_col_gap = elem.get("gap_cols_from_prev")
+            if prev_gap is not None and prev_gap <= 2:
+                same_table_candidate = True
+            if prev_col_gap is not None and prev_col_gap == 0 and abs(prev["bbox"]["r1"] - elem["bbox"]["r1"]) <= 2:
+                same_table_candidate = True
+
+        if same_table_candidate:
+            current.append(elem)
+        else:
+            grouped.append(current)
+            current = [elem]
+
+    if current:
+        grouped.append(current)
+
+    return grouped
+
+
+# --- Inserted helper functions ---
+
+
+def union_bbox(bboxes):
+    rows1 = [b["r1"] for b in bboxes]
+    rows2 = [b["r2"] for b in bboxes]
+    cols1 = [b["c1"] for b in bboxes]
+    cols2 = [b["c2"] for b in bboxes]
+    return {
+        "r1": min(rows1),
+        "r2": max(rows2),
+        "c1": min(cols1),
+        "c2": max(cols2),
+    }
+
+# --- Inserted helper functions ---
+
+def union_bbox_from_elements(elements):
+    return union_bbox([x["bbox"] for x in elements])
+
+
+def recompute_group_bbox(grid, group, include_intermediate_elements: bool = True):
+    base_bbox = union_bbox_from_elements(group)
+    r1, r2, c1, c2 = base_bbox["r1"], base_bbox["r2"], base_bbox["c1"], base_bbox["c2"]
+
+    if include_intermediate_elements:
+        group_rows = [x["bbox"]["r1"] for x in group] + [x["bbox"]["r2"] for x in group]
+        group_cols = [x["bbox"]["c1"] for x in group] + [x["bbox"]["c2"] for x in group]
+        r1, r2 = min(group_rows), max(group_rows)
+        c1, c2 = min(group_cols), max(group_cols)
+
+    merged_bbox = trim_empty_edges(grid, {"r1": r1, "r2": r2, "c1": c1, "c2": c2})
+    return merged_bbox
+
+
+def build_element_api_payload(elements):
+    payload = []
+    for elem in elements:
+        print(elem.get("element_id"))
+        payload.append({
+            "element_id": elem.get("element_id"),
+            "reading_order_index": elem.get("reading_order_index"),
+            "prev_element_id": elem.get("prev_element_id"),
+            "next_element_id": elem.get("next_element_id"),
+            "gap_rows_from_prev": elem.get("gap_rows_from_prev"),
+            "gap_cols_from_prev": elem.get("gap_cols_from_prev"),
+            "title_guess": elem.get("title_guess"),
+            "bbox": elem.get("bbox"),
+            "features": {
+                "n_rows": elem["features"].get("n_rows"),
+                "n_cols": elem["features"].get("n_cols"),
+                "nonempty_ratio": elem["features"].get("nonempty_ratio"),
+                "numeric_ratio": elem["features"].get("numeric_ratio"),
+                "header_like_rows": elem["features"].get("header_like_rows"),
+                "title_like_top_row": elem["features"].get("title_like_top_row"),
+                "has_numeric_body": elem["features"].get("has_numeric_body"),
+                "numeric_body_bbox": elem["features"].get("numeric_body_bbox"),
+                "title_to_body_gap_rows": elem["features"].get("title_to_body_gap_rows"),
+                "left_body_margin_cols": elem["features"].get("left_body_margin_cols"),
+            },
+        })
+    return payload
+
+
+def merge_element_group(ws, excel_path: Path, sheet_name: str, group_idx: int, group):
+    grid = build_ws_grid(ws)
+    merged_bbox = recompute_group_bbox(grid, group, include_intermediate_elements=True)
+    merged_df = extract_block_df_from_ws(ws, merged_bbox)
+    merged_bbox = trim_empty_edges(grid, merged_bbox)
+    merged_df = extract_block_df_from_ws(ws, merged_bbox)
+    title_guess = next((x.get("title_guess") for x in group if x.get("title_guess")), sheet_name)
+    source_element_ids = []
+    for x in group:
+        if x.get("element_id"):
+            source_element_ids.append(x.get("element_id"))
+        source_element_ids.extend(x.get("contained_element_ids", []))
+    source_reading_order = [x.get("reading_order_index") for x in group if x.get("reading_order_index") is not None]
+    route_hints = [x.get("route_hint") for x in group if x.get("route_hint")]
+    route_reasons = [x.get("route_reason") for x in group if x.get("route_reason")]
+    merged_features = dict(group[0].get("features", {})) if group else {}
+    merged_features["group_element_count"] = len(group)
+    merged_features["source_element_ids"] = source_element_ids
+    merged_features["source_reading_order"] = source_reading_order
+    merged_features["group_bbox"] = merged_bbox
+    merged_features["recomputed_from_group"] = True
+
+    if any(h == "41" for h in route_hints):
+        route_hint = "41"
+        route_reason = "api_or_heuristic_group_contains_complex_element"
+    else:
+        route_hint = route_hints[0] if route_hints else "40"
+        route_reason = route_reasons[0] if route_reasons else "regular_table"
+
+    return {
+        "block_id": f"{Path(excel_path).stem}__{sheet_name}__block_{group_idx:03d}",
+        "group_id": f"{Path(excel_path).stem}__{sheet_name}__group_{group_idx:03d}",
+        "element_id": f"{Path(excel_path).stem}__{sheet_name}__merged_{group_idx:03d}",
+        "title_guess": title_guess,
+        "bbox": merged_bbox,
+        "df": merged_df,
+        "csv_text": merged_df.to_csv(index=False),
+        "features": merged_features,
+        "route_hint": route_hint,
+        "route_reason": route_reason,
+        "reading_order_index": min(source_reading_order) if source_reading_order else 1,
+        "prev_element_id": group[0].get("prev_element_id") if group else None,
+        "next_element_id": group[-1].get("next_element_id") if group else None,
+        "gap_rows_from_prev": group[0].get("gap_rows_from_prev") if group else None,
+        "gap_cols_from_prev": group[0].get("gap_cols_from_prev") if group else None,
+        "element_hint": group[0].get("element_hint") if group else {
+            "has_numeric_body": False,
+            "title_to_body_gap_rows": None,
+            "left_body_margin_cols": None
+        },
+        "source_element_ids": source_element_ids,
+        "api_element_payload": build_element_api_payload(group),
+    }
+
+def apply_resolved_grouping(ws, excel_path: Path, sheet_name: str, raw_elements, resolved_groups=None):
+    element_map = {x.get("element_id"): x for x in raw_elements}
+
+    if resolved_groups:
+        grouped_elements = []
+        used = set()
+
+        for grp in resolved_groups:
+            elem_ids = [x for x in grp if x in element_map]
+            if not elem_ids:
+                continue
+
+            group = [element_map[eid] for eid in elem_ids]
+            grouped_elements.append(group)
+            used.update(elem_ids)
+
+        # grouping 寃곌낵???ы븿?섏? ?딆? element???⑤룆 洹몃９?쇰줈 ?좎?
+        for elem in raw_elements:
+            eid = elem.get("element_id")
+            if eid not in used:
+                grouped_elements.append([elem])
+    else:
+        # ?듭떖 ?섏젙:
+        # resolved_groups媛 ?놁쓣 ?뚮뒗 ?대━?ㅽ떛 merge 湲덉?
+        grouped_elements = [[elem] for elem in raw_elements]
+
+    final_blocks = []
+    for group_idx, group in enumerate(grouped_elements, 1):
+        final_blocks.append(
+            merge_element_group(ws, excel_path, sheet_name, group_idx, group)
+        )
+    return final_blocks
+
+
+def split_sheet_into_blocks(excel_path: Path, sheet_name: str, resolved_groups=None):
+    df, ws = load_sheet_df_and_ws(excel_path, sheet_name)
+    if ws is None:
+        return [{
+            "block_id": f"{Path(excel_path).stem}__{sheet_name}__block_001",
+            "element_id": f"{Path(excel_path).stem}__{sheet_name}__element_001",
+            "group_id": f"{Path(excel_path).stem}__{sheet_name}__group_001",
+            "title_guess": sheet_name,
+            "bbox": {"r1": 1, "r2": len(df), "c1": 1, "c2": max(1, df.shape[1])},
+            "df": df.copy(),
+            "csv_text": df.to_csv(index=False),
+            "features": {
+                "n_rows": int(df.shape[0]), "n_cols": int(df.shape[1]), "nonempty_ratio": 1.0 if not df.empty else 0.0,
+                "numeric_ratio": 0.0, "text_ratio": 1.0 if not df.empty else 0.0, "border_ratio": 0.0,
+                "fill_ratio": 0.0, "bold_ratio": 0.0, "merged_ratio": 0.0, "empty_rows_inside": 0,
+                "empty_cols_inside": 0, "header_like_rows": 1, "title_like_top_row": False,
+                "has_numeric_body": False, "numeric_body_bbox": None, "title_to_body_gap_rows": None,
+                "left_body_margin_cols": None,
+            },
+            "route_hint": "41", "route_reason": "csv_fallback",
+            "reading_order_index": 1,
+            "prev_element_id": None,
+            "next_element_id": None,
+            "gap_rows_from_prev": None,
+            "gap_cols_from_prev": None,
+            "element_hint": {"has_numeric_body": False, "title_to_body_gap_rows": None, "left_body_margin_cols": None},
+            "source_element_ids": [f"{Path(excel_path).stem}__{sheet_name}__element_001"],
+            "api_element_payload": [],
+        }]
+    grid = build_ws_grid(ws)
+    mask = dilate_mask(build_occupancy_mask(grid), grid["max_row"], grid["max_col"], row_radius=0, col_radius=0)
+    comps = connected_components(mask, grid["max_row"], grid["max_col"])
+    raw_elements = []
+    for comp in comps:
+        element_df, bbox = extract_component_df_from_ws(ws, grid, comp)
+        if bbox is None:
+            continue
+        bbox = trim_empty_edges(grid, bbox)
+        if bbox["r1"] > bbox["r2"] or bbox["c1"] > bbox["c2"]:
+            continue
+        features = compute_block_features(grid, bbox)
+        if features["nonempty_ratio"] < 0.03:
+            continue
+        if features["n_rows"] < 1 or features["n_cols"] < 1:
+            continue
+        if not (
+            features.get("has_numeric_body")
+            or features.get("title_like_top_row")
+            or features.get("header_like_rows", 0) >= 1
+            or features.get("text_ratio", 0) >= 0.08
+        ):
+            continue
+        route_hint, route_reason = classify_block_route({"bbox": bbox, "features": features})
+        raw_elements.append({
+            "bbox": bbox,
+            "df": element_df,
+            "csv_text": element_df.to_csv(index=False),
+            "features": features,
+            "route_hint": route_hint,
+            "route_reason": route_reason,
+            "title_guess": "", # infer_block_title(ws, bbox),
+        })
+    raw_elements = sorted(raw_elements, key=lambda x: (x["bbox"]["r1"], x["bbox"]["c1"]))
+    for i, elem in enumerate(raw_elements, 1):
+        elem["element_id"] = f"{Path(excel_path).stem}__{sheet_name}__element_{i:03d}"
+
+    raw_elements = merge_contained_raw_elements(raw_elements)
+    raw_elements = build_element_metadata(grid, raw_elements)
+
+    # ?듭떖 ?섏젙:
+    # resolved_groups媛 ?꾩쭅 ?놁쑝硫?raw element瑜?洹몃?濡?諛섑솚
+    if resolved_groups is None:
+        final_blocks = []
+        for i, elem in enumerate(raw_elements, 1):
+            final_blocks.append({
+                "block_id": f"{Path(excel_path).stem}__{sheet_name}__block_{i:03d}",
+                "group_id": f"{Path(excel_path).stem}__{sheet_name}__group_{i:03d}",
+                "element_id": elem.get("element_id"),
+                "title_guess": elem.get("title_guess"),
+                "bbox": elem.get("bbox"),
+                "df": elem.get("df"),
+                "csv_text": elem.get("csv_text"),
+                "features": elem.get("features"),
+                "route_hint": elem.get("route_hint"),
+                "route_reason": elem.get("route_reason"),
+                "reading_order_index": elem.get("reading_order_index"),
+                "prev_element_id": elem.get("prev_element_id"),
+                "next_element_id": elem.get("next_element_id"),
+                "gap_rows_from_prev": elem.get("gap_rows_from_prev"),
+                "gap_cols_from_prev": elem.get("gap_cols_from_prev"),
+                "element_hint": elem.get("element_hint"),
+                "source_element_ids": ([elem.get("element_id")] if elem.get("element_id") else []) + elem.get("contained_element_ids", []),
+                "api_element_payload": build_element_api_payload([elem]),
+            })
+    else:
+        final_blocks = apply_resolved_grouping(
+            ws,
+            excel_path,
+            sheet_name,
+            raw_elements,
+            resolved_groups=resolved_groups,
+        )
+
+    if not final_blocks:
+        fallback_df = extract_block_df_from_ws(ws, {"r1": 1, "r2": ws.max_row, "c1": 1, "c2": ws.max_column})
+        final_blocks = [{
+            "block_id": f"{Path(excel_path).stem}__{sheet_name}__block_001",
+            "element_id": f"{Path(excel_path).stem}__{sheet_name}__element_001",
+            "group_id": f"{Path(excel_path).stem}__{sheet_name}__group_001",
+            "title_guess": sheet_name,
+            "bbox": {"r1": 1, "r2": ws.max_row, "c1": 1, "c2": ws.max_column},
+            "df": fallback_df,
+            "csv_text": fallback_df.to_csv(index=False),
+            "features": {
+                "n_rows": ws.max_row, "n_cols": ws.max_column, "nonempty_ratio": 1.0 if ws.max_row and ws.max_column else 0.0,
+                "numeric_ratio": 0.0, "text_ratio": 1.0, "border_ratio": 0.0, "fill_ratio": 0.0, "bold_ratio": 0.0,
+                "merged_ratio": 0.0, "empty_rows_inside": 0, "empty_cols_inside": 0, "header_like_rows": 1,
+                "title_like_top_row": False, "has_numeric_body": False, "numeric_body_bbox": None,
+                "title_to_body_gap_rows": None, "left_body_margin_cols": None,
+            },
+            "route_hint": "41", "route_reason": "fallback_full_sheet",
+            "reading_order_index": 1,
+            "prev_element_id": None,
+            "next_element_id": None,
+            "gap_rows_from_prev": None,
+            "gap_cols_from_prev": None,
+            "element_hint": {"has_numeric_body": False, "title_to_body_gap_rows": None, "left_body_margin_cols": None},
+            "source_element_ids": [f"{Path(excel_path).stem}__{sheet_name}__element_001"],
+            "api_element_payload": [],
+        }]
+    return final_blocks
+
+
+2026-06-29T10:02:23.976612Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 0.2 seconds
+Output:
+
+ exited 1 in 185ms:
+codex
+There is already an API-free helper in `agent_workspace/tools`, which fits the task constraints. I’m reading it and the validation section before running or adjusting it.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -Raw agent_workspace\\tools\\api_free_excel_block_splitter.py" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 149ms:
+"""API-free Excel block splitter for external-agent stage 03.
+
+This helper intentionally avoids Gemini/Vertex/LLM modules and the legacy
+03_split_excel_blocks_batch.py script. It wraps the deterministic workbook
+layout utilities in 0_mark_down_gen/sheet_block_splitter.py and writes the
+stage artifacts expected by Agent_Task_Runner validation.
+"""
+
+from __future__ import annotations
+
+import argparse
+import contextlib
+import csv
+import importlib.util
+import io
+import json
+import re
+import shutil
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+from openpyxl import load_workbook
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+SPLITTER_PATH = PROJECT_ROOT / "0_mark_down_gen" / "sheet_block_splitter.py"
+
+INVENTORY_FIELDS = [
+    "excel_file",
+    "excel_sheet",
+    "block_id",
+    "group_id",
+    "element_id",
+    "block_csv_path",
+    "block_meta_path",
+    "block_type",
+]
+
+ALLOWED_BLOCK_TYPES = {
+    "title_and_table",
+    "table_body",
+    "table_title",
+    "multi_table",
+    "note",
+    "other",
+}
+
+
+def load_splitter_module() -> Any:
+    spec = importlib.util.spec_from_file_location("api_free_sheet_block_splitter", SPLITTER_PATH)
+    if spec is None or spec.loader is None:
+        raise RuntimeError(f"Could not load splitter module from {SPLITTER_PATH}")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def safe_name(value: str) -> str:
+    cleaned = re.sub(r"[^A-Za-z0-9_.-]+", "_", value.strip())
+    cleaned = cleaned.strip("._")
+    return cleaned or "unnamed"
+
+
+def rel_to_paper(path: Path, paper_folder: Path) -> str:
+    try:
+        return path.resolve().relative_to(paper_folder.resolve()).as_posix()
+    except ValueError:
+        return str(path)
+
+
+def utc_now() -> str:
+    return datetime.now(timezone.utc).isoformat(timespec="seconds")
+
+
+def backup_existing_outputs(paper_folder: Path) -> list[str]:
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_root = paper_folder / "_agent_backups" / f"03_split_excel_blocks_batch_{timestamp}"
+    backed_up: list[str] = []
+    for name in ("excel_block_inventory.csv", "three_core_result_all.json", "Exp_Excel_Blocks"):
+        src = paper_folder / name
+        if not src.exists():
+            continue
+        backup_root.mkdir(parents=True, exist_ok=True)
+        dst = backup_root / name
+        if src.is_dir():
+            shutil.copytree(src, dst)
+        else:
+            shutil.copy2(src, dst)
+        backed_up.append(rel_to_paper(src, paper_folder))
+    return backed_up
+
+
+def json_sanitize(value: Any) -> Any:
+    if isinstance(value, dict):
+        return {str(k): json_sanitize(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [json_sanitize(v) for v in value]
+    try:
+        import pandas as pd
+
+        if value is pd.NA:
+            return None
+    except Exception:
+        pass
+    if hasattr(value, "item"):
+        try:
+            return value.item()
+        except Exception:
+            pass
+    return value
+
+
+def nonempty_texts(df: Any, limit: int = 20) -> list[str]:
+    texts: list[str] = []
+    for row in df.fillna("").astype(str).values.tolist():
+        for cell in row:
+            text = str(cell).strip()
+            if text and text.lower() not in {"nan", "none", "null"}:
+                texts.append(text)
+                if len(texts) >= limit:
+                    return texts
+    return texts
+
+
+def numeric_like(text: str) -> bool:
+    s = str(text).strip().replace(",", "")
+    if s.endswith("%"):
+        s = s[:-1]
+    if not s:
+        return False
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+
+
+def row_has_mixed_header(row: list[str]) -> bool:
+    values = [str(v).strip() for v in row if str(v).strip()]
+    if not values:
+        return False
+    text_count = sum(1 for value in values if not numeric_like(value))
+    numeric_count = len(values) - text_count
+    return text_count > 0 and numeric_count > 0
+
+
+def classify_block(block: dict[str, Any]) -> tuple[str, str, str, bool]:
+    df = block.get("df")
+    features = block.get("features") or {}
+    if df is None:
+        return "other", "low", "No dataframe was returned for this block.", True
+
+    matrix = df.fillna("").astype(str).values.tolist()
+    texts = nonempty_texts(df, 80)
+    numeric_count = sum(1 for text in texts if numeric_like(text))
+    text_count = len(texts) - numeric_count
+    row_count = int(features.get("n_rows") or len(matrix))
+    col_count = int(features.get("n_cols") or (max((len(r) for r in matrix), default=0)))
+    numeric_ratio = float(features.get("numeric_ratio") or 0.0)
+    text_ratio = float(features.get("text_ratio") or 0.0)
+    header_like_rows = int(features.get("header_like_rows") or 0)
+    title_like_top_row = bool(features.get("title_like_top_row"))
+    empty_rows_inside = int(features.get("empty_rows_inside") or 0)
+    empty_cols_inside = int(features.get("empty_cols_inside") or 0)
+    merged_ratio = float(features.get("merged_ratio") or 0.0)
+    first_rows = matrix[: min(3, len(matrix))]
+    mixed_header = any(row_has_mixed_header(row) for row in first_rows)
+    figure_labels = sum(1 for text in texts if re.search(r"\bfig(?:ure)?\.?\s*\d+", text, re.I))
+    group_labels = sum(
+        1
+        for text in texts
+        if not numeric_like(text)
+        and any(token in text.lower() for token in ("pbs", "control", "treated", "mc3", "g0-", "fluc", "il-12"))
+    )
+
+    if len(texts) <= 3 and numeric_count == 0:
+        return "table_title", "high", "Block contains only a short text label/title and no numeric cells.", False
+
+    if numeric_count == 0 and text_count > 0:
+        if row_count <= 4:
+            return "table_title", "medium", "Text-only block is short and functions as a table or panel label.", False
+        return "note", "medium", "Text-only block spans multiple rows and is better treated as a note.", False
+
+    if (
+        (figure_labels >= 2 and numeric_count >= 6)
+        or (empty_cols_inside >= 2 and group_labels >= 2 and numeric_count >= 8)
+        or (row_count >= 18 and col_count >= 10 and empty_rows_inside >= 1 and numeric_count >= 10)
+    ):
+        return "multi_table", "medium", "Block contains multiple panel/group labels or internal separators with numeric data.", False
+
+    if numeric_count >= 3 and (
+        title_like_top_row
+        or header_like_rows >= 1
+        or mixed_header
+        or group_labels >= 1
+        or merged_ratio > 0
+    ):
+        return "title_and_table", "high", "Header/group text is present with a numeric table body.", False
+
+    if numeric_count >= max(3, text_count) and numeric_ratio >= max(0.25, text_ratio):
+        return "table_body", "high", "Numeric cells dominate and no clear separate title was detected.", False
+
+    if row_count <= 4 and text_count >= numeric_count:
+        return "note", "medium", "Small text-heavy block with limited numeric content.", False
+
+    return "other", "low", "Mixed or sparse content could not be assigned to a narrower block type.", True
+
+
+def write_csv_matrix(path: Path, df: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    df.fillna("").to_csv(path, index=False, header=False, encoding="utf-8-sig")
+
+
+def write_csv_dicts(path: Path, rows: list[dict[str, Any]], fieldnames: list[str]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8-sig", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        for row in rows:
+            writer.writerow({field: row.get(field, "") for field in fieldnames})
+
+
+def write_json(path: Path, data: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(json_sanitize(data), ensure_ascii=False, indent=2), encoding="utf-8")
+
+
+def split_sheet(splitter: Any, excel_file: Path, sheet_name: str) -> tuple[list[dict[str, Any]], str]:
+    capture = io.StringIO()
+    with contextlib.redirect_stdout(capture):
+        blocks = splitter.split_sheet_into_blocks(excel_file, sheet_name)
+    return blocks, capture.getvalue().strip()
+
+
+def process_workbooks(paper_folder: Path) -> dict[str, Any]:
+    marker = paper_folder / ".manual_select_review_done"
+    if not marker.exists():
+        raise FileNotFoundError(f"Missing required manual review marker: {marker}")
+    exp_excel = paper_folder / "Exp_Excel"
+    if not exp_excel.is_dir():
+        raise FileNotFoundError(f"Missing Exp_Excel folder: {exp_excel}")
+
+    backups = backup_existing_outputs(paper_folder)
+    block_root = paper_folder / "Exp_Excel_Blocks"
+    block_root.mkdir(parents=True, exist_ok=True)
+
+    splitter = load_splitter_module()
+    inventory_rows: list[dict[str, Any]] = []
+    summary_rows: list[dict[str, Any]] = []
+    excel_files = sorted(p for p in exp_excel.glob("*.xlsx") if p.is_file())
+
+    for excel_file in excel_files:
+        wb = load_workbook(excel_file, read_only=True, data_only=True)
+        for sheet_name in wb.sheetnames:
+            sheet_summary: dict[str, Any] = {
+                "excel_file": rel_to_paper(excel_file, paper_folder),
+                "excel_sheet": sheet_name,
+                "result": {
+                    "status": "ok",
+                    "method": "openpyxl_layout_splitter_api_free",
+                    "reasoning": [],
+                    "blocks": [],
+                },
+            }
+            try:
+                blocks, captured_stdout = split_sheet(splitter, excel_file, sheet_name)
+            except Exception as exc:
+                sheet_summary["result"] = {
+                    "status": "failed",
+                    "method": "openpyxl_layout_splitter_api_free",
+                    "manual_required": True,
+                    "failure_cause": str(exc),
+                    "changed_outputs": "No block files were written for this failed sheet.",
+                }
+                summary_rows.append(sheet_summary)
+                continue
+
+            sheet_summary["result"]["reasoning"].append(
+                "Split candidate blocks using deterministic occupied-cell components, merged-cell expansion, "
+                "blank row/column separation, border/fill/bold/header features, and numeric-density features."
+            )
+            if captured_stdout:
+                sheet_summary["result"]["helper_stdout_suppressed"] = captured_stdout.splitlines()[:20]
+
+            for local_index, block in enumerate(blocks, start=1):
+                df = block.get("df")
+                if df is None or df.empty:
+                    continue
+                block_type, confidence, reason, manual_required = classify_block(block)
+                if block_type not in ALLOWED_BLOCK_TYPES:
+                    block_type = "other"
+                    confidence = "low"
+                    manual_required = True
+                    reason = "Classifier returned a non-allowed type; normalized to other."
+
+                canonical_block_id = f"block_{len(inventory_rows) + 1:04d}"
+                rel_dir = Path("Exp_Excel_Blocks") / safe_name(excel_file.stem) / safe_name(sheet_name)
+                block_csv = paper_folder / rel_dir / f"{canonical_block_id}.csv"
+                block_meta = paper_folder / rel_dir / f"{canonical_block_id}.json"
+                write_csv_matrix(block_csv, df)
+
+                texts = nonempty_texts(df, 12)
+                features = block.get("features") or {}
+                meta = {
+                    "excel_file": rel_to_paper(excel_file, paper_folder),
+                    "excel_sheet": sheet_name,
+                    "block_id": canonical_block_id,
+                    "source_block_id": block.get("block_id", ""),
+                    "group_id": block.get("group_id", ""),
+                    "element_id": block.get("element_id", ""),
+                    "reading_order_index": block.get("reading_order_index", local_index),
+                    "bbox": block.get("bbox", {}),
+                    "block_type": block_type,
+                    "classification_confidence": confidence,
+                    "manual_required": manual_required,
+                    "classification_reason": reason,
+                    "evidence": {
+                        "nonempty_sample": texts,
+                        "numeric_count_in_sample": sum(1 for text in texts if numeric_like(text)),
+                        "features": features,
+                        "route_hint": block.get("route_hint", ""),
+                        "route_reason": block.get("route_reason", ""),
+                        "source_element_ids": block.get("source_element_ids", []),
+                    },
+                    "created_by": "api_free_excel_block_splitter.py",
+                    "created_at": utc_now(),
+                }
+                write_json(block_meta, meta)
+
+                row = {
+                    "excel_file": rel_to_paper(excel_file, paper_folder),
+                    "excel_sheet": sheet_name,
+                    "block_id": canonical_block_id,
+                    "group_id": block.get("group_id", ""),
+                    "element_id": block.get("element_id", ""),
+                    "block_csv_path": rel_to_paper(block_csv, paper_folder),
+                    "block_meta_path": rel_to_paper(block_meta, paper_folder),
+                    "block_type": block_type,
+                }
+                inventory_rows.append(row)
+                sheet_summary["result"]["blocks"].append(
+                    {
+                        **row,
+                        "source_block_id": block.get("block_id", ""),
+                        "bbox": block.get("bbox", {}),
+                        "classification_confidence": confidence,
+                        "manual_required": manual_required,
+                        "classification_reason": reason,
+                        "evidence_text": " | ".join(texts[:8]),
+                    }
+                )
+
+            sheet_summary["result"]["block_count"] = len(sheet_summary["result"]["blocks"])
+            if not sheet_summary["result"]["blocks"]:
+                sheet_summary["result"]["manual_required"] = True
+                sheet_summary["result"]["reasoning"].append("No non-empty blocks were produced for this sheet.")
+            summary_rows.append(sheet_summary)
+
+    write_csv_dicts(paper_folder / "excel_block_inventory.csv", inventory_rows, INVENTORY_FIELDS)
+    write_json(paper_folder / "three_core_result_all.json", summary_rows)
+    return {
+        "excel_files": len(excel_files),
+        "sheets": len(summary_rows),
+        "blocks": len(inventory_rows),
+        "backed_up": backups,
+        "outputs": [
+            rel_to_paper(paper_folder / "excel_block_inventory.csv", paper_folder),
+            rel_to_paper(paper_folder / "three_core_result_all.json", paper_folder),
+            rel_to_paper(block_root, paper_folder),
+        ],
+    }
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Split Excel sheets into API-free table blocks.")
+    parser.add_argument("--paper-folder", required=True, help="Target paper folder")
+    args = parser.parse_args()
+    result = process_workbooks(Path(args.paper_folder))
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Get-Content Agent_Task_Runner.py | Select-Object -Skip 4260 -First 80' in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command 'Get-Content Agent_Task_Runner.py | Select-Object -Skip 2080 -First 100' in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -Force agent_workspace\\tools | Format-Table -AutoSize" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 203ms:
+            "caption": row.get("caption", ""),
+            "source_image": rel_to_paper(image_match, paper_folder) if image_found else None,
+            "source_table": rel_to_paper(table_match, paper_folder) if table_match and table_score > 0 else None,
+            "source_quality": "ok" if image_found else "missing_image",
+            "manual_required": not image_found,
+            "confidence": "low" if matched else "unmatched",
+            "reason": "Filename matched item_id/base_id in heuristic mode." if matched else "No filename matched item_id/base_id in heuristic mode.",
+        }
+    write_json(paper_folder / "total_figure_mapping.json", mapping)
+    return {"selected_items": len(selected), "output": str(paper_folder / "total_figure_mapping.json")}
+
+
+def run_heuristic_split_excel_blocks(paper_folder: Path) -> dict[str, Any]:
+    exp_excel = paper_folder / "Exp_Excel"
+    block_root = paper_folder / "Exp_Excel_Blocks"
+    block_root.mkdir(parents=True, exist_ok=True)
+    excel_files = []
+    if exp_excel.exists():
+        excel_files = [
+            p for p in exp_excel.rglob("*")
+            if p.is_file() and p.suffix.lower() in {".xlsx", ".xls", ".csv"}
+        ]
+    inventory_rows: list[dict[str, Any]] = []
+    summary: list[dict[str, Any]] = []
+    fieldnames = [
+        "excel_file",
+        "excel_sheet",
+        "block_id",
+        "group_id",
+        "element_id",
+        "block_csv_path",
+        "block_meta_path",
+        "block_type",
+    ]
+    for excel_file in excel_files:
+        sheet_results = []
+        for sheet_name, matrix, error in load_excel_like_sheets(excel_file):
+            if error:
+                sheet_results.append({"excel_sheet": sheet_name, "error": error, "blocks": 0})
+                continue
+            blocks = split_matrix_blocks(matrix)
+            sheet_results.append({"excel_sheet": sheet_name, "blocks": len(blocks), "method": "blank_row_column_components"})
+            for index, block in enumerate(blocks, start=1):
+                block_id = f"block_{len(inventory_rows) + 1:04d}"
+                rel_dir = Path("Exp_Excel_Blocks") / safe_name(excel_file.stem) / safe_name(sheet_name)
+                block_csv = paper_folder / rel_dir / f"{block_id}.csv"
+                block_meta = paper_folder / rel_dir / f"{block_id}.json"
+                block_type = infer_block_type(block["cells"])
+                write_csv_matrix(block_csv, block["cells"])
+                write_json(
+                    block_meta,
+                    {
+                        "excel_file": rel_to_paper(excel_file, paper_folder),
+                        "excel_sheet": sheet_name,
+                        "block_id": block_id,
+                        "bounds": {
+                            "row_start": block["row_start"],
+                            "row_end": block["row_end"],
+                            "col_start": block["col_start"],
+                            "col_end": block["col_end"],
+                        },
+                        "block_type": block_type,
+                        "created_by": "Agent_Task_Runner heuristic mode",
+                    },
+                )
+                inventory_rows.append(
+                    {
+                        "excel_file": rel_to_paper(excel_file, paper_folder),
+                        "excel_sheet": sheet_name,
+                        "block_id": block_id,
+                        "group_id": f"{safe_name(excel_file.stem)}_{safe_name(sheet_name)}",
+                        "element_id": f"{safe_name(excel_file.stem)}_{safe_name(sheet_name)}_{index:03d}",
+                        "block_csv_path": rel_to_paper(block_csv, paper_folder),
+                        "block_meta_path": rel_to_paper(block_meta, paper_folder),
+                        "block_type": block_type,
+                    }
+                )
+        summary.append(
+            {
+                "excel_file": rel_to_paper(excel_file, paper_folder),
+                "result": sheet_results,
+                "created_by": "Agent_Task_Runner heuristic mode",
+            }
+        )
+    write_csv_dicts(paper_folder / "excel_block_inventory.csv", inventory_rows, fieldnames)
+    write_json(paper_folder / "three_core_result_all.json", summary)
+    return {"excel_files": len(excel_files), "blocks": len(inventory_rows)}
+
+
+def run_heuristic_figure_separate(paper_folder: Path) -> dict[str, Any]:
+    mapping_path = paper_folder / "total_figure_mapping.json"
+    require_existing_file(mapping_path, "04_figure_separate")
+    data = load_json(mapping_path, {})
+    panel_dir = paper_folder / "separated_panels_gemini"
+    panel_dir.mkdir(parents=True, exist_ok=True)
+    updated = 0
+    fallback_render_count = 0
+    fallback_render_errors: list[str] = []
+    for entry in iter_total_figure_mapping_entries(data):
+        source_quality = str(entry.get("source_quality") or "").strip()
+
+ succeeded in 212ms:
+
+
+    디렉터리: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tools
+
+
+Mode          LastWriteTime Length Name                                
+----          ------------- ------ ----                                
+-a---- 2026-06-22  오후 11:52  15402 api_free_excel_block_splitter.py    
+-a---- 2026-06-29   오후 3:45  14319 api_free_smiles_resolution_qs2026.py
+-a---- 2026-06-29   오후 6:47  11286 build_legacy_context.py             
+-a---- 2026-06-29   오후 5:26  61596 build_unified_extraction_qs2026.py  
+
+
+
+ succeeded in 213ms:
+        invalid_qualities = invalid_source_quality_values(data)
+        fallback_missing = missing_mapping_paths(
+            paper_folder,
+            data,
+            {"fallback_render", "selected_source_for_paneling"},
+        )
+        return isinstance(data, dict) and bool(data) and not invalid_qualities, [
+            f"top_level_keys={len(data) if isinstance(data, dict) else 'not_object'}",
+            f"invalid_source_quality_values={len(invalid_qualities)}",
+            f"missing_fallback_or_selected_paths={len(fallback_missing)}",
+        ]
+
+    if stage == "03_split_excel_blocks":
+        script = PROJECT_ROOT / STAGES[stage]["script"]
+        exp_excel = paper_folder / "Exp_Excel"
+        excel_files = []
+        if exp_excel.exists():
+            excel_files = [p for p in iter_paper_files(exp_excel) if p.suffix.lower() in {".xlsx", ".xls", ".csv"}]
+        return script.exists(), [f"utility_script_exists={script.exists()}", f"excel_inputs={len(excel_files)}"]
+
+    if stage == "03_split_excel_blocks_batch":
+        inv = paper_folder / "excel_block_inventory.csv"
+        summary = paper_folder / "three_core_result_all.json"
+        block_dir = paper_folder / "Exp_Excel_Blocks"
+        if not non_empty_file(inv):
+            return False, [f"missing or empty: {inv}"]
+        rows = read_csv_rows(inv)
+        missing_paths = []
+        for row in rows:
+            rel = (row.get("block_csv_path") or "").strip()
+            if rel and not (paper_folder / rel).exists():
+                missing_paths.append(rel)
+        ok = bool(rows) and block_dir.exists() and not missing_paths
+        return ok, [f"rows={len(rows)}", f"summary_exists={summary.exists()}", f"block_dir_exists={block_dir.exists()}", f"missing_block_paths={len(missing_paths)}"]
+
+    if stage == "04_figure_separate":
+        mapping = paper_folder / "total_figure_mapping.json"
+        if not non_empty_file(mapping):
+            return False, [f"missing or empty: {mapping}"]
+        data = json.loads(mapping.read_text(encoding="utf-8"))
+        panel_dirs = list(paper_folder.rglob("separated_panels_gemini"))
+        invalid_qualities = invalid_source_quality_values(data)
+        missing_paths = missing_mapping_paths(
+            paper_folder,
+            data,
+            {"fallback_render", "selected_source_for_paneling"},
+        )
+        ok = isinstance(data, dict) and not invalid_qualities and not missing_paths
+        return ok, [
+            f"mapping_keys={len(data) if isinstance(data, dict) else 'not_object'}",
+            f"panel_dirs={len(panel_dirs)}",
+            f"invalid_source_quality_values={len(invalid_qualities)}",
+            f"missing_fallback_or_selected_paths={len(missing_paths)}",
+        ]
+
+    if stage == "04_ft_excel_matcher":
+        mapping = paper_folder / "excel_mapping.json"
+        rows_csv = paper_folder / "excel_mapping_rows.csv"
+        if not non_empty_file(mapping):
+            return False, [f"missing or empty: {mapping}"]
+        data = json.loads(mapping.read_text(encoding="utf-8"))
+        ok = isinstance(data, dict) and rows_csv.exists()
+        return ok, [f"mapping_keys={len(data) if isinstance(data, dict) else 'not_object'}", f"rows_csv_exists={rows_csv.exists()}"]
+
+    if stage == "05_smiles_structure_resolution":
+        path = paper_folder / "smiles_resolved.csv"
+        if not non_empty_file(path):
+            return False, [f"missing or empty: {path}"]
+        rows = read_csv_rows(path)
+        cols = set(rows[0].keys()) if rows else set()
+        name_cols = {"Name", "name", "compound_id", "Compound_ID"} & cols
+        smiles_cols = {"SMILES", "smiles", "resolved_smiles", "Resolved_SMILES"} & cols
+        image_structure_smiles_rows_used = sum(
+            1 for row in rows if row_resolved_smiles_value(row) and is_disallowed_image_smiles_row(row)
+        )
+        novel_pil_with_smiles = sum(
+            1
+            for row in rows
+            if row_resolved_smiles_value(row)
+            and re.search(r"\b(?:[A-Z0-9]+-)?(?:SS|6C)-AA-C(?:10|12|14)\b", str(row.get("Name") or row.get("standardized_name") or ""), flags=re.I)
+
+codex
+The helper already writes per-block metadata with evidence samples and classification reasons, plus the required inventory and sheet summary. I’m confirming the root deterministic splitter it imports exists, then I’ll run it against the target folder.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Test-Path 0_mark_down_gen\\sheet_block_splitter.py; Get-Item 0_mark_down_gen\\sheet_block_splitter.py | Format-List FullName,Length,LastWriteTime" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -Force \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\" -Filter \"excel_block_inventory.csv\",\"three_core_result_all.json\" -ErrorAction SilentlyContinue | Format-Table -AutoSize" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 190ms:
+True
+
+
+FullName      : C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\0_mark_down_gen\sheet_block_splitter.py
+Length        : 34023
+LastWriteTime : 2026-06-17 오후 6:06:35
+
+
+
+
+2026-06-29T10:02:40.127783Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 0.2 seconds
+Output:
+Get-ChildItem : Cannot convert 'System.Object[]' to the type 'System.String' required by parameter 'Filter'. Specified method is not supported.
+At line:2 char:65
++ ... _3" -Filter "excel_block_inventory.csv","three_core_result_all.json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Get-ChildItem], ParameterBindingException
+    + FullyQualifiedErrorId : CannotConvertArgument,Microsoft.PowerShell.Commands.GetChildItemCommand
+ 
+
+ exited 1 in 238ms:
+Get-ChildItem : Cannot convert 'System.Object[]' to the type 'System.String' required by parameter 'Filter'. Specified method is not supported.
+At line:2 char:65
++ ... _3" -Filter "excel_block_inventory.csv","three_core_result_all.json"  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Get-ChildItem], ParameterBindingException
+    + FullyQualifiedErrorId : CannotConvertArgument,Microsoft.PowerShell.Commands.GetChildItemCommand
+ 
+
+codex
+I’m going to run the API-free splitter now. It has built-in backup behavior for any existing stage outputs, and it does not call the prohibited legacy batch script or API modules.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "python agent_workspace\\tools\\api_free_excel_block_splitter.py --paper-folder \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\"" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 15026ms:
+{
+  "excel_files": 5,
+  "sheets": 20,
+  "blocks": 44,
+  "backed_up": [],
+  "outputs": [
+    "excel_block_inventory.csv",
+    "three_core_result_all.json",
+    "Exp_Excel_Blocks"
+  ]
+}
+
+codex
+The splitter completed: five workbooks, twenty sheets, forty-four saved blocks. I’m sampling the inventory and metadata before validation to catch path or classification issues early.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -Recurse \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\\Exp_Excel_Blocks\" -File | Measure-Object | Format-List" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Import-Csv \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\\excel_block_inventory.csv\" | Select-Object -First 12 | Format-Table -AutoSize" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 190ms:
+
+excel_file                                excel_sheet block_id   group_id                                           element_id                    
+----------                                ----------- --------   --------                                           ----------                    
+Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx Figure 2B   block_0001 41565_2025_2102_MOESM3_ESM__Figure 2B__group_001   41565_2025_2102_MOESM3_ESM_...
+Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx Figure 2C   block_0002 41565_2025_2102_MOESM3_ESM__Figure 2C__group_001   41565_2025_2102_MOESM3_ESM_...
+Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx Figure 3B,C block_0003 41565_2025_2102_MOESM4_ESM__Figure 3B,C__group_001 41565_2025_2102_MOESM4_ESM_...
+Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx Figure 3B,C block_0004 41565_2025_2102_MOESM4_ESM__Figure 3B,C__group_002 41565_2025_2102_MOESM4_ESM_...
+Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx Figure 3E   block_0005 41565_2025_2102_MOESM4_ESM__Figure 3E__group_001   41565_2025_2102_MOESM4_ESM_...
+Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx Figure 3G   block_0006 41565_2025_2102_MOESM4_ESM__Figure 3G__group_001   41565_2025_2102_MOESM4_ESM_...
+Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx Figure 3I-K block_0007 41565_2025_2102_MOESM4_ESM__Figure 3I-K__group_001 41565_2025_2102_MOESM4_ESM_...
+Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx Figure 3I-K block_0008 41565_2025_2102_MOESM4_ESM__Figure 3I-K__group_002 41565_2025_2102_MOESM4_ESM_...
+Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx Figure 3I-K block_0009 41565_2025_2102_MOESM4_ESM__Figure 3I-K__group_003 41565_2025_2102_MOESM4_ESM_...
+Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx Figure 4B   block_0010 41565_2025_2102_MOESM5_ESM__Figure 4B__group_001   41565_2025_2102_MOESM5_ESM_...
+Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx Figure 4B   block_0011 41565_2025_2102_MOESM5_ESM__Figure 4B__group_002   41565_2025_2102_MOESM5_ESM_...
+Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx Figure 4B   block_0012 41565_2025_2102_MOESM5_ESM__Figure 4B__group_003   41565_2025_2102_MOESM5_ESM_...
+
+
+
+ succeeded in 217ms:
+
+
+Count    : 88
+Average  : 
+Sum      : 
+Maximum  : 
+Minimum  : 
+Property : 
+
+
+
+
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "python -c \"import csv, collections, pathlib; p=pathlib.Path(r'F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\\excel_block_inventory.csv'); rows=list(csv.DictReader(p.open(encoding='utf-8-sig'))); print(collections.Counter(r['block_type'] for r in rows)); print(rows[-1])\"" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "python -c \"import json, pathlib; p=pathlib.Path(r'F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\\three_core_result_all.json'); data=json.loads(p.read_text(encoding='utf-8')); print(len(data)); print(data[0]['excel_file'], data[0]['excel_sheet'], data[0]['result'].get('block_count')); print(data[0]['result']['blocks'][0]['block_type'], data[0]['result']['blocks'][0]['classification_reason'])\"" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 180ms:
+Counter({'title_and_table': 42, 'table_title': 2})
+{'excel_file': 'Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx', 'excel_sheet': 'Figure 6K,L', 'block_id': 'block_0044', 'group_id': '41565_2025_2102_MOESM7_ESM__Figure 6K,L__group_002', 'element_id': '41565_2025_2102_MOESM7_ESM__Figure 6K,L__element_002', 'block_csv_path': 'Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6K_L/block_0044.csv', 'block_meta_path': 'Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6K_L/block_0044.json', 'block_type': 'title_and_table'}
+
+ succeeded in 183ms:
+20
+Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx Figure 2B 1
+title_and_table Header/group text is present with a numeric table body.
+
+codex
+The outputs look structurally consistent: each block has a CSV and JSON metadata file, and block types are within the allowed set. I’m running the official stage validation next.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\"" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 230ms:
+{
+  "ok": true,
+  "messages": [
+    "rows=44",
+    "summary_exists=True",
+    "block_dir_exists=True",
+    "missing_block_paths=0"
+  ]
+}
+
+codex
+Completed stage `03_split_excel_blocks_batch` for `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`.
+
+Created:
+- [excel_block_inventory.csv](</F:/내 드라이브/EXTRACT-TEST/QS_2026_3/excel_block_inventory.csv>)
+- [three_core_result_all.json](</F:/내 드라이브/EXTRACT-TEST/QS_2026_3/three_core_result_all.json>)
+- [Exp_Excel_Blocks](</F:/내 드라이브/EXTRACT-TEST/QS_2026_3/Exp_Excel_Blocks>)
+
+Result: 5 workbooks, 20 sheets, 44 block CSVs plus 44 metadata JSON files. Block classifications were API-free and deterministic; metadata includes evidence samples, layout features, classification reason, confidence, and `manual_required` where applicable.
+
+Validation passed:
+
+```json
+{
+  "ok": true,
+  "messages": [
+    "rows=44",
+    "summary_exists=True",
+    "block_dir_exists=True",
+    "missing_block_paths=0"
+  ]
+}
+```
+Completed stage `03_split_excel_blocks_batch` for `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`.
+tokens used
+
+48,912
+Created:
+- [excel_block_inventory.csv](</F:/내 드라이브/EXTRACT-TEST/QS_2026_3/excel_block_inventory.csv>)
+- [three_core_result_all.json](</F:/내 드라이브/EXTRACT-TEST/QS_2026_3/three_core_result_all.json>)
+- [Exp_Excel_Blocks](</F:/내 드라이브/EXTRACT-TEST/QS_2026_3/Exp_Excel_Blocks>)
+
+Result: 5 workbooks, 20 sheets, 44 block CSVs plus 44 metadata JSON files. Block classifications were API-free and deterministic; metadata includes evidence samples, layout features, classification reason, confidence, and `manual_required` where applicable.
+
+Validation passed:
+
+```json
+{
+  "ok": true,
+  "messages": [
+    "rows=44",
+    "summary_exists=True",
+    "block_dir_exists=True",
+    "missing_block_paths=0"
+  ]
+}
+```
+
+===== END EXTERNAL CLI OUTPUT =====
+timestamp_end: 2026-06-29T19:03:24.704396
+returncode: 0
+elapsed_seconds: 82.375

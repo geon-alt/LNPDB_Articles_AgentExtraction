@@ -1,0 +1,104 @@
+{
+  "created_at": "2026-06-29T00:00:00Z",
+  "extracted_from_files": [
+    "0_mark_down_gen/00_Marker.py",
+    "0_mark_down_gen/01_make_FT_csv.py",
+    "0_mark_down_gen/02_FT_selector.py",
+    "0_mark_down_gen/02B_FT_manual_selector_gui.py",
+    "0_mark_down_gen/03_figure_mapping.py",
+    "0_mark_down_gen/03_split_excel_blocks.py",
+    "0_mark_down_gen/03_split_excel_blocks_batch.py",
+    "0_mark_down_gen/04_FT-Excel_matcher.py",
+    "0_mark_down_gen/sheet_block_splitter.py"
+  ],
+  "included_functions_by_module": {
+    "active_legacy_utils.pdf_marker": [
+      "pdf_to_md_marker",
+      "find_all_pdfs",
+      "process_all_pdfs"
+    ],
+    "active_legacy_utils.ft_id_utils": [
+      "normalize_ft_item_id",
+      "classify_item",
+      "is_supplementary",
+      "filter_hierarchy",
+      "group_by_base_figure",
+      "infer_candidates"
+    ],
+    "active_legacy_utils.manual_selector_streamlit": [
+      "parse_cli_args",
+      "is_meaningful_value",
+      "row_has_excel_match",
+      "normalize_manual_select",
+      "initial_select_for_row",
+      "load_classified_csv",
+      "dataframe_to_csv_bytes",
+      "build_selector_view_df",
+      "get_unique_options",
+      "apply_filters",
+      "write_review_outputs",
+      "main"
+    ],
+    "active_legacy_utils.excel.sheet_block_splitter": [
+      "normalize_cell_text",
+      "is_numeric_like",
+      "load_sheet_df_and_ws",
+      "split_sheet_into_blocks"
+    ],
+    "active_legacy_utils.excel.excel_io_utils": [
+      "safe_path_name",
+      "load_sheet_df",
+      "list_sheet_specs",
+      "load_markdown_text",
+      "truncate_csv_text"
+    ],
+    "active_legacy_utils.excel.block_preview_utils": [
+      "render_sheet_ascii_preview",
+      "block_df_to_text",
+      "block_preview",
+      "normalize_text",
+      "truncate_csv_text"
+    ]
+  },
+  "excluded_files_with_reason": [
+    {
+      "file_pattern": "0_mark_down_gen/01_make_FT_csv.py",
+      "reason": "Full script includes remote judgment setup; only pure ID helper logic was extracted."
+    },
+    {
+      "file_pattern": "0_mark_down_gen/02_FT_selector.py",
+      "reason": "Full script includes remote judgment setup; only pure ID helper logic was extracted."
+    },
+    {
+      "file_pattern": "0_mark_down_gen/03_figure_mapping.py",
+      "reason": "Full script includes remote judgment setup; only pure ID helper logic was extracted."
+    },
+    {
+      "file_pattern": "0_mark_down_gen/03_split_excel_blocks.py",
+      "reason": "Full script includes remote judgment setup; only pure Excel IO and preview helpers were extracted."
+    },
+    {
+      "file_pattern": "0_mark_down_gen/03_split_excel_blocks_batch.py",
+      "reason": "Full script includes cloud batch orchestration; only local preview formatting was extracted."
+    },
+    {
+      "file_pattern": "0_mark_down_gen/04_figure_separation_provider_script.py",
+      "reason": "Provider-backed judgment script excluded."
+    },
+    {
+      "file_pattern": "0_mark_down_gen/04_FT-Excel_matcher.py",
+      "reason": "Full script includes remote judgment setup; only pure ID helper logic was extracted."
+    },
+    {
+      "file_pattern": "2_Extract_SMILES/FromImage/*",
+      "reason": "Image-based molecule-structure recognition is outside the active workflow."
+    }
+  ],
+  "notes": [
+    "This package is a preparation step only and is not imported by active stages.",
+    "No active stage execution mode was changed.",
+    "Current unified outputs keep component SMILES columns blank.",
+    "Experimental values remain Excel/source-data backed only.",
+    "Graph image digitization remains disabled."
+  ]
+}

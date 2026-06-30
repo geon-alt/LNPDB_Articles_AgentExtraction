@@ -1,0 +1,1701 @@
+{
+  "has_any_reference": true,
+  "lnpdb_reference": {
+    "available": true,
+    "source_paths": [
+      "F:\\내 드라이브\\LNPDB (1).csv"
+    ],
+    "columns": {
+      "Aqueous_buffer": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 3,
+        "top_values": [
+          {
+            "value": "citrate",
+            "count": 15804
+          },
+          {
+            "value": "acetate",
+            "count": 3694
+          },
+          {
+            "value": "Unknown",
+            "count": 30
+          }
+        ],
+        "example_values": [
+          "acetate",
+          "citrate",
+          "Unknown"
+        ]
+      },
+      "Dialysis_buffer": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 5997,
+        "unique_count": 3,
+        "top_values": [
+          {
+            "value": "PBS",
+            "count": 5687
+          },
+          {
+            "value": "water",
+            "count": 286
+          },
+          {
+            "value": "saline",
+            "count": 24
+          }
+        ],
+        "example_values": [
+          "PBS",
+          "saline",
+          "water"
+        ]
+      },
+      "Mixing_method": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 2,
+        "top_values": [
+          {
+            "value": "handmixed",
+            "count": 18310
+          },
+          {
+            "value": "microfluidics",
+            "count": 1218
+          }
+        ],
+        "example_values": [
+          "handmixed",
+          "microfluidics"
+        ]
+      },
+      "Model": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 2,
+        "top_values": [
+          {
+            "value": "in_vitro",
+            "count": 17140
+          },
+          {
+            "value": "in_vivo",
+            "count": 2388
+          }
+        ],
+        "example_values": [
+          "in_vitro",
+          "in_vivo"
+        ]
+      },
+      "Model_type": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 17,
+        "top_values": [
+          {
+            "value": "HeLa",
+            "count": 7783
+          },
+          {
+            "value": "A549",
+            "count": 2569
+          },
+          {
+            "value": "HepG2",
+            "count": 2000
+          },
+          {
+            "value": "Mouse_B6",
+            "count": 1818
+          },
+          {
+            "value": "DC2.4",
+            "count": 1703
+          },
+          {
+            "value": "IGROV1",
+            "count": 1202
+          },
+          {
+            "value": "RAW264.7",
+            "count": 1200
+          },
+          {
+            "value": "Mouse_BALBc",
+            "count": 359
+          },
+          {
+            "value": "BeWo_b30",
+            "count": 260
+          },
+          {
+            "value": "HEK293T",
+            "count": 256
+          },
+          {
+            "value": "Mouse_Ai14",
+            "count": 141
+          },
+          {
+            "value": "Human_RBC",
+            "count": 90
+          },
+          {
+            "value": "Mouse_ICR",
+            "count": 60
+          },
+          {
+            "value": "BMDC",
+            "count": 36
+          },
+          {
+            "value": "HBEC_ALI",
+            "count": 29
+          },
+          {
+            "value": "BMDM",
+            "count": 12
+          },
+          {
+            "value": "Mouse_CD1",
+            "count": 10
+          }
+        ],
+        "example_values": [
+          "HeLa",
+          "HEK293T",
+          "Mouse_B6",
+          "Mouse_CD1",
+          "BMDC",
+          "BMDM",
+          "IGROV1",
+          "HepG2",
+          "A549",
+          "Mouse_BALBc",
+          "DC2.4",
+          "HBEC_ALI",
+          "BeWo_b30",
+          "Human_RBC",
+          "Mouse_ICR",
+          "RAW264.7",
+          "Mouse_Ai14"
+        ]
+      },
+      "Model_target": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 12,
+        "top_values": [
+          {
+            "value": "in_vitro",
+            "count": 15310
+          },
+          {
+            "value": "lung_epithelium",
+            "count": 1879
+          },
+          {
+            "value": "liver",
+            "count": 905
+          },
+          {
+            "value": "muscle",
+            "count": 486
+          },
+          {
+            "value": "spleen",
+            "count": 258
+          },
+          {
+            "value": "multiorgan",
+            "count": 192
+          },
+          {
+            "value": "bone_marrow",
+            "count": 141
+          },
+          {
+            "value": "heart",
+            "count": 96
+          },
+          {
+            "value": "lung",
+            "count": 96
+          },
+          {
+            "value": "kidney",
+            "count": 95
+          },
+          {
+            "value": "ear",
+            "count": 60
+          },
+          {
+            "value": "whole_body",
+            "count": 10
+          }
+        ],
+        "example_values": [
+          "in_vitro",
+          "liver",
+          "whole_body",
+          "muscle",
+          "lung_epithelium",
+          "spleen",
+          "heart",
+          "lung",
+          "kidney",
+          "multiorgan",
+          "ear",
+          "bone_marrow"
+        ]
+      },
+      "Route_of_administration": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 5,
+        "top_values": [
+          {
+            "value": "in_vitro",
+            "count": 17140
+          },
+          {
+            "value": "intravenous",
+            "count": 1793
+          },
+          {
+            "value": "intramuscular",
+            "count": 486
+          },
+          {
+            "value": "intradermal",
+            "count": 60
+          },
+          {
+            "value": "intratracheal",
+            "count": 49
+          }
+        ],
+        "example_values": [
+          "in_vitro",
+          "intravenous",
+          "intramuscular",
+          "intratracheal",
+          "intradermal"
+        ]
+      },
+      "Cargo": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 3,
+        "top_values": [
+          {
+            "value": "mRNA",
+            "count": 14578
+          },
+          {
+            "value": "siRNA",
+            "count": 3758
+          },
+          {
+            "value": "pDNA",
+            "count": 1192
+          }
+        ],
+        "example_values": [
+          "siRNA",
+          "pDNA",
+          "mRNA"
+        ]
+      },
+      "Cargo_type": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 8,
+        "top_values": [
+          {
+            "value": "FLuc",
+            "count": 17752
+          },
+          {
+            "value": "DNA_barcode",
+            "count": 671
+          },
+          {
+            "value": "peptide_barcode",
+            "count": 407
+          },
+          {
+            "value": "hEPO",
+            "count": 268
+          },
+          {
+            "value": "base_editor",
+            "count": 141
+          },
+          {
+            "value": "FVII",
+            "count": 117
+          },
+          {
+            "value": "GFP",
+            "count": 112
+          },
+          {
+            "value": "RLuc",
+            "count": 60
+          }
+        ],
+        "example_values": [
+          "FLuc",
+          "GFP",
+          "FVII",
+          "peptide_barcode",
+          "hEPO",
+          "DNA_barcode",
+          "RLuc",
+          "base_editor"
+        ]
+      },
+      "Dose_ug_nucleicacid": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19797,
+        "unique_count": 20,
+        "top_values": [
+          {
+            "value": "0.1",
+            "count": 7079
+          },
+          {
+            "value": "0.05",
+            "count": 2479
+          },
+          {
+            "value": "0.2",
+            "count": 2461
+          },
+          {
+            "value": "0.02",
+            "count": 1830
+          },
+          {
+            "value": "5",
+            "count": 1156
+          },
+          {
+            "value": "0.01",
+            "count": 997
+          },
+          {
+            "value": "1",
+            "count": 830
+          },
+          {
+            "value": "0.025",
+            "count": 635
+          },
+          {
+            "value": "0.003",
+            "count": 500
+          },
+          {
+            "value": "0.9",
+            "count": 497
+          },
+          {
+            "value": "0.081521739",
+            "count": 378
+          },
+          {
+            "value": "NA",
+            "count": 269
+          },
+          {
+            "value": "40",
+            "count": 141
+          },
+          {
+            "value": "2",
+            "count": 122
+          },
+          {
+            "value": "0.075",
+            "count": 112
+          },
+          {
+            "value": "100",
+            "count": 91
+          },
+          {
+            "value": "0.015",
+            "count": 90
+          },
+          {
+            "value": "2.5",
+            "count": 90
+          },
+          {
+            "value": "20",
+            "count": 26
+          },
+          {
+            "value": "10",
+            "count": 14
+          }
+        ],
+        "example_values": [
+          "0.9",
+          "0.081521739",
+          "0.075",
+          "0.05",
+          "100",
+          "0.1",
+          "20",
+          "10",
+          "0.025",
+          "0.2",
+          "0.01",
+          "5",
+          "1",
+          "2",
+          "NA",
+          "0.02",
+          "2.5",
+          "0.015",
+          "40",
+          "0.003"
+        ]
+      },
+      "Experiment_method": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 10,
+        "top_values": [
+          {
+            "value": "luminescence_normalized",
+            "count": 14630
+          },
+          {
+            "value": "luminescence_discretized_normalized",
+            "count": 3058
+          },
+          {
+            "value": "protein_adundance_normalized",
+            "count": 766
+          },
+          {
+            "value": "uptake",
+            "count": 479
+          },
+          {
+            "value": "editing_efficiency_normalized",
+            "count": 141
+          },
+          {
+            "value": "LRP6_knockdown_normalized",
+            "count": 112
+          },
+          {
+            "value": "diameter",
+            "count": 96
+          },
+          {
+            "value": "zeta_potential",
+            "count": 96
+          },
+          {
+            "value": "hemolysis_percent",
+            "count": 90
+          },
+          {
+            "value": "luminescence_relative_to_Spikevax",
+            "count": 60
+          }
+        ],
+        "example_values": [
+          "luminescence_discretized_normalized",
+          "luminescence_normalized",
+          "LRP6_knockdown_normalized",
+          "protein_adundance_normalized",
+          "uptake",
+          "diameter",
+          "zeta_potential",
+          "hemolysis_percent",
+          "luminescence_relative_to_Spikevax",
+          "editing_efficiency_normalized"
+        ]
+      },
+      "Experiment_batching": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 2,
+        "top_values": [
+          {
+            "value": "individual",
+            "count": 18642
+          },
+          {
+            "value": "barcoded",
+            "count": 886
+          }
+        ],
+        "example_values": [
+          "individual",
+          "barcoded"
+        ]
+      },
+      "formulation_id": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 19528,
+        "top_values": [
+          {
+            "value": "AA_2008_F1",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F10",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F100",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F101",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F102",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F103",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F104",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F105",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F106",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F107",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F108",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F109",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F11",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F110",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F111",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F112",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F113",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F114",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F115",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F116",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F117",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F118",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F119",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F12",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F120",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F121",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F122",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F123",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F124",
+            "count": 1
+          },
+          {
+            "value": "AA_2008_F125",
+            "count": 1
+          }
+        ],
+        "example_values": [
+          "AA_2008_F1",
+          "AA_2008_F2",
+          "AA_2008_F3",
+          "AA_2008_F4",
+          "AA_2008_F5",
+          "AA_2008_F6",
+          "AA_2008_F7",
+          "AA_2008_F8",
+          "AA_2008_F9",
+          "AA_2008_F10",
+          "AA_2008_F11",
+          "AA_2008_F12",
+          "AA_2008_F13",
+          "AA_2008_F14",
+          "AA_2008_F15",
+          "AA_2008_F16",
+          "AA_2008_F17",
+          "AA_2008_F18",
+          "AA_2008_F19",
+          "AA_2008_F20"
+        ]
+      },
+      "IL_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19797,
+        "unique_count": 13016,
+        "top_values": [
+          {
+            "value": "DLin-MC3-DMA",
+            "count": 2194
+          },
+          {
+            "value": "1_A3_T9b2",
+            "count": 197
+          },
+          {
+            "value": "other",
+            "count": 157
+          },
+          {
+            "value": "ALC-0315",
+            "count": 96
+          },
+          {
+            "value": "RM_branched_ester_M3_R14",
+            "count": 44
+          },
+          {
+            "value": "RM_branched_ester_M3_R7",
+            "count": 44
+          },
+          {
+            "value": "IR_red_amin_IRh20_IRt11",
+            "count": 42
+          },
+          {
+            "value": "RM_branched_ester_M3_R6",
+            "count": 42
+          },
+          {
+            "value": "RM_branched_ester_M3_R13",
+            "count": 25
+          },
+          {
+            "value": "RM_branched_ester_M68_R10",
+            "count": 25
+          },
+          {
+            "value": "RM_branched_ester_M68_R21",
+            "count": 25
+          },
+          {
+            "value": "RM_branched_ester_M68_R6",
+            "count": 25
+          },
+          {
+            "value": "A3_T133",
+            "count": 24
+          },
+          {
+            "value": "IR_red_amin_IRh20_IRt8",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M37_R14",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M3_R15",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M3_R20",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M3_R21",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M3_R5",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M68_R14",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M68_R15",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M68_R20",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M68_R5",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M68_R7",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M93_R13",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M93_R14",
+            "count": 24
+          },
+          {
+            "value": "RM_branched_ester_M9_R14",
+            "count": 24
+          },
+          {
+            "value": "IR_red_amin_IRh16_IRt11",
+            "count": 23
+          },
+          {
+            "value": "IR_red_amin_IRh2_IRt8",
+            "count": 23
+          },
+          {
+            "value": "RM_branched_ester_M3_R10",
+            "count": 23
+          }
+        ],
+        "example_values": [
+          "87_O15",
+          "96_N12",
+          "98_N12",
+          "64_N15",
+          "64_N16",
+          "26_O14",
+          "32_N12",
+          "95_N12",
+          "99_N12",
+          "100_N12",
+          "11_N14",
+          "87_N14",
+          "109_N14",
+          "62_N16",
+          "63_N16",
+          "81_O12",
+          "90_O12",
+          "95_O12",
+          "24_O12",
+          "103_O13"
+        ]
+      },
+      "IL_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19797,
+        "unique_count": 12844,
+        "top_values": [
+          {
+            "value": "CCCCC/C=C\\C/C=C\\CCCCCCCCC(CCCCCCCC/C=C\\C/C=C\\CCCCC)OC(=O)CCCN(C)C",
+            "count": 2165
+          },
+          {
+            "value": "CCCCC(CC)CCC(=O)Oc1cc(OC(=O)CCC(CC)CCCC)c(CNCCN(C)CCNCc2c(OC(=O)CCC(CC)CCCC)cc(OC(=O)CCC(CC)CCCC)cc2OC(=O)CCC(CC)CCCC)c(OC(=O)CCC(CC)CCCC)c1",
+            "count": 197
+          },
+          {
+            "value": "CCCCCCCCC(CCCCCC)C(=O)OCCCCCCN(CCCCCCOC(=O)C(CCCCCC)CCCCCCCC)CCCCO",
+            "count": 96
+          },
+          {
+            "value": "CCCCC/C=C\\C/C=C\\CCCCCCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCCCCC/C=C\\C/C=C\\CCCCC)CCCCCC",
+            "count": 45
+          },
+          {
+            "value": "CCCCCCCC/C=C\\CCCCCCCC(=O)OCCCCCC(O)C(CCCCOC(=O)CCCCCCC/C=C\\CCCCCCCC)CN(C)CCCn1cccn1",
+            "count": 42
+          },
+          {
+            "value": "CCCCC/C=C\\C/C=C\\CCCCCCCCC(OC(=O)CCCN(C)C)CCCCCCCC/C=C\\C/C=C\\CCCCC",
+            "count": 30
+          },
+          {
+            "value": "CCCCCCCC/C=C\\CCCCCCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCCCCC/C=C\\CCCCCCCC)CCN1CCCC1)CCCCCC",
+            "count": 26
+          },
+          {
+            "value": "CCCCCCCCC(CCCCCC)C(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)C(CCCCCC)CCCCCCCC)CCCCCC",
+            "count": 26
+          },
+          {
+            "value": "CCCCCCCCCCC(O)CN(CCCCC1NC(=O)C(CCCCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)NC1=O)CC(O)CCCCCCCCCC",
+            "count": 26
+          },
+          {
+            "value": "CCCCCCCCCCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCCCCCCCCC)CCN1CCCC1)CCCCCC",
+            "count": 26
+          },
+          {
+            "value": "CCCCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCCC)CCN1CCCC1)CCCCCC",
+            "count": 25
+          },
+          {
+            "value": "CCCCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCCC)CCCCCC",
+            "count": 25
+          },
+          {
+            "value": "CCCCC/C=C\\C/C=C\\CCCCCCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCCCCC/C=C\\C/C=C\\CCCCC)CCN1CCCC1)CCCCCC",
+            "count": 25
+          },
+          {
+            "value": "CCCCC/C=C\\CCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN1CCN(C)CC1)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CC/C=C\\CCCCC)CCCCCC",
+            "count": 25
+          },
+          {
+            "value": "CCCCCCC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCC1CCCCC1)CCN1CCCC1)OC(=O)CCCC1CCCCC1",
+            "count": 25
+          },
+          {
+            "value": "CCCCCCCC/C=C\\CCCCCCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCCCCC/C=C\\CCCCCCCC)CCCCCC",
+            "count": 25
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCCCCCCCCCCCCCCC)CCN1CCCC1)CCCCCC",
+            "count": 25
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCCCCCCCCCCCCCCC)CCCCCC",
+            "count": 25
+          },
+          {
+            "value": "CC/C=C\\C/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCC/C=C\\C/C=C\\C/C=C\\C/C=C\\C/C=C\\CC)CCCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCC/C=C\\CCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(C)CCCN(C)CCCN(C)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CC/C=C\\CCCCC)CCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCC/C=C\\CCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CC/C=C\\CCCCC)CCN1CCCN(C)CC1)CCCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCCC/C=C\\CCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CC/C=C\\CCCCCC)CCN1CCCC1)CCCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCCC/C=C\\CCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CC/C=C\\CCCCCC)CCCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCCCC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)C(CCCC)CCCCCC)CCN1CCCC1)OC(=O)C(CCCC)CCCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCCCC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)C(CCCC)CCCCCC)OC(=O)C(CCCC)CCCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCCCC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCC1CCCCC1)OC(=O)CCCC1CCCCC1",
+            "count": 24
+          },
+          {
+            "value": "CCCCCCCCC(CCCCCC)C(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(C)CCCN(C)CCCN(C)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)C(CCCCCC)CCCCCCCC)CCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCCCCCCCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCCCCCCCCCC)CCCCCC",
+            "count": 24
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCC(=O)OCCCCCC(O)C(CCCCOC(=O)CCCCCCCCCCCCCCC)CN(C)CCCn1cccn1",
+            "count": 24
+          },
+          {
+            "value": "CCCCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCC(=O)OC(C/C=C\\CCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCC/C=C\\CC(CCCCCC)OC(=O)CCC/C=C\\C/C=C\\C/C=C\\C/C=C\\CCCCC)CCc1ccncc1)CCCCCC",
+            "count": 23
+          }
+        ],
+        "example_values": [
+          "CCCCCCCCCCCCCCCOC(=O)CCN(CCCN(CCO)CCO)CCC(=O)OCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(C)CCCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(CCC(=O)NCCCCCCCCCCCC)CCN(CCC(=O)NCCCCCCCCCCCC)CCN(CCC(=O)NCCCCCCCCCCCC)CCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCNC(=O)CCN(CC)CCCN(CC)CCC(=O)NCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCNC(=O)CCN(CC)CCCN(CC)CCC(=O)NCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCCCCCCCC)C(C)(CO)CO",
+          "CCCCCCCCCCCCNC(=O)CCN(CCCCCO)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(C)CCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(CCC(=O)NCCCCCCCCCCCC)CCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(CCCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCNC(=O)CCN(CCOCC)CCC(=O)NCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCNC(=O)CCN(CCCN(CCO)CCO)CCC(=O)NCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCNC(=O)CCN(CCO)CCN(CCC(=O)NCCCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCNC(=O)CCN(CCN(CCC(=O)NCCCCCCCCCCCCCCCC)C(C)C)C(C)C",
+          "CCCCCCCCCCCCCCCCNC(=O)CCN(C)CCCN(C)CCC(=O)NCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCCCCCC",
+          "CCCCCCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCCCCCC)CCN1CCOCC1",
+          "CCCCCCCCCCCCOC(=O)CCN(C)CCN(CCC(=O)OCCCCCCCCCCCC)CCC(=O)OCCCCCCCCCCCC",
+          "CCCCCCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCCCCCC)CC(O)CO",
+          "CCCCCCCCCCCCCOC(=O)CCN(CCO)CCN(CCO)CCC(=O)OCCCCCCCCCCCCC"
+        ]
+      },
+      "HL_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 18959,
+        "unique_count": 7,
+        "top_values": [
+          {
+            "value": "DOPE",
+            "count": 9312
+          },
+          {
+            "value": "DSPC",
+            "count": 5525
+          },
+          {
+            "value": "DOTAP",
+            "count": 2470
+          },
+          {
+            "value": "MDOA",
+            "count": 572
+          },
+          {
+            "value": "14PA",
+            "count": 360
+          },
+          {
+            "value": "18PG",
+            "count": 360
+          },
+          {
+            "value": "DDAB",
+            "count": 360
+          }
+        ],
+        "example_values": [
+          "DSPC",
+          "DOPE",
+          "MDOA",
+          "DOTAP",
+          "DDAB",
+          "14PA",
+          "18PG"
+        ]
+      },
+      "HL_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19797,
+        "unique_count": 9,
+        "top_values": [
+          {
+            "value": "[H][C@@](COP([O-])(OCC[NH3+])=O)(OC(CCCCCCC/C=C\\\\CCCCCCCC)=O)COC(CCCCCCC/C=C\\\\CCCCCCCC)=O",
+            "count": 9271
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC(=O)OC[C@H](COP(=O)([O-])OCC[N+](C)(C)C)OC(=O)CCCCCCCCCCCCCCCCC",
+            "count": 5525
+          },
+          {
+            "value": "[H]C(C[N+](C)(C)C)(OC(CCCCCCC/C=C\\CCCCCCCC)=O)COC(CCCCCCC/C=C\\CCCCCCCC)=O",
+            "count": 2470
+          },
+          {
+            "value": "NA",
+            "count": 838
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCCN(C)CCCCCCCCCCCCCCCCCC",
+            "count": 572
+          },
+          {
+            "value": "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCC)O",
+            "count": 360
+          },
+          {
+            "value": "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCCCCCC)OCC(O)CO",
+            "count": 360
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](CCCCCCCCCCCCCCCCCC)(C)C",
+            "count": 360
+          },
+          {
+            "value": "[H][C@@](COP([O-])(OCC[NH3+])=O)(OC(CCCCCCC/C=C\\CCCCCCCC)=O)COC(CCCCCCC/C=C\\CCCCCCCC)=O",
+            "count": 41
+          }
+        ],
+        "example_values": [
+          "NA",
+          "CCCCCCCCCCCCCCCCCC(=O)OC[C@H](COP(=O)([O-])OCC[N+](C)(C)C)OC(=O)CCCCCCCCCCCCCCCCC",
+          "[H][C@@](COP([O-])(OCC[NH3+])=O)(OC(CCCCCCC/C=C\\\\CCCCCCCC)=O)COC(CCCCCCC/C=C\\\\CCCCCCCC)=O",
+          "CCCCCCCCCCCCCCCCCCN(C)CCCCCCCCCCCCCCCCCC",
+          "[H]C(C[N+](C)(C)C)(OC(CCCCCCC/C=C\\CCCCCCCC)=O)COC(CCCCCCC/C=C\\CCCCCCCC)=O",
+          "CCCCCCCCCCCCCCCCCC[N+](CCCCCCCCCCCCCCCCCC)(C)C",
+          "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCC)O",
+          "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCCCCCC)OCC(O)CO",
+          "[H][C@@](COP([O-])(OCC[NH3+])=O)(OC(CCCCCCC/C=C\\CCCCCCCC)=O)COC(CCCCCCC/C=C\\CCCCCCCC)=O"
+        ]
+      },
+      "CHL_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 16,
+        "top_values": [
+          {
+            "value": "Cholesterol",
+            "count": 19464
+          },
+          {
+            "value": "n-butyl lithocholate",
+            "count": 35
+          },
+          {
+            "value": "Beta-Sitosterol",
+            "count": 5
+          },
+          {
+            "value": "Campesterol",
+            "count": 4
+          },
+          {
+            "value": "Fucosterol",
+            "count": 4
+          },
+          {
+            "value": "Stigmastanol",
+            "count": 4
+          },
+          {
+            "value": "3-methylpentyl lithocholate",
+            "count": 2
+          },
+          {
+            "value": "iso-Pentyl lithocholate",
+            "count": 2
+          },
+          {
+            "value": "Betulin",
+            "count": 1
+          },
+          {
+            "value": "Calcipotriol",
+            "count": 1
+          },
+          {
+            "value": "Lupeol",
+            "count": 1
+          },
+          {
+            "value": "Oleanolic acid",
+            "count": 1
+          },
+          {
+            "value": "Stigmasterol",
+            "count": 1
+          },
+          {
+            "value": "Ursolic acid",
+            "count": 1
+          },
+          {
+            "value": "Vitamin D2",
+            "count": 1
+          },
+          {
+            "value": "Vitamin D3",
+            "count": 1
+          }
+        ],
+        "example_values": [
+          "Cholesterol",
+          "Vitamin D2",
+          "Vitamin D3",
+          "Calcipotriol",
+          "Stigmasterol",
+          "Beta-Sitosterol",
+          "Betulin",
+          "Lupeol",
+          "Ursolic acid",
+          "Oleanolic acid",
+          "Campesterol",
+          "Fucosterol",
+          "Stigmastanol",
+          "n-butyl lithocholate",
+          "3-methylpentyl lithocholate",
+          "iso-Pentyl lithocholate"
+        ]
+      },
+      "CHL_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19528,
+        "unique_count": 16,
+        "top_values": [
+          {
+            "value": "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+            "count": 19464
+          },
+          {
+            "value": "C[C@H](CCC(OCCCC)=O)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+            "count": 35
+          },
+          {
+            "value": "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+            "count": 5
+          },
+          {
+            "value": "C/C=C(\\CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)/C(C)C",
+            "count": 4
+          },
+          {
+            "value": "C[C@H](CC[C@@H](C)C(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+            "count": 4
+          },
+          {
+            "value": "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC[C@@H]4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+            "count": 4
+          },
+          {
+            "value": "O=C(OCCC(C)C)CC[C@@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+            "count": 2
+          },
+          {
+            "value": "O=C(OCCC(C)CC)CC[C@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+            "count": 2
+          },
+          {
+            "value": "C[C@@H]1CC[C@@]2(CC[C@@]3(C(=CC[C@H]4[C@]3(CC[C@@H]5[C@@]4(CC[C@@H](C5(C)C)O)C)C)[C@@H]2[C@H]1C)C)C(=O)O",
+            "count": 1
+          },
+          {
+            "value": "C[C@]12CC[C@@H](C([C@@H]1CC[C@@]3([C@@H]2CC=C4[C@]3(CC[C@@]5([C@H]4CC(CC5)(C)C)C(=O)O)C)C)(C)C)O",
+            "count": 1
+          },
+          {
+            "value": "C[C@H](/C=C/[C@H](C)C(C)C)[C@H]1CCC\\2[C@@]1(CCC/C2=C\\C=C\\3/CC(CCC3=C)O[C@H]4[C@@H]([C@H]([C@@H]([C@H](O4)C(=O)O)O)O)O)C",
+            "count": 1
+          },
+          {
+            "value": "C[C@H](/C=C/[C@H](C1CC1)O)[C@H]2CC[C@@H]\\3[C@@]2(CCC/C3=C\\C=C/4\\C[C@H](C[C@@H](C4=C)O)O)C",
+            "count": 1
+          },
+          {
+            "value": "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]\\2[C@@]1(CCC/C2=C\\C=C/3\\C[C@H](CCC3=C)O)C",
+            "count": 1
+          },
+          {
+            "value": "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)C",
+            "count": 1
+          },
+          {
+            "value": "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)CO",
+            "count": 1
+          },
+          {
+            "value": "CC[C@H](/C=C/[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+            "count": 1
+          }
+        ],
+        "example_values": [
+          "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+          "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]\\2[C@@]1(CCC/C2=C\\C=C/3\\C[C@H](CCC3=C)O)C",
+          "C[C@H](/C=C/[C@H](C)C(C)C)[C@H]1CCC\\2[C@@]1(CCC/C2=C\\C=C\\3/CC(CCC3=C)O[C@H]4[C@@H]([C@H]([C@@H]([C@H](O4)C(=O)O)O)O)O)C",
+          "C[C@H](/C=C/[C@H](C1CC1)O)[C@H]2CC[C@@H]\\3[C@@]2(CCC/C3=C\\C=C/4\\C[C@H](C[C@@H](C4=C)O)O)C",
+          "CC[C@H](/C=C/[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)CO",
+          "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)C",
+          "C[C@@H]1CC[C@@]2(CC[C@@]3(C(=CC[C@H]4[C@]3(CC[C@@H]5[C@@]4(CC[C@@H](C5(C)C)O)C)C)[C@@H]2[C@H]1C)C)C(=O)O",
+          "C[C@]12CC[C@@H](C([C@@H]1CC[C@@]3([C@@H]2CC=C4[C@]3(CC[C@@]5([C@H]4CC(CC5)(C)C)C(=O)O)C)C)(C)C)O",
+          "C[C@H](CC[C@@H](C)C(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+          "C/C=C(\\CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)/C(C)C",
+          "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC[C@@H]4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "C[C@H](CCC(OCCCC)=O)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+          "O=C(OCCC(C)CC)CC[C@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+          "O=C(OCCC(C)C)CC[C@@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C"
+        ]
+      },
+      "PEG_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19344,
+        "unique_count": 15,
+        "top_values": [
+          {
+            "value": "DMG-PEG2000",
+            "count": 11145
+          },
+          {
+            "value": "DMPE-PEG2000",
+            "count": 6322
+          },
+          {
+            "value": "Unknown",
+            "count": 1798
+          },
+          {
+            "value": "DSG-PEG2000",
+            "count": 13
+          },
+          {
+            "value": "ALC-0159",
+            "count": 12
+          },
+          {
+            "value": "C16-Ceramide-PEG2000",
+            "count": 12
+          },
+          {
+            "value": "C8-Ceramide-PEG2000",
+            "count": 12
+          },
+          {
+            "value": "DMG-C-PEG2000",
+            "count": 12
+          },
+          {
+            "value": "DSPE-PEG2000",
+            "count": 12
+          },
+          {
+            "value": "DMG-PEG5000",
+            "count": 1
+          },
+          {
+            "value": "DOG-PEG2000",
+            "count": 1
+          },
+          {
+            "value": "DOG-PEG5000",
+            "count": 1
+          },
+          {
+            "value": "DPG-PEG2000",
+            "count": 1
+          },
+          {
+            "value": "DPG-PEG5000",
+            "count": 1
+          },
+          {
+            "value": "DSG-PEG5000",
+            "count": 1
+          }
+        ],
+        "example_values": [
+          "DMG-PEG2000",
+          "Unknown",
+          "DMPE-PEG2000",
+          "DMG-PEG5000",
+          "DPG-PEG2000",
+          "DPG-PEG5000",
+          "DSG-PEG2000",
+          "DSG-PEG5000",
+          "DOG-PEG2000",
+          "DOG-PEG5000",
+          "ALC-0159",
+          "DMG-C-PEG2000",
+          "C8-Ceramide-PEG2000",
+          "C16-Ceramide-PEG2000",
+          "DSPE-PEG2000"
+        ]
+      },
+      "PEG_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 17546,
+        "unique_count": 14,
+        "top_values": [
+          {
+            "value": "O=C(CCCCCCCCCCCCC)OCC(OC(CCCCCCCCCCCCC)=O)COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 13047
+          },
+          {
+            "value": "CCCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCC",
+            "count": 4420
+          },
+          {
+            "value": "O=C(CCCCCCCCCCCCCCCCC)OCC(OC(CCCCCCCCCCCCCCCCC)=O)COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 13
+          },
+          {
+            "value": "[H][C@](/C=C/CCCCCCCCCCCCC)(O)[C@@]([H])(NC(CCCCCCC)=O)COC(CCC(OOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCCC/C=C/[C@@H](O)[C@@H](NC(=O)CCCCCCCCCCCCCCC)COC(=O)CCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCCCC(O[C@H](COC(CCCCCCCCCCCCC)=O)COC(NCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCCC",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCCCCN(CCCCCCCCCCCCCC)C(COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCC/C=C\\CCCCCCC(=O)OCC(COC(=O)CCCCCCC/C=C\\CCCCCCC)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 1
+          },
+          {
+            "value": "CCCCCCCC/C=C\\CCCCCCC(=O)OCC(COC(=O)CCCCCCC/C=C\\CCCCCCC)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 1
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCC(=O)OCC(COC(=O)CCCCCCCCCCCCCCCC)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 1
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCC(=O)OCC(COC(=O)CCCCCCCCCCCCCCCC)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 1
+          },
+          {
+            "value": "O=C(CCCCCCCCCCCCC)OCC(OC(CCCCCCCCCCCCC)=O)COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 1
+          },
+          {
+            "value": "O=C(CCCCCCCCCCCCCCCCC)OCC(OC(CCCCCCCCCCCCCCCCC)=O)COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+            "count": 1
+          }
+        ],
+        "example_values": [
+          "O=C(CCCCCCCCCCCCC)OCC(OC(CCCCCCCCCCCCC)=O)COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "CCCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCC",
+          "O=C(CCCCCCCCCCCCC)OCC(OC(CCCCCCCCCCCCC)=O)COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "CCCCCCCCCCCCCCCC(=O)OCC(COC(=O)CCCCCCCCCCCCCCCC)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "CCCCCCCCCCCCCCCC(=O)OCC(COC(=O)CCCCCCCCCCCCCCCC)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "O=C(CCCCCCCCCCCCCCCCC)OCC(OC(CCCCCCCCCCCCCCCCC)=O)COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "O=C(CCCCCCCCCCCCCCCCC)OCC(OC(CCCCCCCCCCCCCCCCC)=O)COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "CCCCCCCC/C=C\\CCCCCCC(=O)OCC(COC(=O)CCCCCCC/C=C\\CCCCCCC)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "CCCCCCCC/C=C\\CCCCCCC(=O)OCC(COC(=O)CCCCCCC/C=C\\CCCCCCC)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "CCCCCCCCCCCCCCN(CCCCCCCCCCCCCC)C(COCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O",
+          "CCCCCCCCCCCCCC(O[C@H](COC(CCCCCCCCCCCCC)=O)COC(NCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O",
+          "[H][C@](/C=C/CCCCCCCCCCCCC)(O)[C@@]([H])(NC(CCCCCCC)=O)COC(CCC(OOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O",
+          "CCCCCCCCCCCCC/C=C/[C@@H](O)[C@@H](NC(=O)CCCCCCCCCCCCCCC)COC(=O)CCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC",
+          "CCCCCCCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCCC"
+        ]
+      },
+      "Fifth_component_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 38,
+        "unique_count": 1,
+        "top_values": [
+          {
+            "value": "6,6'-trehalose dioleate",
+            "count": 38
+          }
+        ],
+        "example_values": [
+          "6,6'-trehalose dioleate"
+        ]
+      },
+      "Fifth_component_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19797,
+        "unique_count": 2,
+        "top_values": [
+          {
+            "value": "NA",
+            "count": 19759
+          },
+          {
+            "value": "O[C@@H]1[C@@H](O)[C@H](O)[C@@H](COC(CCCCCCC/C=C\\CCCCCCCC)=O)O[C@@H]1O[C@@H]2[C@H](O)[C@@H](O)[C@H](O)[C@@H](COC(CCCCCCC/C=C\\CCCCCCCC)=O)O2",
+            "count": 38
+          }
+        ],
+        "example_values": [
+          "NA",
+          "O[C@@H]1[C@@H](O)[C@H](O)[C@@H](COC(CCCCCCC/C=C\\CCCCCCCC)=O)O[C@@H]1O[C@@H]2[C@H](O)[C@@H](O)[C@H](O)[C@@H](COC(CCCCCCC/C=C\\CCCCCCCC)=O)O2"
+        ]
+      },
+      "IL_to_nucleicacid_massratio": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB (1).csv"
+        ],
+        "non_empty_count": 19797,
+        "unique_count": 1891,
+        "top_values": [
+          {
+            "value": "10",
+            "count": 11053
+          },
+          {
+            "value": "5",
+            "count": 1458
+          },
+          {
+            "value": "16.96",
+            "count": 720
+          },
+          {
+            "value": "25.44",
+            "count": 720
+          },
+          {
+            "value": "8.48",
+            "count": 720
+          },
+          {
+            "value": "15",
+            "count": 693
+          },
+          {
+            "value": "7",
+            "count": 378
+          },
+          {
+            "value": "11",
+            "count": 325
+          },
+          {
+            "value": "13.9",
+            "count": 286
+          },
+          {
+            "value": "NA",
+            "count": 269
+          },
+          {
+            "value": "20",
+            "count": 127
+          },
+          {
+            "value": "7.5",
+            "count": 114
+          },
+          {
+            "value": "13.93",
+            "count": 96
+          },
+          {
+            "value": "11.2",
+            "count": 30
+          },
+          {
+            "value": "25",
+            "count": 26
+          },
+          {
+            "value": "12.14701818",
+            "count": 9
+          },
+          {
+            "value": "5.301030075",
+            "count": 9
+          },
+          {
+            "value": "6.152488722",
+            "count": 9
+          },
+          {
+            "value": "7.462832198",
+            "count": 9
+          },
+          {
+            "value": "13.31742273",
+            "count": 8
+          },
+          {
+            "value": "5.941556391",
+            "count": 8
+          },
+          {
+            "value": "6.363421053",
+            "count": 8
+          },
+          {
+            "value": "6.965055728",
+            "count": 8
+          },
+          {
+            "value": "7.213943963",
+            "count": 8
+          },
+          {
+            "value": "7.711720434",
+            "count": 8
+          },
+          {
+            "value": "7.960608669",
+            "count": 8
+          },
+          {
+            "value": "8.458385139",
+            "count": 8
+          },
+          {
+            "value": "10.04013539",
+            "count": 7
+          },
+          {
+            "value": "10.19245476",
+            "count": 7
+          },
+          {
+            "value": "10.77588088",
+            "count": 7
+          }
+        ],
+        "example_values": [
+          "5",
+          "7",
+          "3.163915524",
+          "3.2940723",
+          "3.245692009",
+          "3.251864601",
+          "3.294203468",
+          "3.20844915",
+          "3.372887241",
+          "3.33537733",
+          "3.288183125",
+          "3.335505304",
+          "3.412295574",
+          "3.375682854",
+          "3.329631646",
+          "3.37580775",
+          "3.450772056",
+          "3.415024719",
+          "3.370075481",
+          "3.415146647"
+        ]
+      }
+    },
+    "free_text_notes": []
+  },
+  "human_column_guides": {
+    "available": false,
+    "source_paths": [],
+    "text_blocks": []
+  },
+  "warnings": []
+}

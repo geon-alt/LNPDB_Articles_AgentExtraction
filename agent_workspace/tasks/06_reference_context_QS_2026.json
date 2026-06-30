@@ -1,0 +1,18 @@
+{
+  "has_any_reference": false,
+  "lnpdb_reference": {
+    "available": false,
+    "source_paths": [],
+    "columns": {},
+    "column_examples": {},
+    "free_text_notes": []
+  },
+  "human_column_guides": {
+    "available": false,
+    "source_paths": [],
+    "text_blocks": []
+  },
+  "warnings": [
+    "No external LNPDB reference schema/value context was available; proceed using paper evidence only."
+  ]
+}

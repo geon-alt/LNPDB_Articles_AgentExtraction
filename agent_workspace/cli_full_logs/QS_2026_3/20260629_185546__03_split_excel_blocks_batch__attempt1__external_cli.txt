@@ -1,0 +1,116 @@
+===== EXTERNAL CLI RUN LOG =====
+timestamp_start: 2026-06-29T18:55:46.160874
+paper_folder: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+stage: 03_split_excel_blocks_batch
+attempt: 1
+project_root: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+cwd: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+external_agent_command_template: python -c "import sys; data=sys.stdin.read(); print('CLI_TEST_OUTPUT'); print('PROMPT_CHARS', len(data))" -
+final_command: python -c import sys; data=sys.stdin.read(); print('CLI_TEST_OUTPUT'); print('PROMPT_CHARS', len(data)) -
+final_command_argv: ["python", "-c", "import sys; data=sys.stdin.read(); print('CLI_TEST_OUTPUT'); print('PROMPT_CHARS', len(data))", "-"]
+task_file: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md
+mode: external_agent
+
+===== BEGIN PROMPT SENT TO EXTERNAL CLI =====
+You are an external CLI coding agent working in the LNPDB_Articles_AgentExtraction repository.
+
+Stage: 03_split_excel_blocks_batch
+Target paper folder: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+Task file: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tasks\03_split_excel_blocks_batch_QS_2026_3.md
+
+Read and complete the task markdown below. Use the target paper folder from both this prompt and the task file.
+
+Hard constraints:
+- Do not use Gemini/API/find_api/LLM_API/LLM_Batch.
+- Do not run legacy Gemini scripts.
+- Follow agent_workspace/OUTPUT_SCHEMA.md.
+- Create or modify the required output files so Agent_Task_Runner.py validation passes.
+- If exact fields are missing, leave them blank and set manual_required=true.
+- Record evidence/provenance for nontrivial extracted data.
+- Do not delete original PDF or Excel files.
+- If overwrite is needed, create a backup or follow the runner backup policy.
+- Stage-specific task markdown instructions have priority.
+- If you fail, record the cause and what you changed.
+
+Task markdown:
+
+# External Agent Task: 03_split_excel_blocks_batch
+
+Target paper folder: `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`
+
+## Stage Purpose
+Split experimental Excel workbooks/sheets into API-free table blocks and classify block type by direct CLI agent judgment.
+
+## Required Input Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\.manual_select_review_done`
+- Excel files under `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel`
+
+Excel files found:
+- `Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx`
+- `Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx`
+
+## Expected Output Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\Exp_Excel_Blocks`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\three_core_result_all.json`
+
+## Work Instructions
+1. Inspect the `Exp_Excel` folder.
+2. Read Excel workbooks and sheets.
+3. Split sheets into candidate blocks using merged cells, blank rows/columns, borders, fills, headers, and numeric density.
+4. Prefer API-free helper logic such as `0_mark_down_gen/sheet_block_splitter.py`, `0_mark_down_gen/03_split_excel_blocks.py` pure utilities, or a deterministic helper script.
+5. Do not use Gemini or LLM judgment.
+6. Save each block CSV under `Exp_Excel_Blocks/`.
+7. Create `excel_block_inventory.csv` with required columns:
+   - `excel_file`
+   - `excel_sheet`
+   - `block_id`
+   - `group_id`
+   - `element_id`
+   - `block_csv_path`
+   - `block_meta_path`
+   - `block_type`
+8. Classify `block_type` by direct inspection as one of:
+   - `title_and_table`
+   - `table_body`
+   - `table_title`
+   - `multi_table`
+   - `note`
+   - `other`
+9. Create `three_core_result_all.json` with JSON reasoning for every workbook/sheet.
+10. If useful, create or run an API-free helper such as `agent_workspace/tools/api_free_excel_block_splitter.py`; use pandas/openpyxl deterministic parsing only.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 03_split_excel_blocks_batch --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026_3"
+```
+
+## Constraints
+- Do not run `0_mark_down_gen/03_split_excel_blocks_batch.py`.
+- Do not import or require `find_api.py`.
+- Do not use Gemini, Vertex, `LLM_API.py`, or `LLM_Batch.py`.
+- Do not hard-code API keys or credentials.
+## Legacy context files
+
+These files are reference-only. Do not execute or import Gemini/API-dependent scripts. Use them only to understand prior deterministic logic, expected output shapes, and naming conventions. Current stage contract and `AGENT_INSTRUCTIONS.md` override legacy behavior.
+
+- `agent_workspace/legacy_context/by_stage/03_split_excel_blocks_batch/README.md` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks.py` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/03_split_excel_blocks_batch.py` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/sheet_block_splitter.py` (exists)
+- `agent_workspace/legacy_context/README.md` (context policy)
+- `agent_workspace/legacy_context/LEGACY_CODE_INDEX.md` (stage-by-stage index)
+
+
+===== END PROMPT SENT TO EXTERNAL CLI =====
+===== BEGIN EXTERNAL CLI OUTPUT =====
+CLI_TEST_OUTPUT
+PROMPT_CHARS 4264
+
+===== END EXTERNAL CLI OUTPUT =====
+timestamp_end: 2026-06-29T18:55:46.190308
+returncode: 0
+elapsed_seconds: 0.031

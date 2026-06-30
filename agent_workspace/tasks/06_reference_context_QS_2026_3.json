@@ -1,0 +1,3430 @@
+{
+  "has_any_reference": true,
+  "lnpdb_reference": {
+    "available": true,
+    "source_paths": [
+      "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx"
+    ],
+    "columns": {
+      "Aqueous_buffer": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28883,
+        "unique_count": 5,
+        "top_values": [
+          {
+            "value": "citrate",
+            "count": 24304
+          },
+          {
+            "value": "acetate",
+            "count": 4229
+          },
+          {
+            "value": "hydrochloric acid buffer",
+            "count": 263
+          },
+          {
+            "value": "OGP",
+            "count": 57
+          },
+          {
+            "value": "Unknown",
+            "count": 30
+          }
+        ],
+        "example_values": [
+          "acetate",
+          "citrate",
+          "Unknown",
+          "OGP",
+          "hydrochloric acid buffer"
+        ],
+        "column_examples": [
+          "citrate",
+          "acetate",
+          "hydrochloric acid buffer",
+          "OGP",
+          "Unknown"
+        ]
+      },
+      "Dialysis_buffer": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 15154,
+        "unique_count": 5,
+        "top_values": [
+          {
+            "value": "PBS",
+            "count": 14755
+          },
+          {
+            "value": "water",
+            "count": 286
+          },
+          {
+            "value": "HBS",
+            "count": 57
+          },
+          {
+            "value": "acetate",
+            "count": 32
+          },
+          {
+            "value": "saline",
+            "count": 24
+          }
+        ],
+        "example_values": [
+          "PBS",
+          "saline",
+          "water",
+          "acetate",
+          "HBS"
+        ],
+        "column_examples": [
+          "PBS",
+          "water",
+          "HBS",
+          "acetate",
+          "saline"
+        ]
+      },
+      "Mixing_method": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28883,
+        "unique_count": 6,
+        "top_values": [
+          {
+            "value": "handmixed",
+            "count": 19375
+          },
+          {
+            "value": "microfluidic",
+            "count": 4989
+          },
+          {
+            "value": "vortexing",
+            "count": 3157
+          },
+          {
+            "value": "liquid_handler",
+            "count": 1120
+          },
+          {
+            "value": "pulse_vortexing",
+            "count": 137
+          },
+          {
+            "value": "Unknown",
+            "count": 105
+          }
+        ],
+        "example_values": [
+          "handmixed",
+          "microfluidic",
+          "vortexing",
+          "pulse_vortexing",
+          "liquid_handler",
+          "Unknown"
+        ],
+        "column_examples": [
+          "handmixed",
+          "microfluidic",
+          "vortexing",
+          "liquid_handler",
+          "pulse_vortexing",
+          "Unknown"
+        ]
+      },
+      "Model": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 26007,
+        "unique_count": 2,
+        "top_values": [
+          {
+            "value": "in_vitro",
+            "count": 20270
+          },
+          {
+            "value": "in_vivo",
+            "count": 5737
+          }
+        ],
+        "example_values": [
+          "in_vitro",
+          "in_vivo"
+        ],
+        "column_examples": [
+          "in_vitro",
+          "in_vivo"
+        ]
+      },
+      "Model_type": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 25868,
+        "unique_count": 50,
+        "top_values": [
+          {
+            "value": "HeLa",
+            "count": 8113
+          },
+          {
+            "value": "Mouse_B6",
+            "count": 4140
+          },
+          {
+            "value": "A549",
+            "count": 2578
+          },
+          {
+            "value": "HepG2",
+            "count": 2072
+          },
+          {
+            "value": "DC2.4",
+            "count": 1703
+          },
+          {
+            "value": "IGROV1",
+            "count": 1652
+          },
+          {
+            "value": "Raw_264.7",
+            "count": 1216
+          },
+          {
+            "value": "BEAS-2B",
+            "count": 1012
+          },
+          {
+            "value": "HEK293T",
+            "count": 545
+          },
+          {
+            "value": "Mouse_BALBc",
+            "count": 424
+          },
+          {
+            "value": "BeWo_b30",
+            "count": 260
+          },
+          {
+            "value": "Mouse_BALBc_female",
+            "count": 206
+          },
+          {
+            "value": "Mouse_Ai14_tdTomato",
+            "count": 198
+          },
+          {
+            "value": "BMDC",
+            "count": 166
+          },
+          {
+            "value": "Mouse_Ai14",
+            "count": 141
+          },
+          {
+            "value": "Mouse_B6_pregnant",
+            "count": 119
+          },
+          {
+            "value": "C2C12",
+            "count": 100
+          },
+          {
+            "value": "HeLa-FLuc_RLuc",
+            "count": 96
+          },
+          {
+            "value": "Mouse_LDLR_knockout",
+            "count": 96
+          },
+          {
+            "value": "Mouse_VLDLR_knockout",
+            "count": 96
+          },
+          {
+            "value": "Human_RBC",
+            "count": 90
+          },
+          {
+            "value": "Mouse_Ai9",
+            "count": 84
+          },
+          {
+            "value": "JEG-3",
+            "count": 80
+          },
+          {
+            "value": "Mouse_Cortical_neurons",
+            "count": 72
+          },
+          {
+            "value": "Mouse_ICR",
+            "count": 60
+          },
+          {
+            "value": "Hep3B",
+            "count": 59
+          },
+          {
+            "value": "Mouse_BALB/c_fetus",
+            "count": 56
+          },
+          {
+            "value": "MC38",
+            "count": 53
+          },
+          {
+            "value": "HEK293",
+            "count": 43
+          },
+          {
+            "value": "Mouse_A/J",
+            "count": 41
+          }
+        ],
+        "example_values": [
+          "HeLa",
+          "HEK293T",
+          "Mouse_B6",
+          "Mouse_CD1",
+          "BMDC",
+          "BMDM",
+          "IGROV1",
+          "HepG2",
+          "A549",
+          "Mouse_BALBc",
+          "DC2.4",
+          "HBEC_ALI",
+          "BeWo_b30",
+          "Human_RBC",
+          "Mouse_ICR",
+          "Raw_264.7",
+          "Mouse_Ai14",
+          "Mouse_Ai14_tdTomato",
+          "HEK293",
+          "Mouse_BALBc_female"
+        ],
+        "column_examples": [
+          "HeLa",
+          "Mouse_B6",
+          "A549",
+          "HepG2",
+          "DC2.4",
+          "IGROV1",
+          "Raw_264.7",
+          "BEAS-2B",
+          "HEK293T",
+          "Mouse_BALBc",
+          "BeWo_b30",
+          "Mouse_BALBc_female",
+          "Mouse_Ai14_tdTomato",
+          "BMDC",
+          "Mouse_Ai14",
+          "Mouse_B6_pregnant",
+          "C2C12",
+          "HeLa-FLuc_RLuc",
+          "Mouse_LDLR_knockout",
+          "Mouse_VLDLR_knockout"
+        ]
+      },
+      "Model_target": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 25872,
+        "unique_count": 28,
+        "top_values": [
+          {
+            "value": "in_vitro",
+            "count": 18209
+          },
+          {
+            "value": "lung_epithelium",
+            "count": 1879
+          },
+          {
+            "value": "liver",
+            "count": 1774
+          },
+          {
+            "value": "lung",
+            "count": 1054
+          },
+          {
+            "value": "spleen",
+            "count": 1040
+          },
+          {
+            "value": "muscle",
+            "count": 536
+          },
+          {
+            "value": "serum",
+            "count": 249
+          },
+          {
+            "value": "multiorgan",
+            "count": 198
+          },
+          {
+            "value": "kidney",
+            "count": 146
+          },
+          {
+            "value": "bone_marrow",
+            "count": 141
+          },
+          {
+            "value": "heart",
+            "count": 138
+          },
+          {
+            "value": "firefly luciferase",
+            "count": 96
+          },
+          {
+            "value": "placenta",
+            "count": 85
+          },
+          {
+            "value": "whole_body",
+            "count": 80
+          },
+          {
+            "value": "ear",
+            "count": 60
+          },
+          {
+            "value": "Hepatocyte",
+            "count": 32
+          },
+          {
+            "value": "pancreas",
+            "count": 29
+          },
+          {
+            "value": "lymph node",
+            "count": 28
+          },
+          {
+            "value": "MC38_tumor_tissue",
+            "count": 23
+          },
+          {
+            "value": "tumor",
+            "count": 17
+          },
+          {
+            "value": "brain",
+            "count": 16
+          },
+          {
+            "value": "intestine",
+            "count": 14
+          },
+          {
+            "value": "MC38_contralateral_tumor_tissue",
+            "count": 6
+          },
+          {
+            "value": "uterus",
+            "count": 6
+          },
+          {
+            "value": "liver(ASGR1+ hepatocytes)",
+            "count": 4
+          },
+          {
+            "value": "liver(CD31+ endothelial)",
+            "count": 4
+          },
+          {
+            "value": "liver(CD326+ epithelial)",
+            "count": 4
+          },
+          {
+            "value": "liver(CD45+ cells)",
+            "count": 4
+          }
+        ],
+        "example_values": [
+          "in_vitro",
+          "liver",
+          "whole_body",
+          "muscle",
+          "lung_epithelium",
+          "spleen",
+          "heart",
+          "lung",
+          "kidney",
+          "multiorgan",
+          "ear",
+          "bone_marrow",
+          "serum",
+          "brain",
+          "pancreas",
+          "intestine",
+          "placenta",
+          "uterus",
+          "tumor",
+          "firefly luciferase"
+        ],
+        "column_examples": [
+          "in_vitro",
+          "lung_epithelium",
+          "liver",
+          "lung",
+          "spleen",
+          "muscle",
+          "serum",
+          "multiorgan",
+          "kidney",
+          "bone_marrow",
+          "heart",
+          "firefly luciferase",
+          "placenta",
+          "whole_body",
+          "ear",
+          "Hepatocyte",
+          "pancreas",
+          "lymph node",
+          "MC38_tumor_tissue",
+          "tumor"
+        ]
+      },
+      "Route_of_administration": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 25877,
+        "unique_count": 8,
+        "top_values": [
+          {
+            "value": "in_vitro",
+            "count": 20140
+          },
+          {
+            "value": "intravenous",
+            "count": 4869
+          },
+          {
+            "value": "intramuscular",
+            "count": 658
+          },
+          {
+            "value": "intradermal",
+            "count": 60
+          },
+          {
+            "value": "intratumoral",
+            "count": 50
+          },
+          {
+            "value": "intratracheal",
+            "count": 49
+          },
+          {
+            "value": "nebulization",
+            "count": 33
+          },
+          {
+            "value": "retro_orbital",
+            "count": 18
+          }
+        ],
+        "example_values": [
+          "in_vitro",
+          "intravenous",
+          "intramuscular",
+          "intratracheal",
+          "intradermal",
+          "retro_orbital",
+          "nebulization",
+          "intratumoral"
+        ],
+        "column_examples": [
+          "in_vitro",
+          "intravenous",
+          "intramuscular",
+          "intradermal",
+          "intratumoral",
+          "intratracheal",
+          "nebulization",
+          "retro_orbital"
+        ]
+      },
+      "Cargo": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28733,
+        "unique_count": 12,
+        "top_values": [
+          {
+            "value": "mRNA",
+            "count": 21954
+          },
+          {
+            "value": "siRNA",
+            "count": 4078
+          },
+          {
+            "value": "pDNA",
+            "count": 1413
+          },
+          {
+            "value": "DNA",
+            "count": 508
+          },
+          {
+            "value": "ASO",
+            "count": 385
+          },
+          {
+            "value": "FLuc",
+            "count": 183
+          },
+          {
+            "value": "HA",
+            "count": 100
+          },
+          {
+            "value": "protein",
+            "count": 42
+          },
+          {
+            "value": "Cas9 RNP",
+            "count": 28
+          },
+          {
+            "value": "tdTomato",
+            "count": 24
+          },
+          {
+            "value": "Cas9:sgRNA",
+            "count": 12
+          },
+          {
+            "value": "hEPO",
+            "count": 6
+          }
+        ],
+        "example_values": [
+          "siRNA",
+          "pDNA",
+          "mRNA",
+          "ASO",
+          "protein",
+          "Cas9:sgRNA",
+          "DNA",
+          "FLuc",
+          "HA",
+          "hEPO",
+          "tdTomato",
+          "Cas9 RNP"
+        ],
+        "column_examples": [
+          "mRNA",
+          "siRNA",
+          "pDNA",
+          "DNA",
+          "ASO",
+          "FLuc",
+          "HA",
+          "protein",
+          "Cas9 RNP",
+          "tdTomato",
+          "Cas9:sgRNA",
+          "hEPO"
+        ]
+      },
+      "Cargo_type": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28603,
+        "unique_count": 53,
+        "top_values": [
+          {
+            "value": "FLuc",
+            "count": 23649
+          },
+          {
+            "value": "DNA_barcode",
+            "count": 959
+          },
+          {
+            "value": "peptide_barcode",
+            "count": 407
+          },
+          {
+            "value": "mRNA",
+            "count": 358
+          },
+          {
+            "value": "hEPO",
+            "count": 332
+          },
+          {
+            "value": "GFP",
+            "count": 227
+          },
+          {
+            "value": "Custom_barcode",
+            "count": 224
+          },
+          {
+            "value": "gene_targeting_ASO",
+            "count": 210
+          },
+          {
+            "value": "Cre",
+            "count": 202
+          },
+          {
+            "value": "FPLC-purified Luc",
+            "count": 191
+          },
+          {
+            "value": "barcoded",
+            "count": 188
+          },
+          {
+            "value": "FVII",
+            "count": 171
+          },
+          {
+            "value": "EPO",
+            "count": 166
+          },
+          {
+            "value": "AncNanoLuc",
+            "count": 162
+          },
+          {
+            "value": "pCI-FLuc",
+            "count": 160
+          },
+          {
+            "value": "base_editor",
+            "count": 141
+          },
+          {
+            "value": "mCherry",
+            "count": 62
+          },
+          {
+            "value": "Cy5-FLuc",
+            "count": 60
+          },
+          {
+            "value": "PCSK9",
+            "count": 60
+          },
+          {
+            "value": "RLuc",
+            "count": 60
+          },
+          {
+            "value": "pCMVluc",
+            "count": 57
+          },
+          {
+            "value": "VEGF165-A",
+            "count": 52
+          },
+          {
+            "value": "CE-ABE8e-SpRY-Nluc",
+            "count": 42
+          },
+          {
+            "value": "IL-12",
+            "count": 42
+          },
+          {
+            "value": "(-27)GFP-Cre",
+            "count": 38
+          },
+          {
+            "value": "Cy5-EGFP",
+            "count": 33
+          },
+          {
+            "value": "AF647-labeled",
+            "count": 32
+          },
+          {
+            "value": "NLuc",
+            "count": 32
+          },
+          {
+            "value": "Cy5-labeled FLuc",
+            "count": 28
+          },
+          {
+            "value": "m1ψ_Cre",
+            "count": 28
+          }
+        ],
+        "example_values": [
+          "FLuc",
+          "GFP",
+          "FVII",
+          "peptide_barcode",
+          "hEPO",
+          "DNA_barcode",
+          "RLuc",
+          "base_editor",
+          "Cre",
+          "PCSK9",
+          "(-27)GFP-Cre",
+          "Cas9:sgRNA",
+          "FVIII",
+          "barcoded",
+          "GAPDH",
+          "Cy3-siRNA",
+          "EPO",
+          "Cas, sgRNA",
+          "Custom_barcode",
+          "FPLC-purified Luc"
+        ],
+        "column_examples": [
+          "FLuc",
+          "DNA_barcode",
+          "peptide_barcode",
+          "mRNA",
+          "hEPO",
+          "GFP",
+          "Custom_barcode",
+          "gene_targeting_ASO",
+          "Cre",
+          "FPLC-purified Luc",
+          "barcoded",
+          "FVII",
+          "EPO",
+          "AncNanoLuc",
+          "pCI-FLuc",
+          "base_editor",
+          "mCherry",
+          "Cy5-FLuc",
+          "PCSK9",
+          "RLuc"
+        ]
+      },
+      "Dose_ug_nucleicacid": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 25945,
+        "unique_count": 43,
+        "top_values": [
+          {
+            "value": "0.1",
+            "count": 8398
+          },
+          {
+            "value": "0.05",
+            "count": 2676
+          },
+          {
+            "value": "0.2",
+            "count": 2488
+          },
+          {
+            "value": "2",
+            "count": 2247
+          },
+          {
+            "value": "0.02",
+            "count": 1896
+          },
+          {
+            "value": "5",
+            "count": 1254
+          },
+          {
+            "value": "0.01",
+            "count": 1069
+          },
+          {
+            "value": "1",
+            "count": 1046
+          },
+          {
+            "value": "0.025",
+            "count": 694
+          },
+          {
+            "value": "10",
+            "count": 509
+          },
+          {
+            "value": "0.003",
+            "count": 500
+          },
+          {
+            "value": "0.9",
+            "count": 497
+          },
+          {
+            "value": "0.081521739",
+            "count": 378
+          },
+          {
+            "value": "15",
+            "count": 274
+          },
+          {
+            "value": "20",
+            "count": 211
+          },
+          {
+            "value": "0.25",
+            "count": 201
+          },
+          {
+            "value": "6",
+            "count": 157
+          },
+          {
+            "value": "2.5",
+            "count": 156
+          },
+          {
+            "value": "40",
+            "count": 141
+          },
+          {
+            "value": "100",
+            "count": 132
+          },
+          {
+            "value": "0.125",
+            "count": 130
+          },
+          {
+            "value": "0.075",
+            "count": 122
+          },
+          {
+            "value": "0.04",
+            "count": 100
+          },
+          {
+            "value": "0.015",
+            "count": 90
+          },
+          {
+            "value": "0.5",
+            "count": 87
+          },
+          {
+            "value": "50",
+            "count": 78
+          },
+          {
+            "value": "3",
+            "count": 66
+          },
+          {
+            "value": "0.192",
+            "count": 56
+          },
+          {
+            "value": "0.75",
+            "count": 46
+          },
+          {
+            "value": "Unknown",
+            "count": 42
+          }
+        ],
+        "example_values": [
+          "0.9",
+          "0.081521739",
+          "0.075",
+          "0.05",
+          "100",
+          "0.1",
+          "20",
+          "10",
+          "0.025",
+          "0.2",
+          "0.01",
+          "5",
+          "1",
+          "2",
+          "0.02",
+          "2.5",
+          "0.015",
+          "40",
+          "0.003",
+          "0"
+        ],
+        "column_examples": [
+          "0.1",
+          "0.05",
+          "0.2",
+          "2",
+          "0.02",
+          "5",
+          "0.01",
+          "1",
+          "0.025",
+          "10",
+          "0.003",
+          "0.9",
+          "0.081521739",
+          "15",
+          "20",
+          "0.25",
+          "6",
+          "2.5",
+          "40",
+          "100"
+        ]
+      },
+      "Experiment_method": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28883,
+        "unique_count": 133,
+        "top_values": [
+          {
+            "value": "luminescence_normalized",
+            "count": 18371
+          },
+          {
+            "value": "luminescence_discretized_normalized",
+            "count": 3058
+          },
+          {
+            "value": "diameter",
+            "count": 1272
+          },
+          {
+            "value": "PDI",
+            "count": 953
+          },
+          {
+            "value": "protein_abundance_normalized",
+            "count": 894
+          },
+          {
+            "value": "cell_viability_normalized",
+            "count": 578
+          },
+          {
+            "value": "uptake_normalized",
+            "count": 571
+          },
+          {
+            "value": "encapsulation",
+            "count": 520
+          },
+          {
+            "value": "zeta_potential",
+            "count": 271
+          },
+          {
+            "value": "luminescence_discretized",
+            "count": 252
+          },
+          {
+            "value": "flow_cytometry_endothelial_cells_normalized",
+            "count": 188
+          },
+          {
+            "value": "editing_efficiency_normalized",
+            "count": 174
+          },
+          {
+            "value": "pKa",
+            "count": 128
+          },
+          {
+            "value": "fluorescence_normalized",
+            "count": 118
+          },
+          {
+            "value": "luminescence_fold_change_normalized",
+            "count": 117
+          },
+          {
+            "value": "LRP6_knockdown_normalized",
+            "count": 112
+          },
+          {
+            "value": "flow_cytometry_macrophages_normalized",
+            "count": 108
+          },
+          {
+            "value": "gene_silencing_normalized",
+            "count": 94
+          },
+          {
+            "value": "hemolysis_percent_normalized",
+            "count": 90
+          },
+          {
+            "value": "flow_cytometry_normalized",
+            "count": 78
+          },
+          {
+            "value": "luminescence_relative_to_Spikevax_normalized",
+            "count": 60
+          },
+          {
+            "value": "flow_cytometry_hepatocyte_normalized",
+            "count": 48
+          },
+          {
+            "value": "flow_cytometry_immune_cells_normalized",
+            "count": 44
+          },
+          {
+            "value": "mRNA_abundance_relative_to_betaactin_normalized",
+            "count": 41
+          },
+          {
+            "value": "flow_cytometry_epithelial_cells_normalized",
+            "count": 34
+          },
+          {
+            "value": "gene_expression_percent_normalized",
+            "count": 32
+          },
+          {
+            "value": "hemolysis_percent_pH5.5_normalized",
+            "count": 32
+          },
+          {
+            "value": "hemolysis_percent_pH7.4_normalized",
+            "count": 32
+          },
+          {
+            "value": "fluorescence_percent_normalized",
+            "count": 25
+          },
+          {
+            "value": "number_of_mRNA",
+            "count": 18
+          }
+        ],
+        "example_values": [
+          "luminescence_discretized_normalized",
+          "luminescence_normalized",
+          "LRP6_knockdown_normalized",
+          "protein_abundance_normalized",
+          "uptake_normalized",
+          "diameter",
+          "zeta_potential",
+          "hemolysis_percent_normalized",
+          "luminescence_relative_to_Spikevax_normalized",
+          "editing_efficiency_normalized",
+          "anti_PEG_IgM_level_normalized",
+          "complement_C5a_level_normalized",
+          "MCP1_level_2nd_normalized",
+          "MCP1_level_1st_normalized",
+          "flow_cytometry_hepatocyte_2nd_normalized",
+          "flow_cytometry_hepatocyte_1st_normalized",
+          "flow_cytometry_LSEC_2nd_normalized",
+          "flow_cytometry_LSEC_1st_normalized",
+          "flow_cytometry_kupffer_cell_1st_normalized",
+          "flow_cytometry_kupffer_cell_2nd_normalized"
+        ],
+        "column_examples": [
+          "luminescence_normalized",
+          "luminescence_discretized_normalized",
+          "diameter",
+          "PDI",
+          "protein_abundance_normalized",
+          "cell_viability_normalized",
+          "uptake_normalized",
+          "encapsulation",
+          "zeta_potential",
+          "luminescence_discretized",
+          "flow_cytometry_endothelial_cells_normalized",
+          "editing_efficiency_normalized",
+          "pKa",
+          "fluorescence_normalized",
+          "luminescence_fold_change_normalized",
+          "LRP6_knockdown_normalized",
+          "flow_cytometry_macrophages_normalized",
+          "gene_silencing_normalized",
+          "hemolysis_percent_normalized",
+          "flow_cytometry_normalized"
+        ]
+      },
+      "Experiment_batching": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28819,
+        "unique_count": 2,
+        "top_values": [
+          {
+            "value": "individual",
+            "count": 27613
+          },
+          {
+            "value": "barcoded",
+            "count": 1206
+          }
+        ],
+        "example_values": [
+          "individual",
+          "barcoded"
+        ],
+        "column_examples": [
+          "individual",
+          "barcoded"
+        ]
+      },
+      "formulation_id": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28883,
+        "unique_count": 22126,
+        "top_values": [
+          {
+            "value": "PG_2019_F11",
+            "count": 88
+          },
+          {
+            "value": "KS_2023_F11",
+            "count": 76
+          },
+          {
+            "value": "KS_2023_F4",
+            "count": 76
+          },
+          {
+            "value": "AR_2025_F2",
+            "count": 74
+          },
+          {
+            "value": "AR_2025_F1",
+            "count": 64
+          },
+          {
+            "value": "QS_2026_F14",
+            "count": 48
+          },
+          {
+            "value": "JM_2022_F2",
+            "count": 44
+          },
+          {
+            "value": "JM_2022_F3",
+            "count": 44
+          },
+          {
+            "value": "JM_2022_F1",
+            "count": 43
+          },
+          {
+            "value": "JM_2022_F4",
+            "count": 42
+          },
+          {
+            "value": "KK_2015_F1",
+            "count": 41
+          },
+          {
+            "value": "YL_2024_F3",
+            "count": 35
+          },
+          {
+            "value": "KS_2023_F10",
+            "count": 33
+          },
+          {
+            "value": "SL_2022_F2",
+            "count": 30
+          },
+          {
+            "value": "JK_2017_F7",
+            "count": 29
+          },
+          {
+            "value": "YL_2024_F4",
+            "count": 29
+          },
+          {
+            "value": "JK_2017_F14",
+            "count": 25
+          },
+          {
+            "value": "JK_2017_F15",
+            "count": 25
+          },
+          {
+            "value": "JK_2017_F16",
+            "count": 25
+          },
+          {
+            "value": "QS_2026_F22",
+            "count": 25
+          },
+          {
+            "value": "SL_2022_F1",
+            "count": 24
+          },
+          {
+            "value": "SL_2022_F3",
+            "count": 22
+          },
+          {
+            "value": "ZT_2026_F361",
+            "count": 22
+          },
+          {
+            "value": "ZT_2026_F375",
+            "count": 22
+          },
+          {
+            "value": "ZT_2026_F397",
+            "count": 22
+          },
+          {
+            "value": "ZT_2026_F446",
+            "count": 22
+          },
+          {
+            "value": "ZT_2026_F146",
+            "count": 20
+          },
+          {
+            "value": "ZT_2026_F191",
+            "count": 20
+          },
+          {
+            "value": "ZT_2026_F237",
+            "count": 20
+          },
+          {
+            "value": "LY_2020_F21",
+            "count": 18
+          }
+        ],
+        "example_values": [
+          "AA_2008_F1",
+          "AA_2008_F2",
+          "AA_2008_F3",
+          "AA_2008_F4",
+          "AA_2008_F5",
+          "AA_2008_F6",
+          "AA_2008_F7",
+          "AA_2008_F8",
+          "AA_2008_F9",
+          "AA_2008_F10",
+          "AA_2008_F11",
+          "AA_2008_F12",
+          "AA_2008_F13",
+          "AA_2008_F14",
+          "AA_2008_F15",
+          "AA_2008_F16",
+          "AA_2008_F17",
+          "AA_2008_F18",
+          "AA_2008_F19",
+          "AA_2008_F20"
+        ],
+        "column_examples": [
+          "PG_2019_F11",
+          "KS_2023_F11",
+          "KS_2023_F4",
+          "AR_2025_F2",
+          "AR_2025_F1",
+          "QS_2026_F14",
+          "JM_2022_F2",
+          "JM_2022_F3",
+          "JM_2022_F1",
+          "JM_2022_F4",
+          "KK_2015_F1",
+          "YL_2024_F3",
+          "KS_2023_F10",
+          "SL_2022_F2",
+          "JK_2017_F7",
+          "YL_2024_F4",
+          "JK_2017_F14",
+          "JK_2017_F15",
+          "JK_2017_F16",
+          "QS_2026_F22"
+        ]
+      },
+      "IL_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 29152,
+        "unique_count": 14667,
+        "top_values": [
+          {
+            "value": "4A3-SC7",
+            "count": 3098
+          },
+          {
+            "value": "DLin-MC3-DMA",
+            "count": 2605
+          },
+          {
+            "value": "C12-200",
+            "count": 754
+          },
+          {
+            "value": "7C1",
+            "count": 450
+          },
+          {
+            "value": "4A3-SC8",
+            "count": 203
+          },
+          {
+            "value": "1_A3_T9b2",
+            "count": 197
+          },
+          {
+            "value": "other",
+            "count": 157
+          },
+          {
+            "value": "DLin-KC2-DMA",
+            "count": 108
+          },
+          {
+            "value": "SM-102",
+            "count": 106
+          },
+          {
+            "value": "ALC-0315",
+            "count": 102
+          },
+          {
+            "value": "246C10",
+            "count": 86
+          },
+          {
+            "value": "CHCha-10",
+            "count": 86
+          },
+          {
+            "value": "244-cis",
+            "count": 77
+          },
+          {
+            "value": "A4",
+            "count": 76
+          },
+          {
+            "value": "AMG1541",
+            "count": 73
+          },
+          {
+            "value": "306-O12B-3",
+            "count": 59
+          },
+          {
+            "value": "cKK-E12",
+            "count": 57
+          },
+          {
+            "value": "DODAC",
+            "count": 57
+          },
+          {
+            "value": "G0-SS-AA-C12",
+            "count": 48
+          },
+          {
+            "value": "ZA3-Ep10",
+            "count": 45
+          },
+          {
+            "value": "RM_branched_ester_M3_R14",
+            "count": 44
+          },
+          {
+            "value": "RM_branched_ester_M3_R7",
+            "count": 44
+          },
+          {
+            "value": "200Oi10",
+            "count": 43
+          },
+          {
+            "value": "IR_red_amin_IRh20_IRt11",
+            "count": 42
+          },
+          {
+            "value": "RM_branched_ester_M3_R6",
+            "count": 42
+          },
+          {
+            "value": "FTT5",
+            "count": 41
+          },
+          {
+            "value": "B5",
+            "count": 33
+          },
+          {
+            "value": "G0-6C-AA-C12",
+            "count": 25
+          },
+          {
+            "value": "RM_branched_ester_M3_R13",
+            "count": 25
+          },
+          {
+            "value": "RM_branched_ester_M68_R10",
+            "count": 25
+          }
+        ],
+        "example_values": [
+          "87_O15",
+          "96_N12",
+          "98_N12",
+          "64_N15",
+          "64_N16",
+          "26_O14",
+          "32_N12",
+          "95_N12",
+          "99_N12",
+          "100_N12",
+          "11_N14",
+          "87_N14",
+          "109_N14",
+          "62_N16",
+          "63_N16",
+          "81_O12",
+          "90_O12",
+          "95_O12",
+          "24_O12",
+          "103_O13"
+        ],
+        "column_examples": [
+          "4A3-SC7",
+          "DLin-MC3-DMA",
+          "C12-200",
+          "7C1",
+          "4A3-SC8",
+          "1_A3_T9b2",
+          "other",
+          "DLin-KC2-DMA",
+          "SM-102",
+          "ALC-0315",
+          "246C10",
+          "CHCha-10",
+          "244-cis",
+          "A4",
+          "AMG1541",
+          "306-O12B-3",
+          "cKK-E12",
+          "DODAC",
+          "G0-SS-AA-C12",
+          "ZA3-Ep10"
+        ]
+      },
+      "IL_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 19540,
+        "unique_count": 10634,
+        "top_values": [
+          {
+            "value": "CCCCCCCSCC(C)C(=O)OCCOC(=O)CCN(CCCN(C)CCCN(CCC(=O)OCCOC(=O)C(C)CSCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCC",
+            "count": 3098
+          },
+          {
+            "value": "N(CC(O)CCCCCCCCCCCCC)(CC)CC",
+            "count": 288
+          },
+          {
+            "value": "CCCCCCCCCCC(CN(CCN1CCN(CC1)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)O",
+            "count": 258
+          },
+          {
+            "value": "CCCCCCCCCCC(O)CN(CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CCN1CCN(CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CC1",
+            "count": 234
+          },
+          {
+            "value": "OC(CN(CCN(CCN1CCN(CC1)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CCCCCCCCCC",
+            "count": 218
+          },
+          {
+            "value": "CCCCCCCCSCC(C)C(=O)OCCOC(=O)CCN(CCCN(C)CCCN(CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC",
+            "count": 205
+          },
+          {
+            "value": "CCCCC(CC)CCC(=O)Oc1cc(OC(=O)CCC(CC)CCCC)c(CNCCN(C)CCNCc2c(OC(=O)CCC(CC)CCCC)cc(OC(=O)CCC(CC)CCCC)cc2OC(=O)CCC(CC)CCCC)c(OC(=O)CCC(CC)CCCC)c1",
+            "count": 197
+          },
+          {
+            "value": "CCN(CC(CCCCCCCCCCCCC)O)CC",
+            "count": 162
+          },
+          {
+            "value": "CCCCCCCCC(CCCCCCCC)OC(CCCCCCCN(CCCCCC(OCCCCCCCCCCC)=O)CCO)=O",
+            "count": 101
+          },
+          {
+            "value": "CCCCCCCCC(CCCCCC)C(=O)OCCCCCCN(CCCCCCOC(=O)C(CCCCCC)CCCCCCCC)CCCCO",
+            "count": 98
+          },
+          {
+            "value": "CCCCCCCCC(CCCCCC)C(=O)OCCCCCCNC(CC1CCCCC1)C(=O)N(C)CCCN1CCN(CCCN(C)C(=O)C(CC2CCCCC2)NCCCCCCOC(=O)C(CCCCCC)CCCCCCCC)CC1",
+            "count": 86
+          },
+          {
+            "value": "CCCCCCCCCCC(O)CN(CCCN1CCN(CCCN)CC1)CC(O)CCCCCCCCCC",
+            "count": 86
+          },
+          {
+            "value": "CCCCCCCCCCC(CN(CC(CCCCCCCCCC)O)CCOCCN1CCN(CCN(CC(CCCCCCCCCC)O)CCOCCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC1)O",
+            "count": 76
+          },
+          {
+            "value": "CCCCCCCCSSCCOC(=O)CCNCCCN(C)CCCN(CCC(=O)OCCSSCCCCCCCC)CCC(=O)OCCSSCCCCCCCC",
+            "count": 60
+          },
+          {
+            "value": "CCCCCCCCC(O)CN(CC(O)CCCCCCCC)CCN(CCN(CC(O)CCCCCCCC)CC(O)CCCCCCCC)CCN(CCC(=O)NCC[N+](C)(C)CCCS(=O)(=O)[O-])CC(O)CCCCCCCC",
+            "count": 44
+          },
+          {
+            "value": "N1(CCN(CC(O)CCCCCCCCCC)CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CCN(CCN(CC(O)CCCCCCCCCC)CC(CCCCCCCCCC)O)CC1",
+            "count": 44
+          },
+          {
+            "value": "C1N(CCN(CCC(=O)OCCCCCCCCCC)CCC(=O)OCCCCCCCCCC)CCN(CCN(CCC(=O)OCCCCCCCCCC)CCN(CCC(=O)OCCCCCCCCCC)CCC(=O)OCCCCCCCCCC)C1",
+            "count": 43
+          },
+          {
+            "value": "C1(CCCCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)NC(=O)C(CCCCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)NC1=O",
+            "count": 42
+          },
+          {
+            "value": "C1N(CCN(C(CCCCCCCCCCCC)O)CCCOCCOCCOCCCN(C(CCCCCCCCCCCC)O)C(O)CCCCCCCCCCCC)CCN(CCCOCCOCCOCCCN(C(CCCCCCCCCCCC)O)C(CCCCCCCCCCCC)O)C1",
+            "count": 33
+          },
+          {
+            "value": "CCCCCCCCCCC(CN(CCCCC1C(=O)NC(C(=O)N1)CCCCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)O",
+            "count": 27
+          },
+          {
+            "value": "CCCCCCCCCCC(O)CN(CCCCC1NC(=O)C(CCCCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)NC1=O)CC(O)CCCCCCCCCC",
+            "count": 26
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCC(=O)OCCCCCC(O)C(CCCCOC(=O)CCCCCCCCCCCCCCC)CN(C)CCCn1cccn1",
+            "count": 24
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCC(=O)OCCCCCC(O)C(CCCCOC(=O)CCCCCCCCCCCCCCC)CN1CCN(C)CC1",
+            "count": 23
+          },
+          {
+            "value": "OC(CN(CCN(CCN1CCN(CC1)CCN(CC(CCCCCC)O)CC(CCCCCC)O)CC(CCCCCC)O)CC(CCCCCC)O)CCCCCC",
+            "count": 22
+          },
+          {
+            "value": "OC(CN(CCN(CCN1CCN(CC1)CCN(CC(CCCCCCCCC(C)C)O)CC(CCCCCCCCC(C)C)O)CC(CCCCCCCCC(C)C)O)CC(CCCCCCCCC(C)C)O)CCCCCCCCC(C)C",
+            "count": 21
+          },
+          {
+            "value": "CCCCCCCCCCC(O)CN(CCN1CCN(CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CC1)CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC",
+            "count": 20
+          },
+          {
+            "value": "OC(CN(CCN(CCN1CCN(CC1)CCN(CC(CCCCC(C)C)O)CC(CCCCC(C)C)O)CC(CCCCC(C)C)O)CC(CCCCC(C)C)O)CCCCC(C)C",
+            "count": 20
+          },
+          {
+            "value": "OC(CN(CCN(CCN1CCN(CC1)CCN(CC(CCCCC(CC)C)O)CC(CCCCC(CC)C)O)CC(CCCCC(CC)C)O)CC(CCCCC(CC)C)O)CCCCC(CC)C",
+            "count": 20
+          },
+          {
+            "value": "CCCCCCCCCCCCSSCCOC(=O)CCNCCN(C)CCN(CCC(=O)OCCSSCCCCCCCCCCCC)CCC(=O)OCCSSCCCCCCCCCCCC",
+            "count": 19
+          },
+          {
+            "value": "CCCCCCCCCCOC(=O)CCN(CCCN(C)CCCN(CCC(=O)OCCCCCCCCCC)CCC(=O)OCCCCCCCCCC)CCC(=O)OCCCCCCCCCC",
+            "count": 19
+          }
+        ],
+        "example_values": [
+          "CCCCCCCCCCCCCCCOC(=O)CCN(CCCN(CCO)CCO)CCC(=O)OCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(C)CCCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(CCC(=O)NCCCCCCCCCCCC)CCN(CCC(=O)NCCCCCCCCCCCC)CCN(CCC(=O)NCCCCCCCCCCCC)CCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCNC(=O)CCN(CC)CCCN(CC)CCC(=O)NCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCNC(=O)CCN(CC)CCCN(CC)CCC(=O)NCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCCCCCCCC)C(C)(CO)CO",
+          "CCCCCCCCCCCCNC(=O)CCN(CCCCCO)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(C)CCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(CCC(=O)NCCCCCCCCCCCC)CCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCNC(=O)CCN(CCCN(CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCNC(=O)CCN(CCOCC)CCC(=O)NCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCNC(=O)CCN(CCCN(CCO)CCO)CCC(=O)NCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCNC(=O)CCN(CCO)CCN(CCC(=O)NCCCCCCCCCCCCCC)CCC(=O)NCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCNC(=O)CCN(CCN(CCC(=O)NCCCCCCCCCCCCCCCC)C(C)C)C(C)C",
+          "CCCCCCCCCCCCCCCCNC(=O)CCN(C)CCCN(C)CCC(=O)NCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCOC(=O)CCN(CCCN(CC)CC)CCC(=O)OCCCCCCCCCCCC",
+          "CCCCCCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCCCCCC)CCN1CCOCC1",
+          "CCCCCCCCCCCCOC(=O)CCN(C)CCN(CCC(=O)OCCCCCCCCCCCC)CCC(=O)OCCCCCCCCCCCC",
+          "CCCCCCCCCCCCOC(=O)CCN(CCC(=O)OCCCCCCCCCCCC)CC(O)CO",
+          "CCCCCCCCCCCCCOC(=O)CCN(CCO)CCN(CCO)CCC(=O)OCCCCCCCCCCCCC"
+        ],
+        "column_examples": [
+          "CCCCCCCSCC(C)C(=O)OCCOC(=O)CCN(CCCN(C)CCCN(CCC(=O)OCCOC(=O)C(C)CSCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCC",
+          "N(CC(O)CCCCCCCCCCCCC)(CC)CC",
+          "CCCCCCCCCCC(CN(CCN1CCN(CC1)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)O",
+          "CCCCCCCCCCC(O)CN(CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CCN1CCN(CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CC1",
+          "OC(CN(CCN(CCN1CCN(CC1)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CCCCCCCCCC",
+          "CCCCCCCCSCC(C)C(=O)OCCOC(=O)CCN(CCCN(C)CCCN(CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC",
+          "CCCCC(CC)CCC(=O)Oc1cc(OC(=O)CCC(CC)CCCC)c(CNCCN(C)CCNCc2c(OC(=O)CCC(CC)CCCC)cc(OC(=O)CCC(CC)CCCC)cc2OC(=O)CCC(CC)CCCC)c(OC(=O)CCC(CC)CCCC)c1",
+          "CCN(CC(CCCCCCCCCCCCC)O)CC",
+          "CCCCCCCCC(CCCCCCCC)OC(CCCCCCCN(CCCCCC(OCCCCCCCCCCC)=O)CCO)=O",
+          "CCCCCCCCC(CCCCCC)C(=O)OCCCCCCN(CCCCCCOC(=O)C(CCCCCC)CCCCCCCC)CCCCO",
+          "CCCCCCCCC(CCCCCC)C(=O)OCCCCCCNC(CC1CCCCC1)C(=O)N(C)CCCN1CCN(CCCN(C)C(=O)C(CC2CCCCC2)NCCCCCCOC(=O)C(CCCCCC)CCCCCCCC)CC1",
+          "CCCCCCCCCCC(O)CN(CCCN1CCN(CCCN)CC1)CC(O)CCCCCCCCCC",
+          "CCCCCCCCCCC(CN(CC(CCCCCCCCCC)O)CCOCCN1CCN(CCN(CC(CCCCCCCCCC)O)CCOCCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC1)O",
+          "CCCCCCCCSSCCOC(=O)CCNCCCN(C)CCCN(CCC(=O)OCCSSCCCCCCCC)CCC(=O)OCCSSCCCCCCCC",
+          "CCCCCCCCC(O)CN(CC(O)CCCCCCCC)CCN(CCN(CC(O)CCCCCCCC)CC(O)CCCCCCCC)CCN(CCC(=O)NCC[N+](C)(C)CCCS(=O)(=O)[O-])CC(O)CCCCCCCC",
+          "N1(CCN(CC(O)CCCCCCCCCC)CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CCN(CCN(CC(O)CCCCCCCCCC)CC(CCCCCCCCCC)O)CC1",
+          "C1N(CCN(CCC(=O)OCCCCCCCCCC)CCC(=O)OCCCCCCCCCC)CCN(CCN(CCC(=O)OCCCCCCCCCC)CCN(CCC(=O)OCCCCCCCCCC)CCC(=O)OCCCCCCCCCC)C1",
+          "C1(CCCCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)NC(=O)C(CCCCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)NC1=O",
+          "C1N(CCN(C(CCCCCCCCCCCC)O)CCCOCCOCCOCCCN(C(CCCCCCCCCCCC)O)C(O)CCCCCCCCCCCC)CCN(CCCOCCOCCOCCCN(C(CCCCCCCCCCCC)O)C(CCCCCCCCCCCC)O)C1",
+          "CCCCCCCCCCC(CN(CCCCC1C(=O)NC(C(=O)N1)CCCCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)O"
+        ]
+      },
+      "HL_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28072,
+        "unique_count": 29,
+        "top_values": [
+          {
+            "value": "DOPE",
+            "count": 16361
+          },
+          {
+            "value": "DSPC",
+            "count": 7065
+          },
+          {
+            "value": "DOTAP",
+            "count": 2577
+          },
+          {
+            "value": "MDOA",
+            "count": 572
+          },
+          {
+            "value": "DDAB",
+            "count": 378
+          },
+          {
+            "value": "14PA",
+            "count": 360
+          },
+          {
+            "value": "18PG",
+            "count": 360
+          },
+          {
+            "value": "DOPC",
+            "count": 65
+          },
+          {
+            "value": "DPPC",
+            "count": 44
+          },
+          {
+            "value": "SOPC",
+            "count": 36
+          },
+          {
+            "value": "18:1 Biotinyl PE",
+            "count": 28
+          },
+          {
+            "value": "DOTMA",
+            "count": 23
+          },
+          {
+            "value": "DMPC",
+            "count": 19
+          },
+          {
+            "value": "4Me",
+            "count": 18
+          },
+          {
+            "value": "BMP(S,R)",
+            "count": 18
+          },
+          {
+            "value": "POPE",
+            "count": 18
+          },
+          {
+            "value": "18:1 Lyso PC",
+            "count": 17
+          },
+          {
+            "value": "BMP(S,S)",
+            "count": 16
+          },
+          {
+            "value": "CL",
+            "count": 16
+          },
+          {
+            "value": "DC Chol-HCl",
+            "count": 14
+          },
+          {
+            "value": "OChemsPC",
+            "count": 14
+          },
+          {
+            "value": "POPC",
+            "count": 14
+          },
+          {
+            "value": "DC Chol-HCI",
+            "count": 7
+          },
+          {
+            "value": "C16-18:1 PE",
+            "count": 6
+          },
+          {
+            "value": "DEPE",
+            "count": 6
+          },
+          {
+            "value": "DPPE",
+            "count": 6
+          },
+          {
+            "value": "SOPE",
+            "count": 6
+          },
+          {
+            "value": "DLinPC",
+            "count": 4
+          },
+          {
+            "value": "DPoPC",
+            "count": 4
+          }
+        ],
+        "example_values": [
+          "DSPC",
+          "DOPE",
+          "MDOA",
+          "DOTAP",
+          "DDAB",
+          "14PA",
+          "18PG",
+          "DMPC",
+          "DOPC",
+          "OChemsPC",
+          "DC Chol-HCl",
+          "18:1 Lyso PC",
+          "POPC",
+          "DC Chol-HCI",
+          "18:1 Biotinyl PE",
+          "DPPC",
+          "DOTMA",
+          "4Me",
+          "BMP(S,R)",
+          "C16-18:1 PE"
+        ],
+        "column_examples": [
+          "DOPE",
+          "DSPC",
+          "DOTAP",
+          "MDOA",
+          "DDAB",
+          "14PA",
+          "18PG",
+          "DOPC",
+          "DPPC",
+          "SOPC",
+          "18:1 Biotinyl PE",
+          "DOTMA",
+          "DMPC",
+          "4Me",
+          "BMP(S,R)",
+          "POPE",
+          "18:1 Lyso PC",
+          "BMP(S,S)",
+          "CL",
+          "DC Chol-HCl"
+        ]
+      },
+      "HL_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 8874,
+        "unique_count": 11,
+        "top_values": [
+          {
+            "value": "CCCCCCCCCCCCCCCCCC(=O)OC[C@H](COP(=O)([O-])OCC[N+](C)(C)C)OC(=O)CCCCCCCCCCCCCCCCC",
+            "count": 7088
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCCN(C)CCCCCCCCCCCCCCCCCC",
+            "count": 572
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](CCCCCCCCCCCCCCCCCC)(C)C",
+            "count": 378
+          },
+          {
+            "value": "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCC)O",
+            "count": 360
+          },
+          {
+            "value": "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCCCCCC)OCC(O)CO",
+            "count": 360
+          },
+          {
+            "value": "C(CCCCCCCCCCCCCCC)(=O)OC[C@@H](OC(CCCCCCCCCCCCCCC)=O)COP(=O)([O-])OCC[N+](C)(C)C",
+            "count": 32
+          },
+          {
+            "value": "C[C@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@]([H])(OC(=O)NCC[N+](C)(C)[H])CC4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C.[Cl-]",
+            "count": 21
+          },
+          {
+            "value": "CCCCCCCCCCCCCC(OC[C@]([H])(OC(CCCCCCCCCCCCC)=O)COP(OCC[N+](C)(C)C)([O-])=O)=O",
+            "count": 19
+          },
+          {
+            "value": "CC(C)CCCC(C)CCCC(C)CCCC(C)CCOCC(COP(=O)(O)OCCN)OCCC(C)CCCC(C)CCCC(C)CCCC(C)C",
+            "count": 18
+          },
+          {
+            "value": "C(=C/CCCCCCCC)/CCCCCCCC(OC[C@@H](OC(CCC(=O)OC1CC[C@@]2(C)C3CC[C@@]4(C)[C@H]([C@@H](C)CCCC(C)C)CCC4C3CC=C2C1)=O)COP(OCC[N+](C)(C)C)([O-])=O)=O",
+            "count": 14
+          },
+          {
+            "value": "O=C(OC[C@@H](OC(=O)CCCCCCCCCCCCCCC)COP([O-])(=O)OCC[N+](C)(C)C)CCCCCCCCCCCCCCC",
+            "count": 12
+          }
+        ],
+        "example_values": [
+          "CCCCCCCCCCCCCCCCCC(=O)OC[C@H](COP(=O)([O-])OCC[N+](C)(C)C)OC(=O)CCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCCCN(C)CCCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCCC[N+](CCCCCCCCCCCCCCCCCC)(C)C",
+          "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCC)O",
+          "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCCCCCC)OCC(O)CO",
+          "CCCCCCCCCCCCCC(OC[C@]([H])(OC(CCCCCCCCCCCCC)=O)COP(OCC[N+](C)(C)C)([O-])=O)=O",
+          "C(=C/CCCCCCCC)/CCCCCCCC(OC[C@@H](OC(CCC(=O)OC1CC[C@@]2(C)C3CC[C@@]4(C)[C@H]([C@@H](C)CCCC(C)C)CCC4C3CC=C2C1)=O)COP(OCC[N+](C)(C)C)([O-])=O)=O",
+          "C[C@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@]([H])(OC(=O)NCC[N+](C)(C)[H])CC4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C.[Cl-]",
+          "C(CCCCCCCCCCCCCCC)(=O)OC[C@@H](OC(CCCCCCCCCCCCCCC)=O)COP(=O)([O-])OCC[N+](C)(C)C",
+          "CC(C)CCCC(C)CCCC(C)CCCC(C)CCOCC(COP(=O)(O)OCCN)OCCC(C)CCCC(C)CCCC(C)CCCC(C)C",
+          "O=C(OC[C@@H](OC(=O)CCCCCCCCCCCCCCC)COP([O-])(=O)OCC[N+](C)(C)C)CCCCCCCCCCCCCCC"
+        ],
+        "column_examples": [
+          "CCCCCCCCCCCCCCCCCC(=O)OC[C@H](COP(=O)([O-])OCC[N+](C)(C)C)OC(=O)CCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCCCN(C)CCCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCCC[N+](CCCCCCCCCCCCCCCCCC)(C)C",
+          "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCC)O",
+          "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCCCCCC)OCC(O)CO",
+          "C(CCCCCCCCCCCCCCC)(=O)OC[C@@H](OC(CCCCCCCCCCCCCCC)=O)COP(=O)([O-])OCC[N+](C)(C)C",
+          "C[C@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@]([H])(OC(=O)NCC[N+](C)(C)[H])CC4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C.[Cl-]",
+          "CCCCCCCCCCCCCC(OC[C@]([H])(OC(CCCCCCCCCCCCC)=O)COP(OCC[N+](C)(C)C)([O-])=O)=O",
+          "CC(C)CCCC(C)CCCC(C)CCCC(C)CCOCC(COP(=O)(O)OCCN)OCCC(C)CCCC(C)CCCC(C)CCCC(C)C",
+          "C(=C/CCCCCCCC)/CCCCCCCC(OC[C@@H](OC(CCC(=O)OC1CC[C@@]2(C)C3CC[C@@]4(C)[C@H]([C@@H](C)CCCC(C)C)CCC4C3CC=C2C1)=O)COP(OCC[N+](C)(C)C)([O-])=O)=O",
+          "O=C(OC[C@@H](OC(=O)CCCCCCCCCCCCCCC)COP([O-])(=O)OCC[N+](C)(C)C)CCCCCCCCCCCCCCC"
+        ]
+      },
+      "CHL_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28691,
+        "unique_count": 23,
+        "top_values": [
+          {
+            "value": "Cholesterol",
+            "count": 23330
+          },
+          {
+            "value": "cholesterol",
+            "count": 5030
+          },
+          {
+            "value": "Cholesteryl Oleate",
+            "count": 59
+          },
+          {
+            "value": "7B-OH Cholesterol",
+            "count": 55
+          },
+          {
+            "value": "Cholesteryl Stearate",
+            "count": 42
+          },
+          {
+            "value": "7A-OH Cholesterol",
+            "count": 37
+          },
+          {
+            "value": "n-butyl lithocholate",
+            "count": 35
+          },
+          {
+            "value": "4B-OH Cholesterol",
+            "count": 18
+          },
+          {
+            "value": "Beta-Sitosterol",
+            "count": 17
+          },
+          {
+            "value": "Stigmasterol",
+            "count": 13
+          },
+          {
+            "value": "Campesterol",
+            "count": 12
+          },
+          {
+            "value": "Fucosterol",
+            "count": 12
+          },
+          {
+            "value": "Stigmastanol",
+            "count": 12
+          },
+          {
+            "value": "β-Sitosterol",
+            "count": 8
+          },
+          {
+            "value": "3-methylpentyl lithocholate",
+            "count": 2
+          },
+          {
+            "value": "iso-Pentyl lithocholate",
+            "count": 2
+          },
+          {
+            "value": "Betulin",
+            "count": 1
+          },
+          {
+            "value": "Calcipotriol",
+            "count": 1
+          },
+          {
+            "value": "Lupeol",
+            "count": 1
+          },
+          {
+            "value": "Oleanolic acid",
+            "count": 1
+          },
+          {
+            "value": "Ursolic acid",
+            "count": 1
+          },
+          {
+            "value": "Vitamin D2",
+            "count": 1
+          },
+          {
+            "value": "Vitamin D3",
+            "count": 1
+          }
+        ],
+        "example_values": [
+          "Cholesterol",
+          "Vitamin D2",
+          "Vitamin D3",
+          "Calcipotriol",
+          "Stigmasterol",
+          "Beta-Sitosterol",
+          "Betulin",
+          "Lupeol",
+          "Ursolic acid",
+          "Oleanolic acid",
+          "Campesterol",
+          "Fucosterol",
+          "Stigmastanol",
+          "n-butyl lithocholate",
+          "3-methylpentyl lithocholate",
+          "iso-Pentyl lithocholate",
+          "cholesterol",
+          "7B-OH Cholesterol",
+          "4B-OH Cholesterol",
+          "7A-OH Cholesterol"
+        ],
+        "column_examples": [
+          "Cholesterol",
+          "Cholesteryl Oleate",
+          "7B-OH Cholesterol",
+          "Cholesteryl Stearate",
+          "7A-OH Cholesterol",
+          "n-butyl lithocholate",
+          "4B-OH Cholesterol",
+          "Beta-Sitosterol",
+          "Stigmasterol",
+          "Campesterol",
+          "Fucosterol",
+          "Stigmastanol",
+          "β-Sitosterol",
+          "3-methylpentyl lithocholate",
+          "iso-Pentyl lithocholate",
+          "Betulin",
+          "Calcipotriol",
+          "Lupeol",
+          "Oleanolic acid",
+          "Ursolic acid"
+        ]
+      },
+      "CHL_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28538,
+        "unique_count": 19,
+        "top_values": [
+          {
+            "value": "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+            "count": 28281
+          },
+          {
+            "value": "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)CC4=C[C@@H](O)[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+            "count": 55
+          },
+          {
+            "value": "C[C@@H]([C@@H]1[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)CC4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+            "count": 42
+          },
+          {
+            "value": "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)CC4=C[C@H](O)[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+            "count": 37
+          },
+          {
+            "value": "C[C@H](CCC(OCCCC)=O)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+            "count": 35
+          },
+          {
+            "value": "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)C(O)C4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+            "count": 18
+          },
+          {
+            "value": "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+            "count": 17
+          },
+          {
+            "value": "CC[C@H](/C=C/[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+            "count": 13
+          },
+          {
+            "value": "C1[C@H](O)CC2=CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](C)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+            "count": 8
+          },
+          {
+            "value": "C1[C@H](O)CC2=CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](CC)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+            "count": 8
+          },
+          {
+            "value": "C1[C@H](O)CC2CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](CC)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+            "count": 8
+          },
+          {
+            "value": "C[C@H](CC[C@@H](C)C(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+            "count": 4
+          },
+          {
+            "value": "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC[C@@H]4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+            "count": 4
+          },
+          {
+            "value": "O=C(OCCC(C)C)CC[C@@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+            "count": 2
+          },
+          {
+            "value": "O=C(OCCC(C)CC)CC[C@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+            "count": 2
+          },
+          {
+            "value": "C[C@@H]1CC[C@@]2(CC[C@@]3(C(=CC[C@H]4[C@]3(CC[C@@H]5[C@@]4(CC[C@@H](C5(C)C)O)C)C)[C@@H]2[C@H]1C)C)C(=O)O",
+            "count": 1
+          },
+          {
+            "value": "C[C@]12CC[C@@H](C([C@@H]1CC[C@@]3([C@@H]2CC=C4[C@]3(CC[C@@]5([C@H]4CC(CC5)(C)C)C(=O)O)C)C)(C)C)O",
+            "count": 1
+          },
+          {
+            "value": "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)C",
+            "count": 1
+          },
+          {
+            "value": "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)CO",
+            "count": 1
+          }
+        ],
+        "example_values": [
+          "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+          "CC[C@H](/C=C/[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)CO",
+          "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)C",
+          "C[C@@H]1CC[C@@]2(CC[C@@]3(C(=CC[C@H]4[C@]3(CC[C@@H]5[C@@]4(CC[C@@H](C5(C)C)O)C)C)[C@@H]2[C@H]1C)C)C(=O)O",
+          "C[C@]12CC[C@@H](C([C@@H]1CC[C@@]3([C@@H]2CC=C4[C@]3(CC[C@@]5([C@H]4CC(CC5)(C)C)C(=O)O)C)C)(C)C)O",
+          "C[C@H](CC[C@@H](C)C(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+          "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC[C@@H]4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "C[C@H](CCC(OCCCC)=O)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+          "O=C(OCCC(C)CC)CC[C@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+          "O=C(OCCC(C)C)CC[C@@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+          "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)CC4=C[C@@H](O)[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+          "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)C(O)C4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+          "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)CC4=C[C@H](O)[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+          "C[C@@H]([C@@H]1[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)CC4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+          "C1[C@H](O)CC2=CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](C)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+          "C1[C@H](O)CC2CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](CC)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+          "C1[C@H](O)CC2=CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](CC)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1"
+        ],
+        "column_examples": [
+          "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+          "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)CC4=C[C@@H](O)[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+          "C[C@@H]([C@@H]1[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)CC4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+          "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)CC4=C[C@H](O)[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+          "C[C@H](CCC(OCCCC)=O)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+          "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)C(O)C4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+          "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "CC[C@H](/C=C/[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "C1[C@H](O)CC2=CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](C)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+          "C1[C@H](O)CC2=CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](CC)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+          "C1[C@H](O)CC2CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](CC)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+          "C[C@H](CC[C@@H](C)C(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+          "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC[C@@H]4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+          "O=C(OCCC(C)C)CC[C@@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+          "O=C(OCCC(C)CC)CC[C@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+          "C[C@@H]1CC[C@@]2(CC[C@@]3(C(=CC[C@H]4[C@]3(CC[C@@H]5[C@@]4(CC[C@@H](C5(C)C)O)C)C)[C@@H]2[C@H]1C)C)C(=O)O",
+          "C[C@]12CC[C@@H](C([C@@H]1CC[C@@]3([C@@H]2CC=C4[C@]3(CC[C@@]5([C@H]4CC(CC5)(C)C)C(=O)O)C)C)(C)C)O",
+          "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)C",
+          "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)CO"
+        ]
+      },
+      "PEG_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 28580,
+        "unique_count": 32,
+        "top_values": [
+          {
+            "value": "DMG-PEG2000",
+            "count": 16435
+          },
+          {
+            "value": "DMPE-PEG2000",
+            "count": 9583
+          },
+          {
+            "value": "Unknown",
+            "count": 1798
+          },
+          {
+            "value": "C16-Ceramide-PEG2000",
+            "count": 186
+          },
+          {
+            "value": "DSPE-PEG2000",
+            "count": 119
+          },
+          {
+            "value": "DMPE-PEG1000",
+            "count": 55
+          },
+          {
+            "value": "DMPE-PEG3000",
+            "count": 48
+          },
+          {
+            "value": "C16-PEG2000-Ceramide",
+            "count": 46
+          },
+          {
+            "value": "DMPE-PEG5000",
+            "count": 46
+          },
+          {
+            "value": "DSG-PEG2000",
+            "count": 37
+          },
+          {
+            "value": "C8-Ceramide-PEG2000",
+            "count": 29
+          },
+          {
+            "value": "DMPE-PEG550",
+            "count": 17
+          },
+          {
+            "value": "DOPE-PEG550",
+            "count": 17
+          },
+          {
+            "value": "DSPE-2arm-PEG2000",
+            "count": 17
+          },
+          {
+            "value": "C18-CONH-PEG2000",
+            "count": 16
+          },
+          {
+            "value": "DPG-PEG2000",
+            "count": 16
+          },
+          {
+            "value": "ALC-0159",
+            "count": 14
+          },
+          {
+            "value": "C20-Ceramide-PEG2000",
+            "count": 12
+          },
+          {
+            "value": "DMG-C-PEG2000",
+            "count": 12
+          },
+          {
+            "value": "C16-Ceramide-PEG750",
+            "count": 9
+          },
+          {
+            "value": "C8-Ceramide-PEG750",
+            "count": 9
+          },
+          {
+            "value": "DOPE-PEG1000",
+            "count": 9
+          },
+          {
+            "value": "DOPE-PEG2000",
+            "count": 9
+          },
+          {
+            "value": "DPPE-PEG1000",
+            "count": 9
+          },
+          {
+            "value": "DPPE-PEG2000",
+            "count": 9
+          },
+          {
+            "value": "DSPE-PEG1000",
+            "count": 9
+          },
+          {
+            "value": "DSPE-PEG550",
+            "count": 9
+          },
+          {
+            "value": "DMG-PEG5000",
+            "count": 1
+          },
+          {
+            "value": "DOG-PEG2000",
+            "count": 1
+          },
+          {
+            "value": "DOG-PEG5000",
+            "count": 1
+          }
+        ],
+        "example_values": [
+          "DMG-PEG2000",
+          "Unknown",
+          "DMPE-PEG2000",
+          "DMG-PEG5000",
+          "DPG-PEG2000",
+          "DPG-PEG5000",
+          "DSG-PEG2000",
+          "DSG-PEG5000",
+          "DOG-PEG2000",
+          "DOG-PEG5000",
+          "ALC-0159",
+          "DMG-C-PEG2000",
+          "C8-Ceramide-PEG2000",
+          "C16-Ceramide-PEG2000",
+          "DSPE-PEG2000",
+          "C16-PEG2000-Ceramide",
+          "C18-CONH-PEG2000",
+          "DMPE-PEG1000",
+          "DMPE-PEG3000",
+          "DMPE-PEG5000"
+        ],
+        "column_examples": [
+          "DMG-PEG2000",
+          "DMPE-PEG2000",
+          "Unknown",
+          "C16-Ceramide-PEG2000",
+          "DSPE-PEG2000",
+          "DMPE-PEG1000",
+          "DMPE-PEG3000",
+          "C16-PEG2000-Ceramide",
+          "DMPE-PEG5000",
+          "DSG-PEG2000",
+          "C8-Ceramide-PEG2000",
+          "DMPE-PEG550",
+          "DOPE-PEG550",
+          "DSPE-2arm-PEG2000",
+          "C18-CONH-PEG2000",
+          "DPG-PEG2000",
+          "ALC-0159",
+          "C20-Ceramide-PEG2000",
+          "DMG-C-PEG2000",
+          "C16-Ceramide-PEG750"
+        ]
+      },
+      "PEG_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 117,
+        "unique_count": 8,
+        "top_values": [
+          {
+            "value": "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+            "count": 46
+          },
+          {
+            "value": "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+            "count": 17
+          },
+          {
+            "value": "C(CC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCC",
+            "count": 9
+          },
+          {
+            "value": "C(CCCC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCC",
+            "count": 9
+          },
+          {
+            "value": "C(CCCC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCC",
+            "count": 9
+          },
+          {
+            "value": "CCCCCCCCCCCCC/C=C/[C@H]([C@H](COC(CCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)NC(CCCCCCC)=O)O",
+            "count": 9
+          },
+          {
+            "value": "CCCCCCCCCCCCC/C=C/[C@H]([C@H](COC(CCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)NC(CCCCCCCCCCCCCCC)=O)O",
+            "count": 9
+          },
+          {
+            "value": "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+            "count": 9
+          }
+        ],
+        "example_values": [
+          "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+          "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+          "C(CCCC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+          "C(CC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCC",
+          "C(CCCC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCC/C=C/[C@H]([C@H](COC(CCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)NC(CCCCCCCCCCCCCCC)=O)O",
+          "CCCCCCCCCCCCC/C=C/[C@H]([C@H](COC(CCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)NC(CCCCCCC)=O)O"
+        ],
+        "column_examples": [
+          "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+          "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+          "C(CC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCC",
+          "C(CCCC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCC",
+          "C(CCCC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCC/C=C/[C@H]([C@H](COC(CCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)NC(CCCCCCC)=O)O",
+          "CCCCCCCCCCCCC/C=C/[C@H]([C@H](COC(CCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)NC(CCCCCCCCCCCCCCC)=O)O",
+          "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O"
+        ]
+      },
+      "Fifth_component_name": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 3272,
+        "unique_count": 459,
+        "top_values": [
+          {
+            "value": "DOTAP",
+            "count": 40
+          },
+          {
+            "value": "6,6'-trehalose dioleate",
+            "count": 38
+          },
+          {
+            "value": "BMP(S,R)",
+            "count": 30
+          },
+          {
+            "value": "DSPE-PEG2000-mannose",
+            "count": 30
+          },
+          {
+            "value": "1A7B13",
+            "count": 22
+          },
+          {
+            "value": "1A7B15",
+            "count": 22
+          },
+          {
+            "value": "1A8B18",
+            "count": 22
+          },
+          {
+            "value": "1A8B25",
+            "count": 22
+          },
+          {
+            "value": "1A7B5",
+            "count": 20
+          },
+          {
+            "value": "1A7B6",
+            "count": 20
+          },
+          {
+            "value": "1A8B4",
+            "count": 20
+          },
+          {
+            "value": "DiI-C18",
+            "count": 16
+          },
+          {
+            "value": "1A22B13",
+            "count": 12
+          },
+          {
+            "value": "1A4B8",
+            "count": 12
+          },
+          {
+            "value": "1A7B18",
+            "count": 12
+          },
+          {
+            "value": "1A7B21",
+            "count": 12
+          },
+          {
+            "value": "1A7B22",
+            "count": 12
+          },
+          {
+            "value": "1A7B23",
+            "count": 12
+          },
+          {
+            "value": "1A7B24",
+            "count": 12
+          },
+          {
+            "value": "1A7B25",
+            "count": 12
+          },
+          {
+            "value": "1A8B17",
+            "count": 12
+          },
+          {
+            "value": "1A8B21",
+            "count": 12
+          },
+          {
+            "value": "1A8B22",
+            "count": 12
+          },
+          {
+            "value": "1A8B23",
+            "count": 12
+          },
+          {
+            "value": "1A8B24",
+            "count": 12
+          },
+          {
+            "value": "1A11B5",
+            "count": 10
+          },
+          {
+            "value": "1A1B6",
+            "count": 10
+          },
+          {
+            "value": "1A1B7",
+            "count": 10
+          },
+          {
+            "value": "1A7B7",
+            "count": 10
+          },
+          {
+            "value": "1A8B3",
+            "count": 10
+          }
+        ],
+        "example_values": [
+          "6,6'-trehalose dioleate",
+          "DSPE-PEG2000-mannose",
+          "DSPE-PEG2000-galactose",
+          "DiR",
+          "BMP(S,R)",
+          "4Me",
+          "CL",
+          "DSPC",
+          "POPE",
+          "DiI-C18",
+          "DOTAP",
+          "1A1B1",
+          "1A2B1",
+          "1A3B1",
+          "1A4B1",
+          "1A5B1",
+          "1A6B1",
+          "1A7B1",
+          "1A8B1",
+          "1A9B1"
+        ],
+        "column_examples": [
+          "DOTAP",
+          "6,6'-trehalose dioleate",
+          "BMP(S,R)",
+          "DSPE-PEG2000-mannose",
+          "1A7B13",
+          "1A7B15",
+          "1A8B18",
+          "1A8B25",
+          "1A7B5",
+          "1A7B6",
+          "1A8B4",
+          "DiI-C18",
+          "1A22B13",
+          "1A4B8",
+          "1A7B18",
+          "1A7B21",
+          "1A7B22",
+          "1A7B23",
+          "1A7B24",
+          "1A7B25"
+        ]
+      },
+      "Fifth_component_SMILES": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 2987,
+        "unique_count": 437,
+        "top_values": [
+          {
+            "value": "CCC/C=C/COC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCCCCCCCC)CCCCCCCCCC(=O)OC/C=C/CCC",
+            "count": 22
+          },
+          {
+            "value": "CCCCCCCCCCCC[N+](C)(CCCCCC(=O)OCC(CCCC)CCCCCC)CCCCCC(=O)OCC(CCCC)CCCCCC",
+            "count": 22
+          },
+          {
+            "value": "CCCCCCCCCCCC[N+](C)(CCCCCC(=O)OCC(CCCCCCCC)CCCCCCCCCC)CCCCCC(=O)OCC(CCCCCCCC)CCCCCCCCCC",
+            "count": 22
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CC)CCCC)CCCCCCCCCC(=O)OCC(CC)CCCC",
+            "count": 22
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCC",
+            "count": 20
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCCCC",
+            "count": 20
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCCCC)CCCCCCCCCCCCCC",
+            "count": 20
+          },
+          {
+            "value": "CC1(C(=[N+](C2=CC=CC=C12)CCCCCCCCCCCCCCCCCC)C=CC=C1N(C2=CC=CC=C2C1(C)C)CCCCCCCCCCCCCCCCCC)C",
+            "count": 16
+          },
+          {
+            "value": "C=CCCCCOC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCC(=O)OCCCCC=C",
+            "count": 12
+          },
+          {
+            "value": "C=CCCCCOC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCCCCCCCC)CCCCCCCCCC(=O)OCCCCC=C",
+            "count": 12
+          },
+          {
+            "value": "CCC/C=C/COC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCC(=O)OC/C=C/CCC",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCC(CCCCCCCC)COC(=O)CCCCC[N+](CCCCCCCCCC)(CCCCCCCCCC)CCCCCCCCCC",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C)CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CC)CCCC)CCCCCCCCCC(=O)OCC(CC)CCCC",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C)CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C)CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CCCC)CCCCCC)CCCCCCCCCC(=O)OCC(CCCC)CCCCCC",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C)CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C",
+            "count": 12
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCCCCCC[N+](CCCCCC)(CCCCCCCCCCCCCCCCCCCCCC)CCCCCCCCCCCCCCCCCCCCCC",
+            "count": 12
+          },
+          {
+            "value": "C[N+](CCCCCCCCCCCC)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCCCC",
+            "count": 10
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCC[N+](CCC)(CCC)CCCCCCCCCCCCCCCC",
+            "count": 10
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCC[N+](CC)(CCCCCCCCCCCCCCCCCC)CCCCCCCCCCCCCCCCCC",
+            "count": 10
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCCCCCC",
+            "count": 10
+          },
+          {
+            "value": "CCCCCCCCCCCCCCCCCCCC[N+](CC)(CCCCCCCCCCCCCCCCCCCC)CCCCCCCCCCCCCCCCCCCC",
+            "count": 10
+          },
+          {
+            "value": "C=CCCCCCCCCCCCCCCCC[N+](C)(C)CCCCCCCCCCCCCCCCCC",
+            "count": 8
+          },
+          {
+            "value": "C=CCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCCC=C",
+            "count": 8
+          },
+          {
+            "value": "C=CCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCCCCCCC=C)CCCCCCCCCCCCCCCCCC",
+            "count": 8
+          },
+          {
+            "value": "C=CCCCCCCCCCCCCCCCC[N+](CCCC)(CCCCCCCCCCCCCCCCC=C)CCCCCCCCCCCCCCCCC=C",
+            "count": 8
+          },
+          {
+            "value": "C=CCCCCCCCCCCCCCCCC[N+](CCCCCC)(CCCCCCCCCCCCCCCCC=C)CCCCCCCCCCCCCCCCC=C",
+            "count": 8
+          },
+          {
+            "value": "C=CCCCCCCCCCCCCCCCC[N+](CCCCCCCCCC)(CCCCCCCCCC)CCCCCCCCCC",
+            "count": 8
+          }
+        ],
+        "example_values": [
+          "[I-].CC1(C(N(C2=CC=CC=C12)CCCCCCCCCCCCCCCCCC)=C/C=C/C=C/C=C/C1=[N+](C2=CC=CC=C2C1(C)C)CCCCCCCCCCCCCCCCCC)C",
+          "CC(C)CCCC(C)CCCC(C)CCCC(C)CCOCC(COP(=O)(O)OCCN)OCCC(C)CCCC(C)CCCC(C)CCCC(C)C",
+          "CCCCCCCCCCCCCCCCCC(=O)OC[C@H](COP(=O)([O-])OCC[N+](C)(C)C)OC(=O)CCCCCCCCCCCCCCCCC",
+          "CC1(C(=[N+](C2=CC=CC=C12)CCCCCCCCCCCCCCCCCC)C=CC=C1N(C2=CC=CC=C2C1(C)C)CCCCCCCCCCCCCCCCCC)C",
+          "CCCCCCCC[N+](CC)(CCCCCCCC)CCCCCCCC",
+          "CCCCCCCC[N+](CCC)(CCCCCCCC)CCCCCCCC",
+          "CCCCCCCC[N+](CCCC)(CCCCCCCC)CCCCCCCC",
+          "CCCCCCCC[N+](CCCCCC)(CCCCCCCC)CCCCCCCC",
+          "CCCCCCCC[N+](C)(CCCCCC)CCCCCCCC",
+          "CCCCCCCC[N+](C)(CCCCCCCC)CCCCCCCC",
+          "C[N+](CCCCCCCC)(CCCCCCCC)CCCCCCCCCCCC",
+          "C[N+](CCCCCCCC)(CCCCCCCC)CCCCCCCCCCCCCCCCCC",
+          "CCCCCCCC[N+](C)(C)CCCCCCCC",
+          "CCCCCCCC[N+](CC)(CC)CCCCCCCC",
+          "CCCCCCCC[N+](CCC)(CCC)CCCCCCCC",
+          "CCCCCCCC[N+](CCCC)(CCCC)CCCCCCCC",
+          "CCCCCCCC[N+](CCCCCC)(CCCCCC)CCCCCCCC",
+          "[N+](CCCCCCCC)(CCCCCCCC)(CCCCCCCC)CCCCCCCC",
+          "[N+](CCCCCCCC)(CCCCCCCC)(CCCCCCCCCC)CCCCCCCCCC",
+          "CCCCCCCCCCC[N+](CCCCCCCC)(CCCCCCCC)CCCCCCCCCCC"
+        ],
+        "column_examples": [
+          "CCC/C=C/COC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCCCCCCCC)CCCCCCCCCC(=O)OC/C=C/CCC",
+          "CCCCCCCCCCCC[N+](C)(CCCCCC(=O)OCC(CCCC)CCCCCC)CCCCCC(=O)OCC(CCCC)CCCCCC",
+          "CCCCCCCCCCCC[N+](C)(CCCCCC(=O)OCC(CCCCCCCC)CCCCCCCCCC)CCCCCC(=O)OCC(CCCCCCCC)CCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CC)CCCC)CCCCCCCCCC(=O)OCC(CC)CCCC",
+          "CCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCCCC",
+          "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCCCC)CCCCCCCCCCCCCC",
+          "CC1(C(=[N+](C2=CC=CC=C12)CCCCCCCCCCCCCCCCCC)C=CC=C1N(C2=CC=CC=C2C1(C)C)CCCCCCCCCCCCCCCCCC)C",
+          "C=CCCCCOC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCC(=O)OCCCCC=C",
+          "C=CCCCCOC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCCCCCCCC)CCCCCCCCCC(=O)OCCCCC=C",
+          "CCC/C=C/COC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCC(=O)OC/C=C/CCC",
+          "CCCCCCCCCCC(CCCCCCCC)COC(=O)CCCCC[N+](CCCCCCCCCC)(CCCCCCCCCC)CCCCCCCCCC",
+          "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C)CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C",
+          "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CC)CCCC)CCCCCCCCCC(=O)OCC(CC)CCCC",
+          "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C)CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C",
+          "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C)CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C",
+          "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CCCC)CCCCCC)CCCCCCCCCC(=O)OCC(CCCC)CCCCCC",
+          "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C)CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C",
+          "CCCCCCCCCCCCCCCCCCCCCC[N+](CCCCCC)(CCCCCCCCCCCCCCCCCCCCCC)CCCCCCCCCCCCCCCCCCCCCC",
+          "C[N+](CCCCCCCCCCCC)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCCCC"
+        ]
+      },
+      "IL_to_nucleicacid_massratio": {
+        "column_exists": true,
+        "sources": [
+          "F:\\내 드라이브\\LNPDB_originalPLUSupdates.xlsx::LNPDB_final"
+        ],
+        "non_empty_count": 26000,
+        "unique_count": 1902,
+        "top_values": [
+          {
+            "value": "10",
+            "count": 13518
+          },
+          {
+            "value": "40",
+            "count": 3097
+          },
+          {
+            "value": "5",
+            "count": 1611
+          },
+          {
+            "value": "15",
+            "count": 902
+          },
+          {
+            "value": "16.96",
+            "count": 720
+          },
+          {
+            "value": "25.44",
+            "count": 720
+          },
+          {
+            "value": "8.48",
+            "count": 720
+          },
+          {
+            "value": "7",
+            "count": 378
+          },
+          {
+            "value": "11",
+            "count": 325
+          },
+          {
+            "value": "13.9",
+            "count": 286
+          },
+          {
+            "value": "7.5",
+            "count": 264
+          },
+          {
+            "value": "20",
+            "count": 134
+          },
+          {
+            "value": "10:1",
+            "count": 133
+          },
+          {
+            "value": "13.93",
+            "count": 96
+          },
+          {
+            "value": "11.3314",
+            "count": 62
+          },
+          {
+            "value": "2.5",
+            "count": 53
+          },
+          {
+            "value": "12.5",
+            "count": 52
+          },
+          {
+            "value": "25",
+            "count": 46
+          },
+          {
+            "value": "11.2",
+            "count": 30
+          },
+          {
+            "value": "11.25",
+            "count": 28
+          },
+          {
+            "value": "5.6657",
+            "count": 24
+          },
+          {
+            "value": "12.14701818",
+            "count": 9
+          },
+          {
+            "value": "5.301030075",
+            "count": 9
+          },
+          {
+            "value": "6.152488722",
+            "count": 9
+          },
+          {
+            "value": "7.462832198",
+            "count": 9
+          },
+          {
+            "value": "13.31742273",
+            "count": 8
+          },
+          {
+            "value": "5.941556391",
+            "count": 8
+          },
+          {
+            "value": "6.363421053",
+            "count": 8
+          },
+          {
+            "value": "6.965055728",
+            "count": 8
+          },
+          {
+            "value": "7.213943963",
+            "count": 8
+          }
+        ],
+        "example_values": [
+          "5",
+          "7",
+          "3.163915524",
+          "3.2940723",
+          "3.245692009",
+          "3.251864601",
+          "3.294203468",
+          "3.20844915",
+          "3.372887241",
+          "3.33537733",
+          "3.288183125",
+          "3.335505304",
+          "3.412295574",
+          "3.375682854",
+          "3.329631646",
+          "3.37580775",
+          "3.450772056",
+          "3.415024719",
+          "3.370075481",
+          "3.415146647"
+        ],
+        "column_examples": [
+          "10",
+          "40",
+          "5",
+          "15",
+          "16.96",
+          "25.44",
+          "8.48",
+          "7",
+          "11",
+          "13.9",
+          "7.5",
+          "20",
+          "10:1",
+          "13.93",
+          "11.3314",
+          "2.5",
+          "12.5",
+          "25",
+          "11.2",
+          "11.25"
+        ]
+      }
+    },
+    "column_examples": {
+      "Aqueous_buffer": [
+        "citrate",
+        "acetate",
+        "hydrochloric acid buffer",
+        "OGP",
+        "Unknown"
+      ],
+      "Dialysis_buffer": [
+        "PBS",
+        "water",
+        "HBS",
+        "acetate",
+        "saline"
+      ],
+      "Mixing_method": [
+        "handmixed",
+        "microfluidic",
+        "vortexing",
+        "liquid_handler",
+        "pulse_vortexing",
+        "Unknown"
+      ],
+      "Model": [
+        "in_vitro",
+        "in_vivo"
+      ],
+      "Model_type": [
+        "HeLa",
+        "Mouse_B6",
+        "A549",
+        "HepG2",
+        "DC2.4",
+        "IGROV1",
+        "Raw_264.7",
+        "BEAS-2B",
+        "HEK293T",
+        "Mouse_BALBc",
+        "BeWo_b30",
+        "Mouse_BALBc_female",
+        "Mouse_Ai14_tdTomato",
+        "BMDC",
+        "Mouse_Ai14",
+        "Mouse_B6_pregnant",
+        "C2C12",
+        "HeLa-FLuc_RLuc",
+        "Mouse_LDLR_knockout",
+        "Mouse_VLDLR_knockout"
+      ],
+      "Model_target": [
+        "in_vitro",
+        "lung_epithelium",
+        "liver",
+        "lung",
+        "spleen",
+        "muscle",
+        "serum",
+        "multiorgan",
+        "kidney",
+        "bone_marrow",
+        "heart",
+        "firefly luciferase",
+        "placenta",
+        "whole_body",
+        "ear",
+        "Hepatocyte",
+        "pancreas",
+        "lymph node",
+        "MC38_tumor_tissue",
+        "tumor"
+      ],
+      "Route_of_administration": [
+        "in_vitro",
+        "intravenous",
+        "intramuscular",
+        "intradermal",
+        "intratumoral",
+        "intratracheal",
+        "nebulization",
+        "retro_orbital"
+      ],
+      "Cargo": [
+        "mRNA",
+        "siRNA",
+        "pDNA",
+        "DNA",
+        "ASO",
+        "FLuc",
+        "HA",
+        "protein",
+        "Cas9 RNP",
+        "tdTomato",
+        "Cas9:sgRNA",
+        "hEPO"
+      ],
+      "Cargo_type": [
+        "FLuc",
+        "DNA_barcode",
+        "peptide_barcode",
+        "mRNA",
+        "hEPO",
+        "GFP",
+        "Custom_barcode",
+        "gene_targeting_ASO",
+        "Cre",
+        "FPLC-purified Luc",
+        "barcoded",
+        "FVII",
+        "EPO",
+        "AncNanoLuc",
+        "pCI-FLuc",
+        "base_editor",
+        "mCherry",
+        "Cy5-FLuc",
+        "PCSK9",
+        "RLuc"
+      ],
+      "Dose_ug_nucleicacid": [
+        "0.1",
+        "0.05",
+        "0.2",
+        "2",
+        "0.02",
+        "5",
+        "0.01",
+        "1",
+        "0.025",
+        "10",
+        "0.003",
+        "0.9",
+        "0.081521739",
+        "15",
+        "20",
+        "0.25",
+        "6",
+        "2.5",
+        "40",
+        "100"
+      ],
+      "Experiment_method": [
+        "luminescence_normalized",
+        "luminescence_discretized_normalized",
+        "diameter",
+        "PDI",
+        "protein_abundance_normalized",
+        "cell_viability_normalized",
+        "uptake_normalized",
+        "encapsulation",
+        "zeta_potential",
+        "luminescence_discretized",
+        "flow_cytometry_endothelial_cells_normalized",
+        "editing_efficiency_normalized",
+        "pKa",
+        "fluorescence_normalized",
+        "luminescence_fold_change_normalized",
+        "LRP6_knockdown_normalized",
+        "flow_cytometry_macrophages_normalized",
+        "gene_silencing_normalized",
+        "hemolysis_percent_normalized",
+        "flow_cytometry_normalized"
+      ],
+      "Experiment_batching": [
+        "individual",
+        "barcoded"
+      ],
+      "formulation_id": [
+        "PG_2019_F11",
+        "KS_2023_F11",
+        "KS_2023_F4",
+        "AR_2025_F2",
+        "AR_2025_F1",
+        "QS_2026_F14",
+        "JM_2022_F2",
+        "JM_2022_F3",
+        "JM_2022_F1",
+        "JM_2022_F4",
+        "KK_2015_F1",
+        "YL_2024_F3",
+        "KS_2023_F10",
+        "SL_2022_F2",
+        "JK_2017_F7",
+        "YL_2024_F4",
+        "JK_2017_F14",
+        "JK_2017_F15",
+        "JK_2017_F16",
+        "QS_2026_F22"
+      ],
+      "IL_name": [
+        "4A3-SC7",
+        "DLin-MC3-DMA",
+        "C12-200",
+        "7C1",
+        "4A3-SC8",
+        "1_A3_T9b2",
+        "other",
+        "DLin-KC2-DMA",
+        "SM-102",
+        "ALC-0315",
+        "246C10",
+        "CHCha-10",
+        "244-cis",
+        "A4",
+        "AMG1541",
+        "306-O12B-3",
+        "cKK-E12",
+        "DODAC",
+        "G0-SS-AA-C12",
+        "ZA3-Ep10"
+      ],
+      "IL_SMILES": [
+        "CCCCCCCSCC(C)C(=O)OCCOC(=O)CCN(CCCN(C)CCCN(CCC(=O)OCCOC(=O)C(C)CSCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCC",
+        "N(CC(O)CCCCCCCCCCCCC)(CC)CC",
+        "CCCCCCCCCCC(CN(CCN1CCN(CC1)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)O",
+        "CCCCCCCCCCC(O)CN(CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CCN1CCN(CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CC1",
+        "OC(CN(CCN(CCN1CCN(CC1)CCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CCCCCCCCCC",
+        "CCCCCCCCSCC(C)C(=O)OCCOC(=O)CCN(CCCN(C)CCCN(CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC)CCC(=O)OCCOC(=O)C(C)CSCCCCCCCC",
+        "CCCCC(CC)CCC(=O)Oc1cc(OC(=O)CCC(CC)CCCC)c(CNCCN(C)CCNCc2c(OC(=O)CCC(CC)CCCC)cc(OC(=O)CCC(CC)CCCC)cc2OC(=O)CCC(CC)CCCC)c(OC(=O)CCC(CC)CCCC)c1",
+        "CCN(CC(CCCCCCCCCCCCC)O)CC",
+        "CCCCCCCCC(CCCCCCCC)OC(CCCCCCCN(CCCCCC(OCCCCCCCCCCC)=O)CCO)=O",
+        "CCCCCCCCC(CCCCCC)C(=O)OCCCCCCN(CCCCCCOC(=O)C(CCCCCC)CCCCCCCC)CCCCO",
+        "CCCCCCCCC(CCCCCC)C(=O)OCCCCCCNC(CC1CCCCC1)C(=O)N(C)CCCN1CCN(CCCN(C)C(=O)C(CC2CCCCC2)NCCCCCCOC(=O)C(CCCCCC)CCCCCCCC)CC1",
+        "CCCCCCCCCCC(O)CN(CCCN1CCN(CCCN)CC1)CC(O)CCCCCCCCCC",
+        "CCCCCCCCCCC(CN(CC(CCCCCCCCCC)O)CCOCCN1CCN(CCN(CC(CCCCCCCCCC)O)CCOCCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC1)O",
+        "CCCCCCCCSSCCOC(=O)CCNCCCN(C)CCCN(CCC(=O)OCCSSCCCCCCCC)CCC(=O)OCCSSCCCCCCCC",
+        "CCCCCCCCC(O)CN(CC(O)CCCCCCCC)CCN(CCN(CC(O)CCCCCCCC)CC(O)CCCCCCCC)CCN(CCC(=O)NCC[N+](C)(C)CCCS(=O)(=O)[O-])CC(O)CCCCCCCC",
+        "N1(CCN(CC(O)CCCCCCCCCC)CCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)CCN(CCN(CC(O)CCCCCCCCCC)CC(CCCCCCCCCC)O)CC1",
+        "C1N(CCN(CCC(=O)OCCCCCCCCCC)CCC(=O)OCCCCCCCCCC)CCN(CCN(CCC(=O)OCCCCCCCCCC)CCN(CCC(=O)OCCCCCCCCCC)CCC(=O)OCCCCCCCCCC)C1",
+        "C1(CCCCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)NC(=O)C(CCCCN(CC(O)CCCCCCCCCC)CC(O)CCCCCCCCCC)NC1=O",
+        "C1N(CCN(C(CCCCCCCCCCCC)O)CCCOCCOCCOCCCN(C(CCCCCCCCCCCC)O)C(O)CCCCCCCCCCCC)CCN(CCCOCCOCCOCCCN(C(CCCCCCCCCCCC)O)C(CCCCCCCCCCCC)O)C1",
+        "CCCCCCCCCCC(CN(CCCCC1C(=O)NC(C(=O)N1)CCCCN(CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)CC(CCCCCCCCCC)O)O"
+      ],
+      "HL_name": [
+        "DOPE",
+        "DSPC",
+        "DOTAP",
+        "MDOA",
+        "DDAB",
+        "14PA",
+        "18PG",
+        "DOPC",
+        "DPPC",
+        "SOPC",
+        "18:1 Biotinyl PE",
+        "DOTMA",
+        "DMPC",
+        "4Me",
+        "BMP(S,R)",
+        "POPE",
+        "18:1 Lyso PC",
+        "BMP(S,S)",
+        "CL",
+        "DC Chol-HCl"
+      ],
+      "HL_SMILES": [
+        "CCCCCCCCCCCCCCCCCC(=O)OC[C@H](COP(=O)([O-])OCC[N+](C)(C)C)OC(=O)CCCCCCCCCCCCCCCCC",
+        "CCCCCCCCCCCCCCCCCCN(C)CCCCCCCCCCCCCCCCCC",
+        "CCCCCCCCCCCCCCCCCC[N+](CCCCCCCCCCCCCCCCCC)(C)C",
+        "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCC)O",
+        "[P](=O)([O-])(OC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)COC(=O)CCCCCCCCCCCCCCCCC)OCC(O)CO",
+        "C(CCCCCCCCCCCCCCC)(=O)OC[C@@H](OC(CCCCCCCCCCCCCCC)=O)COP(=O)([O-])OCC[N+](C)(C)C",
+        "C[C@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@]([H])(OC(=O)NCC[N+](C)(C)[H])CC4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C.[Cl-]",
+        "CCCCCCCCCCCCCC(OC[C@]([H])(OC(CCCCCCCCCCCCC)=O)COP(OCC[N+](C)(C)C)([O-])=O)=O",
+        "CC(C)CCCC(C)CCCC(C)CCCC(C)CCOCC(COP(=O)(O)OCCN)OCCC(C)CCCC(C)CCCC(C)CCCC(C)C",
+        "C(=C/CCCCCCCC)/CCCCCCCC(OC[C@@H](OC(CCC(=O)OC1CC[C@@]2(C)C3CC[C@@]4(C)[C@H]([C@@H](C)CCCC(C)C)CCC4C3CC=C2C1)=O)COP(OCC[N+](C)(C)C)([O-])=O)=O",
+        "O=C(OC[C@@H](OC(=O)CCCCCCCCCCCCCCC)COP([O-])(=O)OCC[N+](C)(C)C)CCCCCCCCCCCCCCC"
+      ],
+      "CHL_name": [
+        "Cholesterol",
+        "Cholesteryl Oleate",
+        "7B-OH Cholesterol",
+        "Cholesteryl Stearate",
+        "7A-OH Cholesterol",
+        "n-butyl lithocholate",
+        "4B-OH Cholesterol",
+        "Beta-Sitosterol",
+        "Stigmasterol",
+        "Campesterol",
+        "Fucosterol",
+        "Stigmastanol",
+        "β-Sitosterol",
+        "3-methylpentyl lithocholate",
+        "iso-Pentyl lithocholate",
+        "Betulin",
+        "Calcipotriol",
+        "Lupeol",
+        "Oleanolic acid",
+        "Ursolic acid"
+      ],
+      "CHL_SMILES": [
+        "C[C@H](CCCC(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+        "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)CC4=C[C@@H](O)[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+        "C[C@@H]([C@@H]1[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](OC(=O)CCCCCCCCCCCCCCCCC)CC4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+        "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)CC4=C[C@H](O)[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+        "C[C@H](CCC(OCCCC)=O)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+        "C[C@@H]([C@]1([H])[C@@]2(C)CC[C@]3([H])[C@@]4(C)CC[C@H](O)C(O)C4=CC[C@@]3([H])[C@]2([H])CC1)CCCC(C)C",
+        "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+        "CC[C@H](/C=C/[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+        "C1[C@H](O)CC2=CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](C)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+        "C1[C@H](O)CC2=CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](CC)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+        "C1[C@H](O)CC2CC[C@@]3([H])[C@]4([H])CC[C@H]([C@H](C)CC[C@@H](CC)C(C)C)[C@@]4(C)CC[C@]3([H])[C@@]2(C)C1",
+        "C[C@H](CC[C@@H](C)C(C)C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC=C4[C@@]3(CC[C@@H](C4)O)C)C",
+        "CC[C@H](CC[C@@H](C)[C@H]1CC[C@@H]2[C@@]1(CC[C@H]3[C@H]2CC[C@@H]4[C@@]3(CC[C@@H](C4)O)C)C)C(C)C",
+        "O=C(OCCC(C)C)CC[C@@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+        "O=C(OCCC(C)CC)CC[C@H](C)[C@@]1([H])CC[C@@]2([H])[C@]3([H])CC[C@]4([H])C[C@H](O)CC[C@]4(C)[C@@]3([H])CC[C@@]21C",
+        "C[C@@H]1CC[C@@]2(CC[C@@]3(C(=CC[C@H]4[C@]3(CC[C@@H]5[C@@]4(CC[C@@H](C5(C)C)O)C)C)[C@@H]2[C@H]1C)C)C(=O)O",
+        "C[C@]12CC[C@@H](C([C@@H]1CC[C@@]3([C@@H]2CC=C4[C@]3(CC[C@@]5([C@H]4CC(CC5)(C)C)C(=O)O)C)C)(C)C)O",
+        "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)C",
+        "CC(=C)[C@@H]1CC[C@]2([C@H]1[C@H]3CC[C@@H]4[C@]5(CC[C@@H](C([C@@H]5CC[C@]4([C@@]3(CC2)C)C)(C)C)O)C)CO"
+      ],
+      "PEG_name": [
+        "DMG-PEG2000",
+        "DMPE-PEG2000",
+        "Unknown",
+        "C16-Ceramide-PEG2000",
+        "DSPE-PEG2000",
+        "DMPE-PEG1000",
+        "DMPE-PEG3000",
+        "C16-PEG2000-Ceramide",
+        "DMPE-PEG5000",
+        "DSG-PEG2000",
+        "C8-Ceramide-PEG2000",
+        "DMPE-PEG550",
+        "DOPE-PEG550",
+        "DSPE-2arm-PEG2000",
+        "C18-CONH-PEG2000",
+        "DPG-PEG2000",
+        "ALC-0159",
+        "C20-Ceramide-PEG2000",
+        "DMG-C-PEG2000",
+        "C16-Ceramide-PEG750"
+      ],
+      "PEG_SMILES": [
+        "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+        "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O",
+        "C(CC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCC",
+        "C(CCCC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCC",
+        "C(CCCC)CCCCCCCCCCCCC(=O)OCC(COP(=O)(OCCNCC(=O)OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)O)OC(=O)CCCCCCCCCCCCCCCCC",
+        "CCCCCCCCCCCCC/C=C/[C@H]([C@H](COC(CCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)NC(CCCCCCC)=O)O",
+        "CCCCCCCCCCCCC/C=C/[C@H]([C@H](COC(CCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)NC(CCCCCCCCCCCCCCC)=O)O",
+        "CCCCCCCCCCCCCC(OCC(OC(CCCCCCCCCCCCC)=O)COP(O)(OCCNCC(OCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOCCOC)=O)=O)=O"
+      ],
+      "Fifth_component_name": [
+        "DOTAP",
+        "6,6'-trehalose dioleate",
+        "BMP(S,R)",
+        "DSPE-PEG2000-mannose",
+        "1A7B13",
+        "1A7B15",
+        "1A8B18",
+        "1A8B25",
+        "1A7B5",
+        "1A7B6",
+        "1A8B4",
+        "DiI-C18",
+        "1A22B13",
+        "1A4B8",
+        "1A7B18",
+        "1A7B21",
+        "1A7B22",
+        "1A7B23",
+        "1A7B24",
+        "1A7B25"
+      ],
+      "Fifth_component_SMILES": [
+        "CCC/C=C/COC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCCCCCCCC)CCCCCCCCCC(=O)OC/C=C/CCC",
+        "CCCCCCCCCCCC[N+](C)(CCCCCC(=O)OCC(CCCC)CCCCCC)CCCCCC(=O)OCC(CCCC)CCCCCC",
+        "CCCCCCCCCCCC[N+](C)(CCCCCC(=O)OCC(CCCCCCCC)CCCCCCCCCC)CCCCCC(=O)OCC(CCCCCCCC)CCCCCCCCCC",
+        "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CC)CCCC)CCCCCCCCCC(=O)OCC(CC)CCCC",
+        "CCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCC",
+        "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCCCC",
+        "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCCCCCC)CCCCCCCCCCCCCC",
+        "CC1(C(=[N+](C2=CC=CC=C12)CCCCCCCCCCCCCCCCCC)C=CC=C1N(C2=CC=CC=C2C1(C)C)CCCCCCCCCCCCCCCCCC)C",
+        "C=CCCCCOC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCC(=O)OCCCCC=C",
+        "C=CCCCCOC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCCCCCCCC)CCCCCCCCCC(=O)OCCCCC=C",
+        "CCC/C=C/COC(=O)CCCCCCCCC[N+](C)(CCCCCCCCCCCC)CCCCCCCCCC(=O)OC/C=C/CCC",
+        "CCCCCCCCCCC(CCCCCCCC)COC(=O)CCCCC[N+](CCCCCCCCCC)(CCCCCCCCCC)CCCCCCCCCC",
+        "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C)CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C",
+        "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CC)CCCC)CCCCCCCCCC(=O)OCC(CC)CCCC",
+        "CCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C)CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C",
+        "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C)CCCCCCCCCC(=O)OC/C=C(/C)CCC=C(C)C",
+        "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCC(CCCC)CCCCCC)CCCCCCCCCC(=O)OCC(CCCC)CCCCCC",
+        "CCCCCCCCCCCCCCCCCC[N+](C)(CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C)CCCCCCCCCC(=O)OCCC(C)CCC=C(C)C",
+        "CCCCCCCCCCCCCCCCCCCCCC[N+](CCCCCC)(CCCCCCCCCCCCCCCCCCCCCC)CCCCCCCCCCCCCCCCCCCCCC",
+        "C[N+](CCCCCCCCCCCC)(CCCCCCCCCCCC)CCCCCCCCCCCCCCCCCC"
+      ],
+      "IL_to_nucleicacid_massratio": [
+        "10",
+        "40",
+        "5",
+        "15",
+        "16.96",
+        "25.44",
+        "8.48",
+        "7",
+        "11",
+        "13.9",
+        "7.5",
+        "20",
+        "10:1",
+        "13.93",
+        "11.3314",
+        "2.5",
+        "12.5",
+        "25",
+        "11.2",
+        "11.25"
+      ]
+    },
+    "free_text_notes": []
+  },
+  "human_column_guides": {
+    "available": false,
+    "source_paths": [],
+    "text_blocks": []
+  },
+  "warnings": []
+}

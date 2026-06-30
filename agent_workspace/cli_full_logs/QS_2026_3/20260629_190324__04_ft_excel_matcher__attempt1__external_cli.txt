@@ -1,0 +1,1255 @@
+===== EXTERNAL CLI RUN LOG =====
+timestamp_start: 2026-06-29T19:03:24.783982
+paper_folder: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+stage: 04_ft_excel_matcher
+attempt: 1
+project_root: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+cwd: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+external_agent_command_template: cmd /c codex exec --cd C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction --dangerously-bypass-approvals-and-sandbox --add-dir {paper_folder} -
+final_command: cmd /c codex exec --cd C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction --dangerously-bypass-approvals-and-sandbox --add-dir F:\내 드라이브\EXTRACT-TEST\QS_2026_3 -
+final_command_argv: ["cmd", "/c", "codex", "exec", "--cd", "C:\\Users\\kogun\\PycharmProjects\\LNPDB_Articles_AgentExtraction", "--dangerously-bypass-approvals-and-sandbox", "--add-dir", "F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3", "-"]
+task_file: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tasks\04_ft_excel_matcher_QS_2026_3.md
+mode: external_agent
+
+===== BEGIN PROMPT SENT TO EXTERNAL CLI =====
+You are an external CLI coding agent working in the LNPDB_Articles_AgentExtraction repository.
+
+Stage: 04_ft_excel_matcher
+Target paper folder: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+Task file: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tasks\04_ft_excel_matcher_QS_2026_3.md
+
+Read and complete the task markdown below. Use the target paper folder from both this prompt and the task file.
+
+Hard constraints:
+- Do not use Gemini/API/find_api/LLM_API/LLM_Batch.
+- Do not run legacy Gemini scripts.
+- Follow agent_workspace/OUTPUT_SCHEMA.md.
+- Create or modify the required output files so Agent_Task_Runner.py validation passes.
+- If exact fields are missing, leave them blank and set manual_required=true.
+- Record evidence/provenance for nontrivial extracted data.
+- Do not delete original PDF or Excel files.
+- If overwrite is needed, create a backup or follow the runner backup policy.
+- Stage-specific task markdown instructions have priority.
+- If you fail, record the cause and what you changed.
+
+Task markdown:
+
+# External Agent Task: 04_ft_excel_matcher
+
+Target paper folder: `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`
+
+## Stage Purpose
+Match selected figure/table items to Excel blocks by direct CLI agent judgment without Gemini.
+
+## Required Input Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\.manual_select_review_done`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\fig_table_lnpdb_classified.csv`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\fig_table_inventory.csv`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+
+## Expected Output Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_mapping.json`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_mapping_rows.csv`
+- updated `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\fig_table_lnpdb_classified.csv` when possible
+
+## Work Instructions
+1. Read `fig_table_lnpdb_classified.csv`.
+2. Read `fig_table_inventory.csv`.
+3. Read `excel_block_inventory.csv`.
+4. Match every selected FT item to candidate Excel blocks using caption, `item_id`, `base_id`, sheet name, block preview, `block_type`, and keywords.
+5. Create `excel_mapping.json`.
+6. Create `excel_mapping_rows.csv`.
+7. When possible, update `fig_table_lnpdb_classified.csv` columns:
+   - `excel_item_id`
+   - `matched_blocks`
+   - `matched_block_csv_path`
+   - `matched_sheet`
+   - `matched_sheet_file`
+8. Follow `agent_workspace/OUTPUT_SCHEMA.md` for `excel_mapping.json` and `excel_mapping_rows.csv`.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 04_ft_excel_matcher --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026_3"
+```
+
+## Constraints
+- Do not run `0_mark_down_gen/04_FT-Excel_matcher.py`.
+- Do not import or require `find_api.py`.
+- Do not use Gemini, Vertex, `LLM_API.py`, or `LLM_Batch.py`.
+- Do not hard-code API keys or credentials.
+## Legacy context files
+
+These files are reference-only. Do not execute or import Gemini/API-dependent scripts. Use them only to understand prior deterministic logic, expected output shapes, and naming conventions. Current stage contract and `AGENT_INSTRUCTIONS.md` override legacy behavior.
+
+- `agent_workspace/legacy_context/by_stage/04_ft_excel_matcher/README.md` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/04_FT-Excel_matcher.py` (exists)
+- `agent_workspace/legacy_context/README.md` (context policy)
+- `agent_workspace/legacy_context/LEGACY_CODE_INDEX.md` (stage-by-stage index)
+
+
+===== END PROMPT SENT TO EXTERNAL CLI =====
+===== BEGIN EXTERNAL CLI OUTPUT =====
+OpenAI Codex v0.142.4
+--------
+workdir: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019f12d5-705b-7492-ad81-892801cf3976
+--------
+user
+You are an external CLI coding agent working in the LNPDB_Articles_AgentExtraction repository.
+
+Stage: 04_ft_excel_matcher
+Target paper folder: F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+Task file: C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction\agent_workspace\tasks\04_ft_excel_matcher_QS_2026_3.md
+
+Read and complete the task markdown below. Use the target paper folder from both this prompt and the task file.
+
+Hard constraints:
+- Do not use Gemini/API/find_api/LLM_API/LLM_Batch.
+- Do not run legacy Gemini scripts.
+- Follow agent_workspace/OUTPUT_SCHEMA.md.
+- Create or modify the required output files so Agent_Task_Runner.py validation passes.
+- If exact fields are missing, leave them blank and set manual_required=true.
+- Record evidence/provenance for nontrivial extracted data.
+- Do not delete original PDF or Excel files.
+- If overwrite is needed, create a backup or follow the runner backup policy.
+- Stage-specific task markdown instructions have priority.
+- If you fail, record the cause and what you changed.
+
+Task markdown:
+
+# External Agent Task: 04_ft_excel_matcher
+
+Target paper folder: `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`
+
+## Stage Purpose
+Match selected figure/table items to Excel blocks by direct CLI agent judgment without Gemini.
+
+## Required Input Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\.manual_select_review_done`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\fig_table_lnpdb_classified.csv`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\fig_table_inventory.csv`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+
+## Expected Output Files
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_mapping.json`
+- `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_mapping_rows.csv`
+- updated `F:\내 드라이브\EXTRACT-TEST\QS_2026_3\fig_table_lnpdb_classified.csv` when possible
+
+## Work Instructions
+1. Read `fig_table_lnpdb_classified.csv`.
+2. Read `fig_table_inventory.csv`.
+3. Read `excel_block_inventory.csv`.
+4. Match every selected FT item to candidate Excel blocks using caption, `item_id`, `base_id`, sheet name, block preview, `block_type`, and keywords.
+5. Create `excel_mapping.json`.
+6. Create `excel_mapping_rows.csv`.
+7. When possible, update `fig_table_lnpdb_classified.csv` columns:
+   - `excel_item_id`
+   - `matched_blocks`
+   - `matched_block_csv_path`
+   - `matched_sheet`
+   - `matched_sheet_file`
+8. Follow `agent_workspace/OUTPUT_SCHEMA.md` for `excel_mapping.json` and `excel_mapping_rows.csv`.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 04_ft_excel_matcher --paper-folder "F:\내 드라이브\EXTRACT-TEST\QS_2026_3"
+```
+
+## Constraints
+- Do not run `0_mark_down_gen/04_FT-Excel_matcher.py`.
+- Do not import or require `find_api.py`.
+- Do not use Gemini, Vertex, `LLM_API.py`, or `LLM_Batch.py`.
+- Do not hard-code API keys or credentials.
+## Legacy context files
+
+These files are reference-only. Do not execute or import Gemini/API-dependent scripts. Use them only to understand prior deterministic logic, expected output shapes, and naming conventions. Current stage contract and `AGENT_INSTRUCTIONS.md` override legacy behavior.
+
+- `agent_workspace/legacy_context/by_stage/04_ft_excel_matcher/README.md` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/04_FT-Excel_matcher.py` (exists)
+- `agent_workspace/legacy_context/README.md` (context policy)
+- `agent_workspace/legacy_context/LEGACY_CODE_INDEX.md` (stage-by-stage index)
+
+
+codex
+I’ll inspect the task schema and the target folder inputs first, then build the mapping files directly from the CSV inventories without using the prohibited legacy/API paths.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -LiteralPath 'agent_workspace\\tasks\\04_ft_excel_matcher_QS_2026_3.md'" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-Content -LiteralPath 'agent_workspace\\OUTPUT_SCHEMA.md'" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Get-ChildItem -LiteralPath 'F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3' -Force | Select-Object Name,Length,LastWriteTime" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 160ms:
+# External Agent Task: 04_ft_excel_matcher
+
+Target paper folder: `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3`
+
+## Stage Purpose
+Match selected figure/table items to Excel blocks by direct CLI agent judgment without Gemini.
+
+## Required Input Files
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\.manual_select_review_done`
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\fig_table_lnpdb_classified.csv`
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\fig_table_inventory.csv`
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\excel_block_inventory.csv`
+
+## Expected Output Files
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\excel_mapping.json`
+- `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\excel_mapping_rows.csv`
+- updated `F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3\fig_table_lnpdb_classified.csv` when possible
+
+## Work Instructions
+1. Read `fig_table_lnpdb_classified.csv`.
+2. Read `fig_table_inventory.csv`.
+3. Read `excel_block_inventory.csv`.
+4. Match every selected FT item to candidate Excel blocks using caption, `item_id`, `base_id`, sheet name, block preview, `block_type`, and keywords.
+5. Create `excel_mapping.json`.
+6. Create `excel_mapping_rows.csv`.
+7. When possible, update `fig_table_lnpdb_classified.csv` columns:
+   - `excel_item_id`
+   - `matched_blocks`
+   - `matched_block_csv_path`
+   - `matched_sheet`
+   - `matched_sheet_file`
+8. Follow `agent_workspace/OUTPUT_SCHEMA.md` for `excel_mapping.json` and `excel_mapping_rows.csv`.
+
+## Validation Command
+```bash
+python Agent_Task_Runner.py validate --stage 04_ft_excel_matcher --paper-folder "F:\???쒕씪?대툕\EXTRACT-TEST\QS_2026_3"
+```
+
+## Constraints
+- Do not run `0_mark_down_gen/04_FT-Excel_matcher.py`.
+- Do not import or require `find_api.py`.
+- Do not use Gemini, Vertex, `LLM_API.py`, or `LLM_Batch.py`.
+- Do not hard-code API keys or credentials.
+## Legacy context files
+
+These files are reference-only. Do not execute or import Gemini/API-dependent scripts. Use them only to understand prior deterministic logic, expected output shapes, and naming conventions. Current stage contract and `AGENT_INSTRUCTIONS.md` override legacy behavior.
+
+- `agent_workspace/legacy_context/by_stage/04_ft_excel_matcher/README.md` (exists)
+- `agent_workspace/legacy_context/full_copy/0_mark_down_gen/04_FT-Excel_matcher.py` (exists)
+- `agent_workspace/legacy_context/README.md` (context policy)
+- `agent_workspace/legacy_context/LEGACY_CODE_INDEX.md` (stage-by-stage index)
+
+ succeeded in 177ms:
+# Output Schema
+
+This file records expected artifact shapes for validation. Existing scripts may include extra columns or keys; agents should tolerate extra fields but require the minimum fields below when the artifact exists.
+
+## `fig_table_inventory.csv`
+
+Minimum expectations:
+
+- CSV parses with pandas or a standard CSV reader.
+- Row count is greater than zero for papers with figures/tables.
+- One identifier column exists: `item_id`, `pdf_item_id`, or `item`.
+- Useful optional columns: `caption`, `label`, `type`, `page`, `source_file`.
+
+## `fig_table_lnpdb_classified.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- It preserves an FT identifier column.
+- It contains some relevance/classification signal.
+- After manual review, it should contain `manual_select`.
+
+Useful optional columns:
+
+- `is_lnpdb`
+- `lnpdb_class`
+- `reason`
+- `manual_select`
+- `excel_item_id`
+- `matched_blocks`
+- `matched_block_csv_path`
+
+## `.manual_select_review_done`
+
+Minimum expectations:
+
+- File exists in the paper folder.
+- Its content may be empty; existence is the gate for active agent stages.
+
+## `total_figure_mapping.json`
+
+Expected shape:
+
+```json
+{
+  "source_folder_name": {
+    "figure 1": {
+      "source_image": "relative/or/absolute/path.png",
+      "source_pdf": "relative/or/absolute/source.pdf",
+      "source_page": 3,
+      "source_quality": "ok",
+      "fallback_render": "pdf_page_renders/source_page_003.png",
+      "selected_source_for_paneling": "relative/or/absolute/path.png",
+      "manual_required": false,
+      "confidence": "high",
+      "reason": "short rationale",
+      "panels": {
+        "A": "relative/or/absolute/panel.png"
+      }
+    }
+  }
+}
+```
+
+Validation rules:
+
+- JSON parses.
+- Top-level value is an object.
+- At least one nested mapping exists when selected figure/table rows exist.
+- Any local path fields found in values should resolve to existing files or be logged as missing.
+- `source_image` is a primary candidate, not guaranteed ground truth.
+- Optional fallback fields are allowed for Marker crop failures:
+  - `source_pdf`
+  - `source_page`
+  - `source_quality`
+  - `fallback_render`
+  - `selected_source_for_paneling`
+  - `manual_required`
+  - `confidence`
+  - `reason`
+- Allowed `source_quality` values:
+  - `ok`
+  - `suspect_crop`
+  - `missing_image`
+  - `caption_image_mismatch`
+  - `pdf_page_render_fallback`
+  - `manual_required`
+- If `fallback_render` or `selected_source_for_paneling` is present and is a local path, it should resolve under the paper folder or as an absolute file path.
+- If boundaries or source identity remain uncertain, set `manual_required` to `true` and do not invent panel crops.
+
+## `excel_block_inventory.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Each row describes one block or table candidate.
+- Required useful columns when generated by current code:
+  - `excel_file`
+  - `excel_sheet`
+  - `block_id`
+  - `group_id`
+  - `element_id`
+  - `block_csv_path`
+  - `block_meta_path`
+  - `block_type`
+
+Validation rules:
+
+- Non-empty `block_csv_path` resolves under the paper folder.
+- Block CSV files parse as CSV.
+- `Exp_Excel_Blocks/` exists when rows exist.
+
+## `three_core_result_all.json`
+
+Minimum expectations:
+
+- JSON parses.
+- Top-level value is a list.
+- Rows include `excel_file`, `excel_sheet`, and `result` when produced by current code.
+
+## `separated_panels_gemini/`
+
+Minimum expectations:
+
+- Directory exists when panel separation is performed.
+- Contains image files or subfolders with image files.
+- Recorded panel paths in mapping JSON exist.
+
+## `excel_mapping.json`
+
+Expected shape:
+
+```json
+{
+  "figure 1": [
+    {
+      "pdf_item_id": "figure 1",
+      "excel_item_id": "table or block id",
+      "excel_file": "source.xlsx",
+      "excel_sheet": "Sheet1",
+      "block_id": "block id",
+      "block_csv_path": "Exp_Excel_Blocks/source/Sheet1/block.csv",
+      "reason": "short rationale"
+    }
+  ]
+}
+```
+
+Validation rules:
+
+- JSON parses.
+- Top-level value is an object.
+- Non-empty `block_csv_path` values resolve under the paper folder.
+
+## `excel_mapping_rows.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Useful columns:
+  - `pdf_item_id`
+  - `excel_item_id`
+  - `excel_file`
+  - `excel_sheet`
+  - `block_id`
+  - `block_csv_path`
+  - `reason`
+
+## `compound_inventory_standardized.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- One row per compound/name candidate.
+- Useful columns:
+  - `compound_id`
+  - `Name`
+  - `alias`
+  - `source_type`
+  - `source_path`
+  - `Item_ID`
+  - `evidence_text`
+  - `manual_required`
+  - `reason`
+
+## `smiles_resolved.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Columns include at least one name identifier: `Name` or `compound_id`.
+- Columns include at least one SMILES field: `SMILES` or `resolved_smiles`.
+- Unresolved compounds should keep a row with blank SMILES and `manual_required=true`.
+- Active workflow SMILES may only come from exact LNPDB/reference name or alias matches, curated/local known mappings, text/name/IUPAC deterministic lookup that does not rely on structure images, or explicitly manual-verified curated files.
+- Non-empty SMILES must not come from DECIMER, MolScribe, `worker_mol.py`, molecule image crops, image structure recognition, `recognition.py`, or `segmentation.py`.
+- Novel pILs should remain blank unless an exact text/reference/manual-curated SMILES entry is present. Use reason `Structure-image-based SMILES extraction is disabled; no exact text/reference SMILES was available.` when appropriate.
+- Current unified extraction outputs do not project SMILES from this file. Stage 06/07 force all formulation/component SMILES output columns blank.
+
+## `unified_extraction.csv`
+
+Expected shape:
+
+- Long-format CSV with one row per figure/table item, formulation/condition context, and experimental metric/value context when reliable mapped Excel/source-data values exist.
+- `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` may be populated only from mapped Excel/source-data blocks with Excel provenance.
+- Graph image digitization, pixel/axis extraction, bar-height estimation, heatmap color estimation, caption-only numeric inference, and hallucinated values are disabled.
+- `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` are compatibility columns and must remain blank in current unified outputs. Preserve component name and molar-ratio columns.
+- It replaces separate experimental condition, formulation, and Excel-backed value extraction outputs for the active workflow.
+
+Required columns:
+
+- `Paper_ID`
+- `Item_ID`
+- `visual_type`
+- `source_type`
+- `source_image`
+- `source_pdf`
+- `source_page`
+- `selected_source_for_paneling`
+- `excel_file`
+- `excel_sheet`
+- `block_id`
+- `block_csv_path`
+- `Aqueous_buffer`
+- `Dialysis_buffer`
+- `Mixing_method`
+- `Model`
+- `Model_type`
+- `Model_target`
+- `Route_of_administration`
+- `Cargo`
+- `Cargo_type`
+- `Dose_ug_nucleicacid`
+- `Experiment_method`
+- `Experiment_batching`
+- `formulation_id`
+- `Formulation_Name`
+- `IL_name`
+- `IL_SMILES`
+- `IL_molarratio`
+- `HL_name`
+- `HL_SMILES`
+- `HL_molarratio`
+- `CHL_name`
+- `CHL_SMILES`
+- `CHL_molarratio`
+- `PEG_name`
+- `PEG_SMILES`
+- `PEG_molarratio`
+- `Fifth_component_name`
+- `Fifth_component_SMILES`
+- `Fifth_component_molarratio`
+- `IL_to_nucleicacid_massratio`
+- `condition_1_name`
+- `condition_1_value`
+- `condition_2_name`
+- `condition_2_value`
+- `condition_3_name`
+- `condition_3_value`
+- `condition_4_name`
+- `condition_4_value`
+- `metric_type`
+- `original_values`
+- `aggregated_value`
+- `unit`
+- `replicate_type`
+- `evidence_text`
+- `evidence_image`
+- `evidence_excel`
+- `confidence`
+- `manual_required`
+- `reason`
+
+Validation rules:
+
+- CSV parses.
+- Required columns exist.
+- `Item_ID` is non-empty for every row.
+- `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` may be populated only when the value comes from a reliable mapped Excel/source-data block.
+- Populated value rows must include Excel/source-data provenance in `evidence_excel`, `excel_file`, `excel_sheet`, or `block_csv_path`.
+- `original_values` and `aggregated_value` should be numeric-like or pipe-separated numeric-like values unless a future categorical metric is explicitly enabled.
+- Do not populate value columns from graph images, pixel/axis extraction, visual estimation, heatmap colors, captions alone, or hallucinated values.
+- `IL_SMILES`, `HL_SMILES`, `CHL_SMILES`, `PEG_SMILES`, and `Fifth_component_SMILES` must be blank. Blank SMILES are not a manual-review issue in the current workflow.
+- Condition fields must be concise scalar LNPDB-style values. Prose belongs only in `evidence_text`.
+- Multiple panel/model/route/dose/method contexts must not be merged into one scalar field; split rows by panel/item/block context or leave uncertain fields blank with `manual_required=true`.
+- Missing condition/formulation fields should remain blank with `manual_required=true` where review is needed.
+- Optional LNPDB reference examples and human-curated guide definitions may guide normalization, but output fields should still contain concise scalar values supported by paper evidence.
+- Prefer column-specific existing LNPDB examples over generic examples. `Experiment_method` may include assay+readout specificity, e.g. `flow_cytometry_CD8_T_cells`, when needed to preserve panel identity.
+- `confidence` and `reason` should explain nontrivial extraction decisions.
+
+## `unified_extraction_review_flags.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Useful columns:
+  - `Paper_ID`
+  - `Item_ID`
+  - `block_id`
+  - `field`
+  - `issue`
+  - `severity`
+  - `reason`
+- Rows identify manual review needs such as missing metadata, formulation/value mismatch, ambiguous Excel value mapping, or missing evidence. Blank output SMILES are expected and are not review flags by themselves.
+
+## `unified_extraction_final.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Preserves `unified_extraction.csv` rows after final normalization/review.
+- Keeps provenance columns needed to audit source evidence.
+
+## `unified_extraction_lnpdb_like.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Contains LNPDB-facing value rows derived from `unified_extraction_final.csv`.
+- Contains deterministic stable `row_id` values such as `<Paper_ID>_R000001`.
+- Does not repeat large source evidence text fields; evidence is normalized into the source evidence and figure evidence map tables.
+- Does not invent missing scientific values during projection.
+
+## `unified_extraction_source_evidence.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- One row per unique evidence phrase/source span/source object.
+- Contains deterministic `evidence_id` values such as `<Paper_ID>_E000001`.
+- Contains compact `evidence_summary`, pipe-separated `evidence_sentence_ids`, and optional `evidence_sentence_texts`.
+- `evidence_sentence_ids` references `markdown_sentence_index/markdown_sentence_index_all.csv` using global IDs such as `QS_2026:S000145`.
+- `evidence_text_exact` may be blank or compact when sentence IDs are available; it is retained for backward compatibility and fallback review only.
+- Includes source provenance fields such as `source_pdf`, `source_page`, `source_image`, `evidence_excel`, `excel_file`, `excel_sheet`, `block_id`, and `block_csv_path`.
+- Includes placeholder PDF/image bbox and character offset columns for later UI highlighting; these may be blank.
+
+## `markdown_sentence_index/`
+
+Minimum expectations:
+
+- Contains numbered sentence indexes generated from source markdown files, excluding markdown table regions and generated/output folders.
+- Per-source outputs: `<source_md_id>.sentences.md`, `<source_md_id>.sentences.csv`, and `<source_md_id>.sentences.json`.
+- Combined outputs: `markdown_sentence_index_all.csv` and `markdown_sentence_index_manifest.json`.
+- Sentence IDs are deterministic per source markdown file: `[S000001]`, `[S000002]`, etc.
+- `global_sentence_id` values use `<source_md_id>:<sentence_id>`, for example `QS_2026:S000145`.
+- Table rows such as pipe tables and table separator rows are excluded by design.
+
+## `paper_source_context.json`
+
+Minimum expectations:
+
+- Describes the selected `paper_folder` as one paper-level document package with one `Paper_ID`.
+- Lists source documents discovered under the folder with `source_doc_id`, `source_document_type`, `source_md_path`, optional `source_pdf_path`, `source_md_id`, `title`, `doi`, and `priority`.
+- `source_document_type` values include `main_article`, `supplementary_information`, `source_data`, `reporting_summary`, or `unknown`.
+- Global methods/protocol evidence may cross source documents within this same paper package, but evidence must not be merged across different paper folders.
+
+## `unified_extraction_figure_evidence_map.csv`
+
+Minimum expectations:
+
+- CSV parses.
+- Figure/item-level bridge table connecting each `evidence_id` to the LNPDB scientific condition, formulation, and Excel-backed metric/value columns it supports.
+- Required fields include `Paper_ID`, `Item_ID`, `evidence_id`, `supported_columns`, `supported_column_count`, `supported_row_ids`, `supported_formulation_ids`, `support_scope`, optional `evidence_sentence_ids`, optional `evidence_summary`, `confidence`, `manual_required`, and `reason`.
+- `supported_columns` contains pipe-separated LNPDB scientific condition/formulation columns and Excel-backed value columns only. Semicolon-separated legacy files remain readable. It must not contain administrative, provenance, or reason columns.
+- Excel value evidence may support `metric_type`, `original_values`, `aggregated_value`, `unit`, and `replicate_type` when `evidence_source_type` is `excel_block_value` or `source_data_excel`.
+- At least one evidence map row should exist for each `Item_ID` with non-empty scientific condition/formulation/value columns, unless the item is a manual-review placeholder.
+- This is intentionally not a per-cell evidence table. UI lookup can use: `row_id + Item_ID + column_name -> figure_evidence_map rows whose supported_columns include column_name -> evidence_id -> source_evidence evidence_sentence_ids -> markdown_sentence_index`.
+- `methods_global` evidence may support rows whose figures came from a different source document in the same paper package. For example, main-article LNP preparation sentences can support supplementary LNP rows with populated `Aqueous_buffer`, `Dialysis_buffer`, and `Mixing_method`.
+- Global LNP preparation evidence should not be attached to PBS-only, untreated, free drug, or free mRNA rows unless the row is explicitly an LNP/pLNP formulation row.
+
+ succeeded in 191ms:
+
+Name                           Length   LastWriteTime         
+----                           ------   -------------         
+41565_2025_2102_MOESM1_ESM              2026-06-29 오전 1:43:43 
+Exp_Excel                               2026-06-29 오전 1:43:43 
+QS_2026                                 2026-06-29 오전 1:43:43 
+Exp_Excel_Blocks                        2026-06-29 오후 7:02:52 
+.manual_select_review_done     262      2026-06-28 오후 11:56:26
+41565_2025_2102_MOESM1_ESM.pdf 21789001 2026-05-23 오전 11:40:12
+fig_table_inventory.csv        48695    2026-05-30 오후 12:28:04
+fig_table_lnpdb_classified.csv 60452    2026-06-29 오후 3:20:17 
+QS_2026.pdf                    6293942  2026-05-23 오전 11:34:54
+paper_source_context.json      1207     2026-06-29 오후 5:34:14 
+total_figure_mapping.json      54123    2026-06-29 오후 7:01:33 
+excel_block_inventory.csv      14442    2026-06-29 오후 7:02:59 
+three_core_result_all.json     61891    2026-06-29 오후 7:02:59 
+
+
+
+codex
+The schema for this stage is simple: `excel_mapping.json` is an object keyed by FT item, and row entries need the Excel file, sheet, block id, block CSV path, and a rationale. I’m checking the selected rows and block previews now so the mapping is evidence-backed rather than just filename matching.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import pandas as pd
+from pathlib import Path
+p=Path(r'F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3')
+for name in ['fig_table_lnpdb_classified.csv','fig_table_inventory.csv','excel_block_inventory.csv']:
+    df=pd.read_csv(p/name)
+    print('\\n',name)
+    print('rows',len(df))
+    print('columns',list(df.columns))
+    print(df.head(3).to_string())
+'@ | python -" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import pandas as pd
+from pathlib import Path
+p=Path(r'F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3')
+df=pd.read_csv(p/'fig_table_lnpdb_classified.csv')
+print('manual_select values:', df['manual_select'].value_counts(dropna=False).to_string() if 'manual_select' in df.columns else 'missing')
+sel=df[df.get('manual_select', pd.Series(dtype=str)).astype(str).str.lower().isin(['true','1','yes','y','selected'])]
+print('selected rows',len(sel))
+print(sel.to_string(max_colwidth=180))
+'@ | python -" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import pandas as pd
+from pathlib import Path
+p=Path(r'F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3')
+df=pd.read_csv(p/'excel_block_inventory.csv')
+cols=[c for c in ['excel_file','excel_sheet','block_id','group_id','element_id','block_csv_path','block_type','n_rows','n_cols','preview','text_preview'] if c in df.columns]
+print(df[cols].to_string(max_rows=80,max_colwidth=160))
+'@ | python -" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+2026-06-29T10:03:49.215655Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 0.6 seconds
+Output:
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'F:\\? ????\\EXTRACT-TEST\\QS_2026_3\\excel_block_inventory.csv'
+
+2026-06-29T10:03:49.215716Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 0.6 seconds
+Output:
+Traceback (most recent call last):
+  File "<stdin>", line 5, in <module>
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'F:\\? ????\\EXTRACT-TEST\\QS_2026_3\\fig_table_lnpdb_classified.csv'
+
+2026-06-29T10:03:49.215748Z ERROR codex_core::tools::router: error=Exit code: 1
+Wall time: 0.6 seconds
+Output:
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'F:\\? ????\\EXTRACT-TEST\\QS_2026_3\\fig_table_lnpdb_classified.csv'
+
+ exited 1 in 608ms:
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'F:\\? ????\\EXTRACT-TEST\\QS_2026_3\\excel_block_inventory.csv'
+
+ exited 1 in 613ms:
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'F:\\? ????\\EXTRACT-TEST\\QS_2026_3\\fig_table_lnpdb_classified.csv'
+
+ exited 1 in 638ms:
+Traceback (most recent call last):
+  File "<stdin>", line 5, in <module>
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1026, in read_csv
+    return _read(filepath_or_buffer, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 620, in _read
+    parser = TextFileReader(filepath_or_buffer, **kwds)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1620, in __init__
+    self._engine = self._make_engine(f, self.engine)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\parsers\readers.py", line 1880, in _make_engine
+    self.handles = get_handle(
+                   ^^^^^^^^^^^
+  File "C:\Users\kogun\anaconda3\envs\LNPDB_extend\Lib\site-packages\pandas\io\common.py", line 873, in get_handle
+    handle = open(
+             ^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'F:\\? ????\\EXTRACT-TEST\\QS_2026_3\\fig_table_lnpdb_classified.csv'
+
+codex
+PowerShell is mangling the Korean path when it is embedded inside the Python heredoc, so I’m switching to filesystem discovery from `F:\*\EXTRACT-TEST\QS_2026_3`. That avoids relying on the console encoding for the folder name.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import pandas as pd
+from pathlib import Path
+p=list(Path('F:/').glob('*/EXTRACT-TEST/QS_2026_3'))[0]
+df=pd.read_csv(p/'fig_table_lnpdb_classified.csv')
+print('manual_select values:', df['manual_select'].value_counts(dropna=False).to_string() if 'manual_select' in df.columns else 'missing')
+sel=df[df.get('manual_select', pd.Series(dtype=str)).astype(str).str.lower().isin(['true','1','yes','y','selected'])]
+print('selected rows',len(sel))
+print(sel.to_string(max_colwidth=180))
+'@ | python -" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import pandas as pd
+from pathlib import Path
+matches=list(Path('F:/').glob('*/EXTRACT-TEST/QS_2026_3'))
+print(matches)
+p=matches[0]
+for name in ['fig_table_lnpdb_classified.csv','fig_table_inventory.csv','excel_block_inventory.csv']:
+    df=pd.read_csv(p/name)
+    print('\\n',name)
+    print('rows',len(df))
+    print('columns',list(df.columns))
+    print(df.head(3).to_string())
+'@ | python -" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import pandas as pd
+from pathlib import Path
+p=list(Path('F:/').glob('*/EXTRACT-TEST/QS_2026_3'))[0]
+df=pd.read_csv(p/'excel_block_inventory.csv')
+cols=[c for c in ['excel_file','excel_sheet','block_id','group_id','element_id','block_csv_path','block_type','n_rows','n_cols','preview','text_preview'] if c in df.columns]
+print(df[cols].to_string(max_rows=120,max_colwidth=180))
+'@ | python -" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 714ms:
+                                   excel_file  excel_sheet    block_id                                            group_id                                            element_id                                                          block_csv_path       block_type
+0   Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx    Figure 2B  block_0001    41565_2025_2102_MOESM3_ESM__Figure 2B__group_001    41565_2025_2102_MOESM3_ESM__Figure 2B__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2B/block_0001.csv  title_and_table
+1   Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx    Figure 2C  block_0002    41565_2025_2102_MOESM3_ESM__Figure 2C__group_001    41565_2025_2102_MOESM3_ESM__Figure 2C__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2C/block_0002.csv  title_and_table
+2   Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx  Figure 3B,C  block_0003  41565_2025_2102_MOESM4_ESM__Figure 3B,C__group_001  41565_2025_2102_MOESM4_ESM__Figure 3B,C__element_001  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0003.csv  title_and_table
+3   Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx  Figure 3B,C  block_0004  41565_2025_2102_MOESM4_ESM__Figure 3B,C__group_002  41565_2025_2102_MOESM4_ESM__Figure 3B,C__element_002  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0004.csv  title_and_table
+4   Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx    Figure 3E  block_0005    41565_2025_2102_MOESM4_ESM__Figure 3E__group_001    41565_2025_2102_MOESM4_ESM__Figure 3E__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3E/block_0005.csv  title_and_table
+5   Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx    Figure 3G  block_0006    41565_2025_2102_MOESM4_ESM__Figure 3G__group_001    41565_2025_2102_MOESM4_ESM__Figure 3G__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3G/block_0006.csv  title_and_table
+6   Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx  Figure 3I-K  block_0007  41565_2025_2102_MOESM4_ESM__Figure 3I-K__group_001  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_001  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0007.csv  title_and_table
+7   Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx  Figure 3I-K  block_0008  41565_2025_2102_MOESM4_ESM__Figure 3I-K__group_002  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_002  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0008.csv  title_and_table
+8   Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx  Figure 3I-K  block_0009  41565_2025_2102_MOESM4_ESM__Figure 3I-K__group_003  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_003  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0009.csv  title_and_table
+9   Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx    Figure 4B  block_0010    41565_2025_2102_MOESM5_ESM__Figure 4B__group_001    41565_2025_2102_MOESM5_ESM__Figure 4B__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4B/block_0010.csv  title_and_table
+10  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx    Figure 4B  block_0011    41565_2025_2102_MOESM5_ESM__Figure 4B__group_002    41565_2025_2102_MOESM5_ESM__Figure 4B__element_002    Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4B/block_0011.csv  title_and_table
+11  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx    Figure 4B  block_0012    41565_2025_2102_MOESM5_ESM__Figure 4B__group_003    41565_2025_2102_MOESM5_ESM__Figure 4B__element_003    Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4B/block_0012.csv  title_and_table
+12  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx    Figure 4B  block_0013    41565_2025_2102_MOESM5_ESM__Figure 4B__group_004    41565_2025_2102_MOESM5_ESM__Figure 4B__element_004    Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4B/block_0013.csv  title_and_table
+13  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx    Figure 4C  block_0014    41565_2025_2102_MOESM5_ESM__Figure 4C__group_001    41565_2025_2102_MOESM5_ESM__Figure 4C__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4C/block_0014.csv  title_and_table
+14  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx    Figure 4D  block_0015    41565_2025_2102_MOESM5_ESM__Figure 4D__group_001    41565_2025_2102_MOESM5_ESM__Figure 4D__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4D/block_0015.csv  title_and_table
+15  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx  Figure 4G-M  block_0016  41565_2025_2102_MOESM5_ESM__Figure 4G-M__group_001  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_001  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0016.csv  title_and_table
+16  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx  Figure 4G-M  block_0017  41565_2025_2102_MOESM5_ESM__Figure 4G-M__group_002  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_002  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0017.csv  title_and_table
+17  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx  Figure 4G-M  block_0018  41565_2025_2102_MOESM5_ESM__Figure 4G-M__group_003  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_003  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0018.csv  title_and_table
+18  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx  Figure 4G-M  block_0019  41565_2025_2102_MOESM5_ESM__Figure 4G-M__group_004  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_004  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0019.csv  title_and_table
+19  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx  Figure 4G-M  block_0020  41565_2025_2102_MOESM5_ESM__Figure 4G-M__group_005  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_005  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0020.csv  title_and_table
+20  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx  Figure 4G-M  block_0021  41565_2025_2102_MOESM5_ESM__Figure 4G-M__group_006  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_006  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0021.csv  title_and_table
+21  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx  Figure 4G-M  block_0022  41565_2025_2102_MOESM5_ESM__Figure 4G-M__group_007  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_007  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0022.csv  title_and_table
+22  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5B-E  block_0023  41565_2025_2102_MOESM6_ESM__Figure 5B-E__group_001  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_001  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0023.csv  title_and_table
+23  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5B-E  block_0024  41565_2025_2102_MOESM6_ESM__Figure 5B-E__group_002  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_002  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0024.csv  title_and_table
+24  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5B-E  block_0025  41565_2025_2102_MOESM6_ESM__Figure 5B-E__group_003  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_003  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0025.csv  title_and_table
+25  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5B-E  block_0026  41565_2025_2102_MOESM6_ESM__Figure 5B-E__group_004  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_004  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0026.csv  title_and_table
+26  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5F,G  block_0027  41565_2025_2102_MOESM6_ESM__Figure 5F,G__group_001  41565_2025_2102_MOESM6_ESM__Figure 5F,G__element_001  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5F_G/block_0027.csv  title_and_table
+27  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5F,G  block_0028  41565_2025_2102_MOESM6_ESM__Figure 5F,G__group_002  41565_2025_2102_MOESM6_ESM__Figure 5F,G__element_002  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5F_G/block_0028.csv  title_and_table
+28  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx    Figure 5I  block_0029    41565_2025_2102_MOESM6_ESM__Figure 5I__group_001    41565_2025_2102_MOESM6_ESM__Figure 5I__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5I/block_0029.csv  title_and_table
+29  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5J-O  block_0030  41565_2025_2102_MOESM6_ESM__Figure 5J-O__group_001  41565_2025_2102_MOESM6_ESM__Figure 5J-O__element_001  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5J-O/block_0030.csv      table_title
+30  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5J-O  block_0031  41565_2025_2102_MOESM6_ESM__Figure 5J-O__group_002  41565_2025_2102_MOESM6_ESM__Figure 5J-O__element_002  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5J-O/block_0031.csv      table_title
+31  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5J-O  block_0032  41565_2025_2102_MOESM6_ESM__Figure 5J-O__group_003  41565_2025_2102_MOESM6_ESM__Figure 5J-O__element_003  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5J-O/block_0032.csv  title_and_table
+32  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5J-O  block_0033  41565_2025_2102_MOESM6_ESM__Figure 5J-O__group_004  41565_2025_2102_MOESM6_ESM__Figure 5J-O__element_004  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5J-O/block_0033.csv  title_and_table
+33  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5J-O  block_0034  41565_2025_2102_MOESM6_ESM__Figure 5J-O__group_005  41565_2025_2102_MOESM6_ESM__Figure 5J-O__element_005  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5J-O/block_0034.csv  title_and_table
+34  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5J-O  block_0035  41565_2025_2102_MOESM6_ESM__Figure 5J-O__group_006  41565_2025_2102_MOESM6_ESM__Figure 5J-O__element_006  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5J-O/block_0035.csv  title_and_table
+35  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5J-O  block_0036  41565_2025_2102_MOESM6_ESM__Figure 5J-O__group_007  41565_2025_2102_MOESM6_ESM__Figure 5J-O__element_007  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5J-O/block_0036.csv  title_and_table
+36  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx  Figure 5J-O  block_0037  41565_2025_2102_MOESM6_ESM__Figure 5J-O__group_008  41565_2025_2102_MOESM6_ESM__Figure 5J-O__element_008  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5J-O/block_0037.csv  title_and_table
+37  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx    Figure 6B  block_0038    41565_2025_2102_MOESM7_ESM__Figure 6B__group_001    41565_2025_2102_MOESM7_ESM__Figure 6B__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6B/block_0038.csv  title_and_table
+38  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx    Figure 6C  block_0039    41565_2025_2102_MOESM7_ESM__Figure 6C__group_001    41565_2025_2102_MOESM7_ESM__Figure 6C__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6C/block_0039.csv  title_and_table
+39  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx    Figure 6E  block_0040    41565_2025_2102_MOESM7_ESM__Figure 6E__group_001    41565_2025_2102_MOESM7_ESM__Figure 6E__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6E/block_0040.csv  title_and_table
+40  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx    Figure 6H  block_0041    41565_2025_2102_MOESM7_ESM__Figure 6H__group_001    41565_2025_2102_MOESM7_ESM__Figure 6H__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6H/block_0041.csv  title_and_table
+41  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx    Figure 6J  block_0042    41565_2025_2102_MOESM7_ESM__Figure 6J__group_001    41565_2025_2102_MOESM7_ESM__Figure 6J__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6J/block_0042.csv  title_and_table
+42  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx  Figure 6K,L  block_0043  41565_2025_2102_MOESM7_ESM__Figure 6K,L__group_001  41565_2025_2102_MOESM7_ESM__Figure 6K,L__element_001  Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6K_L/block_0043.csv  title_and_table
+43  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx  Figure 6K,L  block_0044  41565_2025_2102_MOESM7_ESM__Figure 6K,L__group_002  41565_2025_2102_MOESM7_ESM__Figure 6K,L__element_002  Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6K_L/block_0044.csv  title_and_table
+
+ succeeded in 731ms:
+manual_select values: manual_select
+no     191
+yes     71
+selected rows 71
+                      item_id item_type                  base_id  is_supplementary  visual_type need_for_lnpdb priority  estimated_data_count                                                                                                                                                                               reason confidence                                         excel_item_id matched_blocks                                                  matched_block_csv_path manual_select matched_sheet                         matched_sheet_file manual_required excel_match_confidence                                                                                                                                                      excel_match_reason
+0                   figure 2b    figure                 figure 2             False      heatmap            yes     high                    21               The heatmap shows luminescence intensities of MC38 cells after treatment with pLNPs formulated from 21 distinct pILs, providing comparative in vitro performance data.       high    41565_2025_2102_MOESM3_ESM__Figure 2B__element_001     block_0001    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2B/block_0001.csv           yes     Figure 2B  Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx           False                   high             Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 2B; block preview is the pLNP library heatmap matrix with C10/C12/C14 columns
+1                   figure 2c    figure                 figure 2             False  scatterplot            yes     high                     5  This plot shows ex vivo FLuc expression in tumour tissue for specific pLNP formulations (G0-SS-AA-C10/C12/C14 and G0-6C-AA-C12) compared to a control (MC3), providing individua...       high    41565_2025_2102_MOESM3_ESM__Figure 2C__element_001     block_0002    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2C/block_0002.csv           yes     Figure 2C  Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx           False                   high        Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 2C; block preview contains G0-SS-AA-C10/C12/C14, G0-6C-AA-C12, and MC3 FLuc values
+2                   figure 3b    figure                 figure 3             False      barplot            yes     high                     3                              Shows secreted (extracellular) IL-12 levels for specific formulations (MC3, G0-6C-AA-C12, and G0-SS-AA-C12), providing individual LNP performance data.       high  41565_2025_2102_MOESM4_ESM__Figure 3B,C__element_001     block_0003  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0003.csv           yes   Figure 3B,C  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high                      Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3B,C; block preview starts with Fig. 3B and IL-12 formulation groups
+3                   figure 3c    figure                 figure 3             False      barplot            yes     high                     3                                         Shows intracellular IL-12 levels for specific formulations (MC3, G0-6C-AA-C12, and G0-SS-AA-C12), providing individual LNP performance data.       high  41565_2025_2102_MOESM4_ESM__Figure 3B,C__element_002     block_0004  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0004.csv           yes   Figure 3B,C  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high                      Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3B,C; block preview starts with Fig. 3C and IL-12 formulation groups
+4                   figure 3e    figure                 figure 3             False      barplot            yes     high                     3                                                                                              Quantifies the mean fluorescence intensity from the microscopy in 3d for specific LNPs.       high    41565_2025_2102_MOESM4_ESM__Figure 3E__element_001     block_0005    Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3E/block_0005.csv           yes     Figure 3E  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high                 Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3E; block preview contains MC3, G0-6C-AA-C12, and G0-SS-AA-C12 MFI values
+6                   figure 3i    figure                 figure 3             False      barplot            yes     high                     3                                                                    Quantifies CD69 expression on T cells for specific formulations (PBS, G0-SS-AA-C12 FLuc, and G0-SS-AA-C12 IL-12).       high  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_001     block_0007  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0007.csv           yes   Figure 3I-K  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high                      Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3I-K; block preview starts with Fig. 3I and T-cell activation groups
+7                   figure 3j    figure                 figure 3             False      barplot            yes     high                     3                                                                    Quantifies CD25 expression on T cells for specific formulations (PBS, G0-SS-AA-C12 FLuc, and G0-SS-AA-C12 IL-12).       high  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_002     block_0008  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0008.csv           yes   Figure 3I-K  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high                      Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3I-K; block preview starts with Fig. 3J and T-cell activation groups
+8                   figure 3k    figure                 figure 3             False      barplot            yes     high                     3                                                                    Quantifies PD-1 expression on T cells for specific formulations (PBS, G0-SS-AA-C12 FLuc, and G0-SS-AA-C12 IL-12).       high  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_003     block_0009  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0009.csv           yes   Figure 3I-K  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high                      Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3I-K; block preview starts with Fig. 3K and T-cell activation groups
+12                  figure 4g    figure                 figure 4             False      barplot            yes     high                     4                                                                                                      Statistical analysis of spleen CD8+ T cells for four specific treatment groups.       high  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_001     block_0016  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0016.csv           yes   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4G
+13                  figure 4h    figure                 figure 4             False      barplot            yes     high                     4                                                                                                      Statistical analysis of spleen CD4+ T cells for four specific treatment groups.       high  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_002     block_0017  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0017.csv           yes   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4H
+14                  figure 4i    figure                 figure 4             False      barplot            yes     high                     4                                                                                                Quantification of splenic effector memory CD8+ T cells for specific treatment groups.       high  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_003     block_0018  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0018.csv           yes   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4I
+15                  figure 4j    figure                 figure 4             False      barplot            yes     high                     4                                                                                                Quantification of splenic effector memory CD4+ T cells for specific treatment groups.       high  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_004     block_0019  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0019.csv           yes   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4J
+16                  figure 4k    figure                 figure 4             False      barplot            yes     high                     4                                                                                                 Quantification of splenic central memory CD8+ T cells for specific treatment groups.       high  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_005     block_0020  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0020.csv           yes   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4K
+17                  figure 4l    figure                 figure 4             False      barplot            yes     high                     4                                                                                                 Quantification of splenic central memory CD4+ T cells for specific treatment groups.       high  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_006     block_0021  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0021.csv           yes   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4L
+18                  figure 4m    figure                 figure 4             False      barplot            yes     high                     4                                                                                                          Quantification of splenic regulatory T cells for specific treatment groups.       high  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_007     block_0022  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0022.csv           yes   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4M
+19                  figure 5b    figure                 figure 5             False      barplot            yes     high                     4                                                                                                    Quantification of tumour-infiltrating CD8+ T cells for specific treatment groups.       high  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_001     block_0023  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0023.csv           yes   Figure 5B-E  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5B-E; block preview starts with Fig. 5B
+20                  figure 5c    figure                 figure 5             False      barplot            yes     high                     4                                                                                                    Quantification of tumour-infiltrating CD4+ T cells for specific treatment groups.       high  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_002     block_0024  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0024.csv           yes   Figure 5B-E  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5B-E; block preview starts with Fig. 5C
+21                  figure 5d    figure                 figure 5             False      barplot            yes     high                     4                                                                                         Quantification of PD-1 expression on infiltrated CD8+ T cells for specific treatment groups.       high  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_003     block_0025  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0025.csv           yes   Figure 5B-E  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5B-E; block preview starts with Fig. 5D
+22                  figure 5e    figure                 figure 5             False      barplot            yes     high                     4                                                                                         Quantification of PD-1 expression on infiltrated CD4+ T cells for specific treatment groups.       high  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_004     block_0026  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0026.csv           yes   Figure 5B-E  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high                                                   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5B-E; block preview starts with Fig. 5E
+23                  figure 5f    figure                 figure 5             False      barplot            yes     high                     4                                                                                                               Intratumoural TNF-alpha cytokine levels for specific treatment groups.       high  41565_2025_2102_MOESM6_ESM__Figure 5F,G__element_001     block_0027  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5F_G/block_0027.csv           yes   Figure 5F,G  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high                     Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5F,G; block preview starts with Fig. 5F and cytokine treatment groups
+24                  figure 5g    figure                 figure 5             False      barplot            yes     high                     4                                                                                                               Intratumoural IFN-gamma cytokine levels for specific treatment groups.       high  41565_2025_2102_MOESM6_ESM__Figure 5F,G__element_002     block_0028  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5F_G/block_0028.csv           yes   Figure 5F,G  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high                     Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5F,G; block preview starts with Fig. 5G and cytokine treatment groups
+25                  figure 5i    figure                 figure 5             False      barplot            yes     high                     2                                                                                          Fold change of IFN-gamma gene expression for two specific LNP formulations relative to PBS.       high    41565_2025_2102_MOESM6_ESM__Figure 5I__element_001     block_0029    Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5I/block_0029.csv           yes     Figure 5I  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high   Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5I; block preview contains G0-SS-AA-C12 IL-12 and G0-6C-AA-C12 IL-12 fold-change values
+26                  figure 6b    figure                 figure 6             False     lineplot            yes     high                     2                                                                                                      Tumour growth curves for specific experimental groups in the rechallenge study.       high    41565_2025_2102_MOESM7_ESM__Figure 6B__element_001     block_0038    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6B/block_0038.csv           yes     Figure 6B  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 6B; block preview contains rechallenge tumor-volume curves by control and treated groups
+27                  figure 6c    figure                 figure 6             False     lineplot            yes     high                     2                                                                                                               Individual spider plots for the rechallenge study for specific groups.       high    41565_2025_2102_MOESM7_ESM__Figure 6C__element_001     block_0039    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6C/block_0039.csv           yes     Figure 6C  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx           False                   high                     Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 6C; block preview contains rechallenge individual tumor-volume series
+28                  figure 6d    figure                 figure 6             False     lineplot            yes     high                     2                                                                                                                       Survival curves for the rechallenge study for specific groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched  No exact Excel block match: selected item is Figure 6D survival curves, but inventory has Figure 6B, 6C, 6E, 6H, 6J, and 6K,L; Figure 6E is body weight, not survival.
+31                  figure 6k    figure                 figure 6             False      barplot            yes     high                     4                                                                                       Quantification of CD8+ T cells in the contralateral tumour for four specific treatment groups.       high  41565_2025_2102_MOESM7_ESM__Figure 6K,L__element_001     block_0043  Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6K_L/block_0043.csv           yes   Figure 6K,L  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx           False                   high          Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 6K,L; block preview starts with Fig. 6K and contralateral tumor treatment groups
+32                  figure 6l    figure                 figure 6             False      barplot            yes     high                     4                                                                                       Quantification of CD4+ T cells in the contralateral tumour for four specific treatment groups.       high  41565_2025_2102_MOESM7_ESM__Figure 6K,L__element_002     block_0044  Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6K_L/block_0044.csv           yes   Figure 6K,L  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx           False                   high          Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 6K,L; block preview starts with Fig. 6L and contralateral tumor treatment groups
+35    supplementary figure 47    figure  supplementary figure 47              True      barplot            yes     high                    21                                                                           In vitro screening of 21 pLNPs in HepG2 cells, mapping individual formulation to transfection performance.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+38   supplementary figure 52c    figure  supplementary figure 52              True        table            yes     high                     5                                                                                       Contains essential physiochemical properties (Size, PDI, Zeta, EE, pKa) for G0-SS-AA-C12 pLNP.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+39   supplementary figure 53c    figure  supplementary figure 53              True        table            yes     high                     5                                                                                        Contains essential physiochemical properties (Size, PDI, Zeta, EE, pKa) for G0-6C-AA-C12 LNP.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+40   supplementary figure 56b    figure  supplementary figure 56              True      barplot            yes     high                     3                                                                                           Quantifies flow cytometry-based IL-12 expression MFIs for three specific LNP formulations.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+41   supplementary figure 60c    figure  supplementary figure 60              True      barplot            yes     high                     3                                                                                                       Quantification of TNF-alpha+ CD3+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+42   supplementary figure 60e    figure  supplementary figure 60              True      barplot            yes     high                     3                                                                                                       Quantification of IFN-gamma+ CD3+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+43   supplementary figure 60g    figure  supplementary figure 60              True      barplot            yes     high                     3                                                                                                      Quantification of granzyme B+ CD3+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+44   supplementary figure 61b    figure  supplementary figure 61              True      barplot            yes     high                     3                                                                                                       Quantification of TNF-alpha+ CD4+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+45   supplementary figure 61d    figure  supplementary figure 61              True      barplot            yes     high                     3                                                                                                       Quantification of IFN-gamma+ CD4+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+46   supplementary figure 61f    figure  supplementary figure 61              True      barplot            yes     high                     3                                                                                                      Quantification of granzyme B+ CD4+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+47   supplementary figure 62b    figure  supplementary figure 62              True      barplot            yes     high                     3                                                                                                       Quantification of TNF-alpha+ CD8+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+48   supplementary figure 62d    figure  supplementary figure 62              True      barplot            yes     high                     3                                                                                                       Quantification of IFN-gamma+ CD8+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+49   supplementary figure 62f    figure  supplementary figure 62              True      barplot            yes     high                     3                                                                                                      Quantification of granzyme B+ CD8+ T cells for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+50   supplementary figure 67b    figure  supplementary figure 67              True      barplot            yes     high                     3                                                                                                           Quantifies T cell proliferation rates for three specific treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+55   supplementary figure 71c    figure  supplementary figure 71              True      barplot            yes     high                     4                                                                                                                  Quantification of splenic CD8+ T cells for control and pLNP groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+56   supplementary figure 71d    figure  supplementary figure 71              True      barplot            yes     high                     4                                                                                                                  Quantification of splenic CD4+ T cells for control and pLNP groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+57   supplementary figure 71f    figure  supplementary figure 71              True      barplot            yes     high                     4                                                                                                            Quantification of splenic regulatory T cells for control and pLNP groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+58   supplementary figure 78c    figure  supplementary figure 78              True      barplot            yes     high                     4                                                                                                                          Quantification of IL-6 in tumor tissue for specific groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+59   supplementary figure 78e    figure  supplementary figure 78              True      barplot            yes     high                     4                                                                                                                       Quantification of TNF-alpha+ CD3+ T cells for specific groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+60   supplementary figure 78g    figure  supplementary figure 78              True      barplot            yes     high                     4                                                                                                                       Quantification of IFN-gamma+ CD3+ T cells for specific groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+61   supplementary figure 78i    figure  supplementary figure 78              True      barplot            yes     high                     4                                                                                                                      Quantification of granzyme B+ CD3+ T cells for specific groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+62   supplementary figure 79c    figure  supplementary figure 79              True      barplot            yes     high                     4                                                                                                                                 Intratumoral IL-6 quantification for control groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+63   supplementary figure 79d    figure  supplementary figure 79              True      barplot            yes     high                     4                                                                                                                            Intratumoral TNF-alpha quantification for control groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+64   supplementary figure 79e    figure  supplementary figure 79              True      barplot            yes     high                     4                                                                                                                            Intratumoral IFN-gamma quantification for control groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+65   supplementary figure 79g    figure  supplementary figure 79              True      barplot            yes     high                     4                                                                                                                             Quantification of tumor CD8+ T cells for control groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+66   supplementary figure 79i    figure  supplementary figure 79              True      barplot            yes     high                     4                                                                                                                  Quantification of tumor TNF-alpha+ CD3+ T cells for control groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+67   supplementary figure 79k    figure  supplementary figure 79              True      barplot            yes     high                     4                                                                                                                  Quantification of tumor IFN-gamma+ CD3+ T cells for control groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+68   supplementary figure 79m    figure  supplementary figure 79              True      barplot            yes     high                     4                                                                                                                 Quantification of tumor granzyme B+ CD3+ T cells for control groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+72    supplementary figure 49    figure  supplementary figure 49              True      barplot            yes   medium                    21                                                                                Cell viability of MC38 cells for the 21 pLNPs library, providing in vitro safety/performance mapping.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+83   supplementary figure 54a    figure  supplementary figure 54              True     lineplot            yes   medium                     1                                                                                                                  TNS assay fluorescence curve to determine pKa of G0-SS-AA-C12 pLNP.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+84   supplementary figure 54b    figure  supplementary figure 54              True     lineplot            yes   medium                     1                                                                                                                   TNS assay fluorescence curve to determine pKa of G0-6C-AA-C12 LNP.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+85    supplementary figure 59    figure  supplementary figure 59              True     lineplot            yes   medium                     1                                                                                                 HPLC traces monitoring drug release from G0-SS-AA-C12 pLNP at different time points.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+86   supplementary figure 87b    figure  supplementary figure 87              True      barplot            yes   medium                     7                                                                                                        Serum IL-6 quantification after intravenous injection for 7 treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+87   supplementary figure 87c    figure  supplementary figure 87              True      barplot            yes   medium                     7                                                                                                   Serum TNF-alpha quantification after intravenous injection for 7 treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+88   supplementary figure 87d    figure  supplementary figure 87              True      barplot            yes   medium                     7                                                                                                   Serum IFN-gamma quantification after intravenous injection for 7 treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+89   supplementary figure 87e    figure  supplementary figure 87              True      barplot            yes   medium                     7                                                                                                       Serum IL-6 quantification after intratumoral injection for 7 treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+90   supplementary figure 87f    figure  supplementary figure 87              True      barplot            yes   medium                     7                                                                                                  Serum TNF-alpha quantification after intratumoral injection for 7 treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+91   supplementary figure 87g    figure  supplementary figure 87              True      barplot            yes   medium                     7                                                                                                  Serum IFN-gamma quantification after intratumoral injection for 7 treatment groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+92   supplementary figure 87h    figure  supplementary figure 87              True      barplot            yes   medium                     2                                                                                                                   Comparison of serum IL-6 for lead pLNP by route of administration.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+93   supplementary figure 87i    figure  supplementary figure 87              True      barplot            yes   medium                     2                                                                                                              Comparison of serum TNF-alpha for lead pLNP by route of administration.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+94   supplementary figure 87j    figure  supplementary figure 87              True      barplot            yes   medium                     2                                                                                                              Comparison of serum IFN-gamma for lead pLNP by route of administration.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+95    supplementary figure 88    figure  supplementary figure 88              True      barplot            yes   medium                    14                                                                                   Quantifies AST and ALT levels in serum after intravenous administration for 7 experimental groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+96    supplementary figure 89    figure  supplementary figure 89              True      barplot            yes   medium                    14                                                                                  Quantifies AST and ALT levels in serum after intratumoral administration for 7 experimental groups.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched                         No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this selected item is supplementary.
+109                 figure 5h    figure                 figure 5             False  scatterplot             no      low                     0                                                     Volcano plot from bulk RNA-seq comparing one formulation to control; broad genomic data, not individual LNP performance metrics.       high                                                   NaN            NaN                                                                     NaN           yes           NaN                                        NaN            True              unmatched         No exact Excel block match: selected item is Figure 5H volcano/RNA-seq plot; inventory has Figure 5B-E, 5F,G, 5I, and 5J-O blocks but no Figure 5H panel block.
+
+ succeeded in 755ms:
+[WindowsPath('F:/내 드라이브/EXTRACT-TEST/QS_2026_3')]
+
+ fig_table_lnpdb_classified.csv
+rows 262
+columns ['item_id', 'item_type', 'base_id', 'is_supplementary', 'visual_type', 'need_for_lnpdb', 'priority', 'estimated_data_count', 'reason', 'confidence', 'excel_item_id', 'matched_blocks', 'matched_block_csv_path', 'manual_select', 'matched_sheet', 'matched_sheet_file', 'manual_required', 'excel_match_confidence', 'excel_match_reason']
+     item_id item_type   base_id  is_supplementary  visual_type need_for_lnpdb priority  estimated_data_count                                                                                                                                                                                                              reason confidence                                         excel_item_id matched_blocks                                                  matched_block_csv_path manual_select matched_sheet                         matched_sheet_file manual_required excel_match_confidence                                                                                                                                                excel_match_reason
+0  figure 2b    figure  figure 2             False      heatmap            yes     high                    21                                              The heatmap shows luminescence intensities of MC38 cells after treatment with pLNPs formulated from 21 distinct pILs, providing comparative in vitro performance data.       high    41565_2025_2102_MOESM3_ESM__Figure 2B__element_001     block_0001    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2B/block_0001.csv           yes     Figure 2B  Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx           False                   high       Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 2B; block preview is the pLNP library heatmap matrix with C10/C12/C14 columns
+1  figure 2c    figure  figure 2             False  scatterplot            yes     high                     5  This plot shows ex vivo FLuc expression in tumour tissue for specific pLNP formulations (G0-SS-AA-C10/C12/C14 and G0-6C-AA-C12) compared to a control (MC3), providing individual formulation numeric performance.       high    41565_2025_2102_MOESM3_ESM__Figure 2C__element_001     block_0002    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2C/block_0002.csv           yes     Figure 2C  Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 2C; block preview contains G0-SS-AA-C10/C12/C14, G0-6C-AA-C12, and MC3 FLuc values
+2  figure 3b    figure  figure 3             False      barplot            yes     high                     3                                                             Shows secreted (extracellular) IL-12 levels for specific formulations (MC3, G0-6C-AA-C12, and G0-SS-AA-C12), providing individual LNP performance data.       high  41565_2025_2102_MOESM4_ESM__Figure 3B,C__element_001     block_0003  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0003.csv           yes   Figure 3B,C  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high                Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3B,C; block preview starts with Fig. 3B and IL-12 formulation groups
+
+ fig_table_inventory.csv
+rows 262
+columns ['item_id', 'item_type', 'base_id', 'is_supplementary', 'visual_type', 'need_for_lnpdb', 'priority', 'estimated_data_count', 'reason', 'confidence', 'excel_item_id', 'matched_blocks', 'matched_block_csv_path', 'manual_select']
+     item_id item_type   base_id  is_supplementary  visual_type need_for_lnpdb priority  estimated_data_count                                                                                                                                                                                                              reason confidence excel_item_id                                                                                      matched_blocks                                                                                          matched_block_csv_path manual_select
+0  figure 2b    figure  figure 2             False      heatmap            yes     high                    21                                              The heatmap shows luminescence intensities of MC38 cells after treatment with pLNPs formulated from 21 distinct pILs, providing comparative in vitro performance data.       high     figure 2b    41565_2025_2102_MOESM3_ESM.xlsx [Figure 2B] [41565_2025_2102_MOESM3_ESM__Figure 2B__whole_sheet]    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure 2B/41565_2025_2102_MOESM3_ESM__Figure 2B__whole_sheet.csv           yes
+1  figure 2c    figure  figure 2             False  scatterplot            yes     high                     5  This plot shows ex vivo FLuc expression in tumour tissue for specific pLNP formulations (G0-SS-AA-C10/C12/C14 and G0-6C-AA-C12) compared to a control (MC3), providing individual formulation numeric performance.       high     figure 2c    41565_2025_2102_MOESM3_ESM.xlsx [Figure 2C] [41565_2025_2102_MOESM3_ESM__Figure 2C__whole_sheet]    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure 2C/41565_2025_2102_MOESM3_ESM__Figure 2C__whole_sheet.csv           yes
+2  figure 3b    figure  figure 3             False      barplot            yes     high                     3                                                             Shows secreted (extracellular) IL-12 levels for specific formulations (MC3, G0-6C-AA-C12, and G0-SS-AA-C12), providing individual LNP performance data.       high     figure 3b  41565_2025_2102_MOESM4_ESM.xlsx [Figure 3B,C] [41565_2025_2102_MOESM4_ESM__Figure 3B,C__block_001]  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure 3B,C/41565_2025_2102_MOESM4_ESM__Figure 3B,C__block_001.csv           yes
+
+ excel_block_inventory.csv
+rows 44
+columns ['excel_file', 'excel_sheet', 'block_id', 'group_id', 'element_id', 'block_csv_path', 'block_meta_path', 'block_type']
+                                  excel_file  excel_sheet    block_id                                            group_id                                            element_id                                                          block_csv_path                                                          block_meta_path       block_type
+0  Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx    Figure 2B  block_0001    41565_2025_2102_MOESM3_ESM__Figure 2B__group_001    41565_2025_2102_MOESM3_ESM__Figure 2B__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2B/block_0001.csv    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2B/block_0001.json  title_and_table
+1  Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx    Figure 2C  block_0002    41565_2025_2102_MOESM3_ESM__Figure 2C__group_001    41565_2025_2102_MOESM3_ESM__Figure 2C__element_001    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2C/block_0002.csv    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2C/block_0002.json  title_and_table
+2  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx  Figure 3B,C  block_0003  41565_2025_2102_MOESM4_ESM__Figure 3B,C__group_001  41565_2025_2102_MOESM4_ESM__Figure 3B,C__element_001  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0003.csv  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0003.json  title_and_table
+
+codex
+The classified CSV already contains staged match decisions for the 71 selected items: main-text panels are mostly matched to block IDs, while supplementary panels and a few missing source-data panels are marked manual-required/unmatched. I’m going to normalize those decisions into the required JSON and row CSV, and preserve the classified CSV columns.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "Test-Path -LiteralPath 'F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\\excel_mapping.json'; Test-Path -LiteralPath 'F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\\excel_mapping_rows.csv'" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import pandas as pd
+from pathlib import Path
+p=list(Path('F:/').glob('*/EXTRACT-TEST/QS_2026_3'))[0]
+cls=pd.read_csv(p/'fig_table_lnpdb_classified.csv')
+sel=cls[cls['manual_select'].astype(str).str.lower().eq('yes')]
+print('selected', len(sel))
+print('matched nonempty', sel['matched_blocks'].notna().sum())
+print('unmatched', sel['matched_blocks'].isna().sum())
+print('\\nSelected summary:')
+print(sel[['item_id','excel_item_id','matched_blocks','matched_block_csv_path','matched_sheet','matched_sheet_file','manual_required','excel_match_confidence','excel_match_reason']].to_string(max_rows=100,max_colwidth=120))
+'@ | python -" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 161ms:
+False
+False
+
+ succeeded in 582ms:
+selected 71
+matched nonempty 26
+unmatched 45
+
+Selected summary:
+                      item_id                                         excel_item_id matched_blocks                                                  matched_block_csv_path matched_sheet                         matched_sheet_file manual_required excel_match_confidence                                                                                                       excel_match_reason
+0                   figure 2b    41565_2025_2102_MOESM3_ESM__Figure 2B__element_001     block_0001    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2B/block_0001.csv     Figure 2B  Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 2B; block preview is the pLNP library ...
+1                   figure 2c    41565_2025_2102_MOESM3_ESM__Figure 2C__element_001     block_0002    Exp_Excel_Blocks/41565_2025_2102_MOESM3_ESM/Figure_2C/block_0002.csv     Figure 2C  Exp_Excel/41565_2025_2102_MOESM3_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 2C; block preview contains G0-SS-AA-C1...
+2                   figure 3b  41565_2025_2102_MOESM4_ESM__Figure 3B,C__element_001     block_0003  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0003.csv   Figure 3B,C  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3B,C; block preview starts with Fig. 3...
+3                   figure 3c  41565_2025_2102_MOESM4_ESM__Figure 3B,C__element_002     block_0004  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3B_C/block_0004.csv   Figure 3B,C  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3B,C; block preview starts with Fig. 3...
+4                   figure 3e    41565_2025_2102_MOESM4_ESM__Figure 3E__element_001     block_0005    Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3E/block_0005.csv     Figure 3E  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3E; block preview contains MC3, G0-6C-...
+6                   figure 3i  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_001     block_0007  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0007.csv   Figure 3I-K  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3I-K; block preview starts with Fig. 3...
+7                   figure 3j  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_002     block_0008  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0008.csv   Figure 3I-K  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3I-K; block preview starts with Fig. 3...
+8                   figure 3k  41565_2025_2102_MOESM4_ESM__Figure 3I-K__element_003     block_0009  Exp_Excel_Blocks/41565_2025_2102_MOESM4_ESM/Figure_3I-K/block_0009.csv   Figure 3I-K  Exp_Excel/41565_2025_2102_MOESM4_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 3I-K; block preview starts with Fig. 3...
+12                  figure 4g  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_001     block_0016  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0016.csv   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4G
+13                  figure 4h  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_002     block_0017  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0017.csv   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4H
+14                  figure 4i  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_003     block_0018  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0018.csv   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4I
+15                  figure 4j  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_004     block_0019  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0019.csv   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4J
+16                  figure 4k  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_005     block_0020  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0020.csv   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4K
+17                  figure 4l  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_006     block_0021  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0021.csv   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4L
+18                  figure 4m  41565_2025_2102_MOESM5_ESM__Figure 4G-M__element_007     block_0022  Exp_Excel_Blocks/41565_2025_2102_MOESM5_ESM/Figure_4G-M/block_0022.csv   Figure 4G-M  Exp_Excel/41565_2025_2102_MOESM5_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 4G-M; block preview starts with Fig. 4M
+19                  figure 5b  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_001     block_0023  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0023.csv   Figure 5B-E  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5B-E; block preview starts with Fig. 5B
+20                  figure 5c  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_002     block_0024  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0024.csv   Figure 5B-E  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5B-E; block preview starts with Fig. 5C
+21                  figure 5d  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_003     block_0025  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0025.csv   Figure 5B-E  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5B-E; block preview starts with Fig. 5D
+22                  figure 5e  41565_2025_2102_MOESM6_ESM__Figure 5B-E__element_004     block_0026  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5B-E/block_0026.csv   Figure 5B-E  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high    Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5B-E; block preview starts with Fig. 5E
+23                  figure 5f  41565_2025_2102_MOESM6_ESM__Figure 5F,G__element_001     block_0027  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5F_G/block_0027.csv   Figure 5F,G  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5F,G; block preview starts with Fig. 5...
+24                  figure 5g  41565_2025_2102_MOESM6_ESM__Figure 5F,G__element_002     block_0028  Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5F_G/block_0028.csv   Figure 5F,G  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5F,G; block preview starts with Fig. 5...
+25                  figure 5i    41565_2025_2102_MOESM6_ESM__Figure 5I__element_001     block_0029    Exp_Excel_Blocks/41565_2025_2102_MOESM6_ESM/Figure_5I/block_0029.csv     Figure 5I  Exp_Excel/41565_2025_2102_MOESM6_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 5I; block preview contains G0-SS-AA-C1...
+26                  figure 6b    41565_2025_2102_MOESM7_ESM__Figure 6B__element_001     block_0038    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6B/block_0038.csv     Figure 6B  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 6B; block preview contains rechallenge...
+27                  figure 6c    41565_2025_2102_MOESM7_ESM__Figure 6C__element_001     block_0039    Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6C/block_0039.csv     Figure 6C  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 6C; block preview contains rechallenge...
+28                  figure 6d                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: selected item is Figure 6D survival curves, but inventory has Figure 6B, 6C, 6E, 6H, 6J,...
+31                  figure 6k  41565_2025_2102_MOESM7_ESM__Figure 6K,L__element_001     block_0043  Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6K_L/block_0043.csv   Figure 6K,L  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 6K,L; block preview starts with Fig. 6...
+32                  figure 6l  41565_2025_2102_MOESM7_ESM__Figure 6K,L__element_002     block_0044  Exp_Excel_Blocks/41565_2025_2102_MOESM7_ESM/Figure_6K_L/block_0044.csv   Figure 6K,L  Exp_Excel/41565_2025_2102_MOESM7_ESM.xlsx           False                   high  Exact panel-to-block match by item ID/sheet title/block preview: sheet Figure 6K,L; block preview starts with Fig. 6...
+35    supplementary figure 47                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+38   supplementary figure 52c                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+39   supplementary figure 53c                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+40   supplementary figure 56b                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+41   supplementary figure 60c                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+42   supplementary figure 60e                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+43   supplementary figure 60g                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+44   supplementary figure 61b                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+45   supplementary figure 61d                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+46   supplementary figure 61f                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+47   supplementary figure 62b                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+48   supplementary figure 62d                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+49   supplementary figure 62f                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+50   supplementary figure 67b                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+55   supplementary figure 71c                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+56   supplementary figure 71d                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+57   supplementary figure 71f                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+58   supplementary figure 78c                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+59   supplementary figure 78e                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+60   supplementary figure 78g                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+61   supplementary figure 78i                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+62   supplementary figure 79c                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+63   supplementary figure 79d                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+64   supplementary figure 79e                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+65   supplementary figure 79g                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+66   supplementary figure 79i                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+67   supplementary figure 79k                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+68   supplementary figure 79m                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+72    supplementary figure 49                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+83   supplementary figure 54a                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+84   supplementary figure 54b                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+85    supplementary figure 59                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+86   supplementary figure 87b                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+87   supplementary figure 87c                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+88   supplementary figure 87d                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+89   supplementary figure 87e                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+90   supplementary figure 87f                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+91   supplementary figure 87g                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+92   supplementary figure 87h                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+93   supplementary figure 87i                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+94   supplementary figure 87j                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+95    supplementary figure 88                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+96    supplementary figure 89                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: excel_block_inventory.csv contains only main Figure 2-6 workbook sheets, while this sele...
+109                 figure 5h                                                   NaN            NaN                                                                     NaN           NaN                                        NaN            True              unmatched  No exact Excel block match: selected item is Figure 5H volcano/RNA-seq plot; inventory has Figure 5B-E, 5F,G, 5I, an...
+
+codex
+I’m writing the two stage artifacts now. For unmatched selected items, I’m keeping a row with blank Excel fields and `manual_required=true`, which matches the task constraint not to invent missing exact matches.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "@'
+import csv
+import json
+import math
+import shutil
+from datetime import datetime
+from pathlib import Path
+
+import pandas as pd
+
+matches = list(Path('F:/').glob('*/EXTRACT-TEST/QS_2026_3'))
+if not matches:
+    raise SystemExit('Target paper folder not found under F:/*/EXTRACT-TEST/QS_2026_3')
+paper = matches[0]
+
+classified_path = paper / 'fig_table_lnpdb_classified.csv'
+block_inv_path = paper / 'excel_block_inventory.csv'
+json_path = paper / 'excel_mapping.json'
+rows_path = paper / 'excel_mapping_rows.csv'
+
+classified = pd.read_csv(classified_path, dtype=str, keep_default_na=False)
+blocks = pd.read_csv(block_inv_path, dtype=str, keep_default_na=False)
+block_by_id = {r['block_id']: r for _, r in blocks.iterrows() if r.get('block_id', '')}
+
+def clean(value):
+    if value is None:
+        return ''
+    if isinstance(value, float) and math.isnan(value):
+        return ''
+    return str(value).strip()
+
+def selected(value):
+    return clean(value).lower() in {'yes', 'true', '1', 'y', 'selected'}
+
+selected_rows = classified[classified['manual_select'].map(selected)].copy()
+
+mapping = {}
+row_records = []
+for _, row in selected_rows.iterrows():
+    item_id = clean(row.get('item_id'))
+    block_id = clean(row.get('matched_blocks'))
+    block = block_by_id.get(block_id)
+
+    if block is not None:
+        excel_file = clean(block.get('excel_file')) or clean(row.get('matched_sheet_file'))
+        excel_sheet = clean(block.get('excel_sheet')) or clean(row.get('matched_sheet'))
+        block_csv_path = clean(block.get('block_csv_path')) or clean(row.get('matched_block_csv_path'))
+        excel_item_id = clean(block.get('element_id')) or clean(row.get('excel_item_id'))
+        confidence = clean(row.get('excel_match_confidence')) or 'high'
+        manual_required = 'false'
+        reason = clean(row.get('excel_match_reason')) or f'Exact sheet/block match for {item_id} to {excel_sheet} {block_id}.'
+        evidence_excel = f'{excel_file} | {excel_sheet} | {block_id}'
+    else:
+        excel_file = ''
+        excel_sheet = ''
+        block_csv_path = ''
+        excel_item_id = clean(row.get('excel_item_id'))
+        confidence = clean(row.get('excel_match_confidence')) or 'unmatched'
+        manual_required = 'true'
+        reason = clean(row.get('excel_match_reason')) or 'No exact Excel block match found in excel_block_inventory.csv; manual review required.'
+        evidence_excel = ''
+
+    rec = {
+        'pdf_item_id': item_id,
+        'excel_item_id': excel_item_id,
+        'excel_file': excel_file,
+        'excel_sheet': excel_sheet,
+        'block_id': block_id if block is not None else '',
+        'block_csv_path': block_csv_path,
+        'reason': reason,
+        'confidence': confidence,
+        'manual_required': manual_required,
+        'evidence_excel': evidence_excel,
+    }
+    mapping[item_id] = [rec]
+    row_records.append(rec)
+
+# Back up if this stage is being re-run over existing artifacts.
+stamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+for path in (json_path, rows_path):
+    if path.exists():
+        backup = path.with_name(path.name + f'.bak_{stamp}')
+        shutil.copy2(path, backup)
+
+with json_path.open('w', encoding='utf-8', newline='') as f:
+    json.dump(mapping, f, indent=2, ensure_ascii=True)
+    f.write('\\n')
+
+fieldnames = ['pdf_item_id','excel_item_id','excel_file','excel_sheet','block_id','block_csv_path','reason','confidence','manual_required','evidence_excel']
+with rows_path.open('w', encoding='utf-8', newline='') as f:
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(row_records)
+
+# Sanity checks required by OUTPUT_SCHEMA.
+missing = []
+for rec in row_records:
+    rel = rec['block_csv_path']
+    if rel and not (paper / rel).exists():
+        missing.append(rel)
+if missing:
+    raise SystemExit('Missing block_csv_path files: ' + '; '.join(missing[:10]))
+
+print(f'paper_folder={paper}')
+print(f'selected_items={len(selected_rows)}')
+print(f'matched_items={sum(1 for r in row_records if r[\"block_id\"])}')
+print(f'manual_required_items={sum(1 for r in row_records if r[\"manual_required\"] == \"true\")}')
+print(f'wrote={json_path}')
+print(f'wrote={rows_path}')
+'@ | python -" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 651ms:
+paper_folder=F:\내 드라이브\EXTRACT-TEST\QS_2026_3
+selected_items=71
+matched_items=26
+manual_required_items=45
+wrote=F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_mapping.json
+wrote=F:\내 드라이브\EXTRACT-TEST\QS_2026_3\excel_mapping_rows.csv
+
+codex
+The mapping artifacts are in place: 71 selected items represented, 26 with direct block matches and 45 marked for manual review because no exact block exists in the inventory. I’m running the stage validator next.
+exec
+"C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe" -Command "python Agent_Task_Runner.py validate --stage 04_ft_excel_matcher --paper-folder \"F:\\내 드라이브\\EXTRACT-TEST\\QS_2026_3\"" in C:\Users\kogun\PycharmProjects\LNPDB_Articles_AgentExtraction
+ succeeded in 223ms:
+{
+  "ok": true,
+  "messages": [
+    "mapping_keys=71",
+    "rows_csv_exists=True"
+  ]
+}
+
+codex
+Completed stage `04_ft_excel_matcher` for `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`.
+
+Created:
+- `excel_mapping.json`
+- `excel_mapping_rows.csv`
+
+Result:
+- Selected FT items mapped: `71`
+- Direct Excel block matches: `26`
+- Manual-required unmatched items: `45`
+
+Validation passed:
+
+```text
+ok: true
+mapping_keys=71
+rows_csv_exists=True
+```
+tokens used
+Completed stage `04_ft_excel_matcher` for `F:\내 드라이브\EXTRACT-TEST\QS_2026_3`.
+47,041
+
+Created:
+- `excel_mapping.json`
+- `excel_mapping_rows.csv`
+
+Result:
+- Selected FT items mapped: `71`
+- Direct Excel block matches: `26`
+- Manual-required unmatched items: `45`
+
+Validation passed:
+
+```text
+ok: true
+mapping_keys=71
+rows_csv_exists=True
+```
+
+===== END EXTERNAL CLI OUTPUT =====
+timestamp_end: 2026-06-29T19:04:59.006807
+returncode: 0
+elapsed_seconds: 94.219

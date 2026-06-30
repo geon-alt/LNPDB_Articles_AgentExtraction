@@ -1,0 +1,10 @@
+{
+  "paper_folder_requested": "F:\\? ????\\EXTRACT-TEST\\QS_2026_3",
+  "fallback_output_dir": "agent_workspace\\smiles_text_QS_2026_3_outputs",
+  "row_count": 68,
+  "target_write_blocked": "Managed sandbox denies direct access to F:\\? ???? and F:\\ root; external Codex subprocess was unavailable with 401 Unauthorized.",
+  "iupac_policy": "IUPAC_name left blank for all rows because no source text explicitly labels an IUPAC_name field.",
+  "api_policy": "No Gemini, Vertex, GCS batch APIs, or project API helper scripts were used.",
+  "source_rows_recovered_from_prior_local_log": 168,
+  "manual_required_rows": 36
+}
